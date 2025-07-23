@@ -7,3 +7,4 @@ django-crispy-forms==2.4
 django-redis==6.0.0
 djangorestframework==3.14.0
 pillow==10.2.0
+requests==2.31.0

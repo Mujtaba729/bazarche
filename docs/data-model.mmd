@@ -1,0 +1,30 @@
+erDiagram
+    Product {
+        int id
+        string name_fa
+        string name_ps
+        text description_fa
+        text description_ps
+        string city
+        string seller_contact
+        datetime created_at
+        bool is_approved
+    }
+    Category {
+        int id
+        string name_fa
+        string name_ps
+    }
+    Tag {
+        int id
+        string name_fa
+        string name_ps
+    }
+    VisitLog {
+        int id
+        int visit_count
+        date date
+    }
+    Product ||--o{ Category: ""
+    Product }|--|{ Tag: "tags"
+    Product ||--|{ VisitLog: "logs"

@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}درباره ما - SoodAva{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-sm p-4">
+                <h1 class="mb-4 text-center" style="color:#276ef1;">درباره SoodAva</h1>
+                
+                <div class="text-center mb-4">
+                  <span class="soodava-brand" style="flex-direction:column;align-items:center;">
+                    <span class="soodava-main" style="font-size:2rem;line-height:1.1;">SoodAva</span>
+                    <span class="soodava-sub" style="font-size:1rem;color:#276ef1;margin-top:0.1rem;">سود آوا</span>
+                  </span>
+                  <p style="color:#666;font-size:1.1rem;margin-bottom:2rem;">سودآوا - بزرگترین پلتفرم خرید و فروش آنلاین افغانستان</p>
+                </div>
+
+                <p style="font-size:1.15rem;line-height:2;text-align:justify;">
+                  <strong class="soodava-main"><span class="soodava-sood">Sood</span><span class="soodava-ava">Ava</span></strong> یک پلتفرم نوآورانه و پیشرفته برای خرید و فروش آنلاین است که با هدف ایجاد یک بازار دیجیتال امن، سریع و کاربرپسند برای تمام مردم افغانستان طراحی شده است. ما معتقدیم که هر فردی باید بتواند به راحتی محصولات خود را معرفی کند و به هزاران خریدار بالقوه دسترسی داشته باشد.
+                </p>
+
+                <div class="row mt-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="feature-box p-3" style="background:#f8f9fa;border-radius:8px;border-right:4px solid #276ef1;">
+                            <h5 style="color:#276ef1;margin-bottom:1rem;">
+                                <i class="bi bi-cart-check me-2"></i>برای خریداران
+                            </h5>
+                            <ul style="font-size:1rem;line-height:1.8;">
+                                <li>جستجوی هوشمند محصولات</li>
+                                <li>مقایسه قیمت‌ها</li>
+                                <li>ارتباط مستقیم با فروشندگان</li>
+                                <li>امنیت در معاملات</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-box p-3" style="background:#f8f9fa;border-radius:8px;border-right:4px solid #28a745;">
+                            <h5 style="color:#28a745;margin-bottom:1rem;">
+                                <i class="bi bi-shop me-2"></i>برای فروشندگان
+                            </h5>
+                            <ul style="font-size:1rem;line-height:1.8;">
+                                <li>ثبت رایگان آگهی</li>
+                                <li>مدیریت آسان محصولات</li>
+                                <li>دسترسی به بازار گسترده</li>
+                                <li>آمار و گزارش‌گیری</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 style="color:#1a237e;margin:2rem 0 1rem 0;">ویژگی‌های کلیدی SoodAva:</h4>
+                <ul style="font-size:1.05rem;line-height:2;">
+                    <li><strong>پلتفرم چندزبانه:</strong> پشتیبانی کامل از زبان‌های دری، پشتو و انگلیسی</li>
+                    <li><strong>دسته‌بندی هوشمند:</strong> بیش از 50 دسته‌بندی مختلف برای انواع محصولات</li>
+                    <li><strong>جستجوی پیشرفته:</strong> فیلتر بر اساس شهر، قیمت، دسته‌بندی و کلمات کلیدی</li>
+                    <li><strong>امنیت بالا:</strong> حفاظت از اطلاعات شخصی و حریم خصوصی کاربران</li>
+                    <li><strong>پشتیبانی 24/7:</strong> تیم پشتیبانی حرفه‌ای و پاسخگو</li>
+                    <li><strong>رابط کاربری مدرن:</strong> طراحی زیبا و کاربرپسند برای تمام دستگاه‌ها</li>
+                </ul>
+
+                <div class="alert alert-info mt-4" style="background:#e3f2fd;border:1px solid #2196f3;border-radius:8px;">
+                    <h5 style="color:#1976d2;margin-bottom:1rem;">
+                        <i class="bi bi-lightbulb me-2"></i>چرا SoodAva؟
+                    </h5>
+                    <p style="margin-bottom:0;font-size:1rem;">
+                        ما با ترکیب تکنولوژی مدرن و درک عمیق از نیازهای بازار افغانستان، پلتفرمی ایجاد کرده‌ایم که نه تنها خرید و فروش را ساده می‌کند، بلکه تجربه‌ای لذت‌بخش و مطمئن از تجارت آنلاین را برای شما فراهم می‌آورد.
+                    </p>
+                </div>
+
+                <p class="mt-4" style="font-size:1.08rem;text-align:center;font-weight:600;color:#276ef1;">
+                    <strong>SoodAva</strong> فقط یک وب‌سایت نیست؛ یک جامعه پویا برای رشد کسب‌وکار و ارتباطات تجاری شماست!
+                </p>
+
+                <div class="text-center mt-4">
+                    <a href="/" class="btn btn-primary btn-lg me-3">
+                        <i class="bi bi-house me-2"></i>شروع خرید و فروش
+                    </a>
+                    <a href="{% url 'app:contact' %}" class="btn btn-outline-primary btn-lg me-3">
+                        <i class="bi bi-envelope me-2"></i>تماس با ما
+                    </a>
+                    <button class="btn btn-success btn-lg" onclick="toggleAdvertisingModal()">
+                        <i class="bi bi-megaphone me-2"></i>تبلیغات
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advertising Modal -->
+<div class="modal fade" id="advertisingModal" tabindex="-1" aria-labelledby="advertisingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">
+                <h5 class="modal-title" id="advertisingModalLabel">
+                    <i class="bi bi-megaphone me-2"></i>خدمات تبلیغاتی SoodAva
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100" style="border-left: 4px solid #667eea;">
+                            <div class="card-body text-center">
+                                <i class="bi bi-star-fill" style="font-size: 2rem; color: #667eea;"></i>
+                                <h5 class="card-title mt-2" style="color: #667eea;">محصولات ویژه</h5>
+                                <p class="card-text">محصولات برتر و پیشنهادی ما را در صفحه اصلی مشاهده کنید</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100" style="border-left: 4px solid #28a745;">
+                            <div class="card-body text-center">
+                                <i class="bi bi-tag-fill" style="font-size: 2rem; color: #28a745;"></i>
+                                <h5 class="card-title mt-2" style="color: #28a745;">محصولات تخفیف دار</h5>
+                                <p class="card-text">بهترین تخفیف‌ها و پیشنهادات ویژه برای شما</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100" style="border-left: 4px solid #ffc107;">
+                            <div class="card-body text-center">
+                                <i class="bi bi-lightbulb-fill" style="font-size: 2rem; color: #ffc107;"></i>
+                                <h5 class="card-title mt-2" style="color: #ffc107;">تبلیغات مجزا</h5>
+                                <p class="card-text">تبلیغات در سر صفحه و بین محصولات برای جلب توجه بیشتر</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100" style="border-left: 4px solid #dc3545;">
+                            <div class="card-body text-center">
+                                <i class="bi bi-bullhorn" style="font-size: 2rem; color: #dc3545;"></i>
+                                <h5 class="card-title mt-2" style="color: #dc3545;">تبلیغات اختصاصی</h5>
+                                <p class="card-text">تبلیغات شخصی‌سازی شده برای کسب‌وکار شما</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-3" style="background: #e3f2fd; border: 1px solid #2196f3;">
+                    <h6 style="color: #1976d2; margin-bottom: 0.5rem;">
+                        <i class="bi bi-info-circle me-2"></i>مزایای تبلیغات در SoodAva:
+                    </h6>
+                    <ul class="mb-0" style="font-size: 0.9rem;">
+                        <li>دسترسی به هزاران کاربر فعال</li>
+                        <li>نمایش در صفحه اصلی و صفحات دسته‌بندی</li>
+                        <li>آمار دقیق بازدید و کلیک</li>
+                        <li>پشتیبانی 24/7 برای تبلیغات شما</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer" style="background: linear-gradient(45deg, #25d366, #128c7e);">
+                <div class="text-center w-100">
+                    <h6 style="color: white; margin-bottom: 1rem;">
+                        <i class="bi bi-whatsapp me-2"></i>برای اطلاع از قیمت‌ها و شروع تبلیغات
+                    </h6>
+                    <a href="https://wa.me/0093729726224" target="_blank" class="btn btn-light btn-lg">
+                        <i class="bi bi-whatsapp me-2"></i>تماس با ما: 0093729726224
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleAdvertisingModal() {
+    const modal = new bootstrap.Modal(document.getElementById('advertisingModal'));
+    modal.show();
+}
+</script>
+{% endblock %} 

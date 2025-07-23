@@ -1,0 +1,382 @@
+/* Mobile Enhancements for Bazarche App */
+
+/* Improve touch responsiveness */
+* {
+    touch-action: pan-y !important;
+}
+
+.product-card {
+    touch-action: pan-y !important;
+}
+
+.product-card .contact-btn,
+.product-card .delete-button {
+    touch-action: manipulation !important;
+}
+
+/* Ultra-compact mobile design */
+@media (max-width: 480px) {
+    /* Reduce main wrapper margin */
+    .main-wrapper {
+        margin-top: 60px !important; /* Smaller navbar height */
+    }
+    
+    /* Compact content container */
+    .content-container {
+        padding: 0.25rem !important;
+    }
+    
+    /* Compact section spacing */
+    .categories-section,
+    .products-section {
+        margin: 0 0.5rem 0.75rem !important;
+        padding: 1rem 0.75rem !important;
+    }
+    
+    /* Ultra-compact product grid */
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.4rem !important; /* Minimal gap */
+    }
+    
+    /* Compact category grid */
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.4rem !important;
+    }
+    
+    /* Compact action cards */
+    .actions-grid {
+        gap: 0.5rem !important;
+    }
+    
+    .action-card {
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    /* Smaller section headers */
+    .section-header {
+        margin-bottom: 1rem !important;
+    }
+    
+    .section-title {
+        font-size: 1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .section-subtitle {
+        font-size: 0.75rem !important;
+    }
+    
+    /* Compact welcome section */
+    .welcome-section {
+        padding: 1.5rem 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .welcome-icon {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    
+    .welcome-icon i {
+        font-size: 1.5rem !important;
+    }
+    
+    .welcome-title {
+        font-size: 1.1rem !important;
+    }
+    
+    .welcome-subtitle {
+        font-size: 0.8rem !important;
+    }
+    
+    /* Compact hero banner */
+    .hero-banner {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .banner-item {
+        height: 150px !important;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .products-grid {
+        gap: 0.3rem !important;
+    }
+    
+    .categories-grid {
+        gap: 0.3rem !important;
+    }
+    
+    .categories-section,
+    .products-section {
+        margin: 0 0.25rem 0.5rem !important;
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    .welcome-section {
+        padding: 1rem 0.5rem !important;
+    }
+    
+    .welcome-title {
+        font-size: 1rem !important;
+    }
+    
+    .welcome-subtitle {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets for mobile */
+    .nav-btn,
+    .user-btn,
+    .search-btn {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+    
+    .contact-btn {
+        min-height: 40px !important;
+    }
+    
+    .category-card,
+    .action-card {
+        min-height: 80px !important;
+    }
+    
+    /* Remove hover effects on touch devices */
+    .product-card:hover,
+    .category-card:hover,
+    .action-card:hover,
+    .nav-btn:hover,
+    .user-btn:hover,
+    .contact-btn:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Add active states for touch */
+    .product-card:active,
+    .category-card:active,
+    .action-card:active,
+    .nav-btn:active,
+    .user-btn:active,
+    .contact-btn:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* Performance optimizations */
+.product-card {
+    will-change: transform;
+    backface-visibility: hidden;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Smooth animations */
+.product-card,
+.category-card,
+.action-card {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    pointer-events: auto !important;
+}
+
+/* Ensure clickability */
+.product-card * {
+    pointer-events: auto !important;
+}
+
+.product-card .contact-btn,
+.product-card .delete-button {
+    pointer-events: auto !important;
+    z-index: 10 !important;
+}
+
+/* Make entire product card clickable */
+.product-card {
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    position: relative !important;
+    touch-action: pan-y !important;
+}
+
+.product-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+.product-card .contact-btn,
+.product-card .delete-button {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Better loading states */
+.product-card.loading {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Improved accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .product-card,
+    .category-card,
+    .action-card {
+        transition: none !important;
+    }
+}
+
+/* Better focus states for mobile */
+.product-card:focus,
+.category-card:focus,
+.action-card:focus {
+    outline: 2px solid #667eea !important;
+    outline-offset: 2px !important;
+}
+
+/* Compact dropdown menus */
+.dropdown-menu {
+    max-width: 280px !important;
+    min-width: 200px !important;
+}
+
+.dropdown-item {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.85rem !important;
+}
+
+/* Mobile menu improvements */
+.mobile-menu-content {
+    width: 260px !important;
+}
+
+.mobile-nav-item {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.9rem !important;
+}
+
+/* Better button hierarchy */
+.contact-btn {
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+}
+
+.contact-btn.registration-required {
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    font-weight: 700 !important;
+}
+
+/* Compact price display */
+.price-container {
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+}
+
+.current-price,
+.discount-price {
+    font-size: 0.8rem !important;
+}
+
+.original-price {
+    font-size: 0.7rem !important;
+}
+
+/* Better image optimization */
+.product-image {
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* Compact badges */
+.product-badge {
+    font-size: 0.55rem !important;
+    padding: 1px 4px !important;
+    border-radius: 4px !important;
+}
+
+/* Better spacing for mobile */
+.product-content {
+    gap: 0.25rem !important;
+}
+
+.product-meta,
+.location {
+    font-size: 0.6rem !important;
+}
+
+.product-meta i,
+.location i {
+    font-size: 0.55rem !important;
+}
+
+/* Compact tags */
+.condition-badge {
+    font-size: 0.5rem !important;
+    padding: 1px 3px !important;
+    border-radius: 2px !important;
+}
+
+/* Better mobile navigation */
+.mobile-navbar {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Compact search */
+.search-input {
+    font-size: 0.8rem !important;
+}
+
+.search-btn {
+    font-size: 0.75rem !important;
+}
+
+/* Better mobile menu */
+.mobile-menu-toggle {
+    font-size: 1.1rem !important;
+}
+
+/* Compact user button */
+.user-btn {
+    font-size: 0.75rem !important;
+    padding: 0.35rem 0.5rem !important;
+}
+
+/* Better mobile responsiveness */
+@media (max-width: 320px) {
+    .products-grid {
+        grid-template-columns: 1fr !important; /* Single column for very small screens */
+    }
+    
+    .categories-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr !important;
+    }
+} 

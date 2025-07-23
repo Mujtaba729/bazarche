@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}ویرایش دسته‌بندی{% endblock %}
+{% block content %}
+<div class="left-content" style="padding: 1rem 2rem; min-height: 100vh; background-color: #f9f4e9;">
+<h1>ویرایش دسته‌بندی: {{ category.name_fa }}</h1>
+<form method="post" novalidate>
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="name_fa" class="form-label">نام دسته‌بندی (دری)</label>
+    <input type="text" class="form-control" id="name_fa" name="name_fa" value="{{ category.name_fa }}" required>
+  </div>
+  <div class="mb-3">
+    <label for="name_ps" class="form-label">نام دسته‌بندی (پشتو)</label>
+    <input type="text" class="form-control" id="name_ps" name="name_ps" value="{{ category.name_ps }}">
+  </div>
+  <div class="mb-3">
+    <label for="name_en" class="form-label">نام دسته‌بندی (انگلیسی)</label>
+    <input type="text" class="form-control" id="name_en" name="name_en" value="{{ category.name_en }}">
+  </div>
+  <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+  <a href="{% url 'manage_categories' %}" class="btn btn-secondary">انصراف</a>
+</form>
+</div>
+{% endblock %}

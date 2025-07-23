@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'گزارش‌های تخلف' %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">{% trans 'گزارش‌های تخلف' %}</h5>
+        </div>
+        <div class="card-body">
+            {% if reports %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'محصول' %}</th>
+                            <th>{% trans 'نوع تخلف' %}</th>
+                            <th>{% trans 'توضیحات' %}</th>
+                            <th>{% trans 'تاریخ ثبت' %}</th>
+                            <th>{% trans 'وضعیت' %}</th>
+                            <th>{% trans 'عملیات' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'app:product_detail' report.product.id %}" target="_blank">
+                                    {{ report.product.name_fa }}
+                                </a>
+                            </td>
+                            <td>{{ report.get_report_type_display }}</td>
+                            <td>{{ report.description|truncatechars:100 }}</td>
+                            <td>{{ report.created_at|date:"Y/m/d H:i" }}</td>
+                            <td>
+                                {% if report.is_reviewed %}
+                                <span class="badge bg-success">{% trans 'بررسی شده' %}</span>
+                                {% else %}
+                                <span class="badge bg-warning">{% trans 'در انتظار بررسی' %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not report.is_reviewed %}
+                                <a href="{% url 'app:review_abuse_report' report.id %}" class="btn btn-primary btn-sm">
+                                    {% trans 'بررسی' %}
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                {% trans 'هیچ گزارشی ثبت نشده است.' %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

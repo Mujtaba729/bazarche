@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 03:25+0430\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# Website Navigation
+msgid "خانه"
+msgstr "خانه"
+
+msgid "درباره ما"
+msgstr "درباره ما"
+
+msgid "تماس با ما"
+msgstr "تماس با ما"
+
+msgid "ثبت نام"
+msgstr "ثبت نام"
+
+msgid "ورود"
+msgstr "ورود"
+
+msgid "خروج"
+msgstr "خروج"
+
+msgid "حساب من"
+msgstr "حساب من"
+
+msgid "پروفایل"
+msgstr "پروفایل"
+
+msgid "ثبت آگهی"
+msgstr "ثبت آگهی"
+
+msgid "جستجو"
+msgstr "جستجو"
+
+msgid "انتخاب شهر"
+msgstr "انتخاب شهر"
+
+msgid "همه شهرها"
+msgstr "همه شهرها"
+
+msgid "انتخاب زبان"
+msgstr "انتخاب زبان"
+
+msgid "فارسی"
+msgstr "فارسی"
+
+msgid "پشتو"
+msgstr "پشتو"
+
+msgid "English"
+msgstr "English"
+
+# Home Page
+msgid "به دیل زون خوش آمدید"
+msgstr "به سودآوا خوش آمدید"
+
+msgid "بزرگترین بازار آنلاین افغانستان"
+msgstr "بزرگترین بازار آنلاین افغانستان"
+
+msgid "دسته‌بندی‌ها"
+msgstr "دسته‌بندی‌ها"
+
+msgid "محصول مورد نظر خود را پیدا کنید"
+msgstr "محصول مورد نظر خود را پیدا کنید"
+
+msgid "محصولات"
+msgstr "محصولات"
+
+msgid "محصولات ویژه، پیشنهادی و تخفیف‌دار در ابتدا نمایش داده می‌شوند"
+msgstr "محصولات ویژه، پیشنهادی و تخفیف‌دار در ابتدا نمایش داده می‌شوند"
+
+msgid "محصولی یافت نشد"
+msgstr "محصولی یافت نشد"
+
+msgid "هیچ محصولی با فیلترهای انتخابی شما یافت نشد."
+msgstr "هیچ محصولی با فیلترهای انتخابی شما یافت نشد."
+
+# Product Details
+msgid "قیمت:"
+msgstr "قیمت:"
+
+msgid "قیمت با تخفیف:"
+msgstr "قیمت با تخفیف:"
+
+msgid "افغانی"
+msgstr "افغانی"
+
+msgid "مشاهده جزئیات"
+msgstr "مشاهده جزئیات"
+
+msgid "محصولات ویژه"
+msgstr "محصولات ویژه"
+
+msgid "محصولات پیشنهادی"
+msgstr "محصولات پیشنهادی"
+
+msgid "تخفیف‌های ویژه"
+msgstr "تخفیف‌های ویژه"
+
+msgid "مشاهده همه"
+msgstr "مشاهده همه"
+
+# Pagination
+msgid "قبلی"
+msgstr "قبلی"
+
+msgid "بعدی"
+msgstr "بعدی"
+
+msgid "صفحه"
+msgstr "صفحه"
+
+msgid "از"
+msgstr "از"
+
+# Advertisement
+msgid "تبلیغ"
+msgstr "تبلیغ"
+
+msgid "تبلیغات"
+msgstr "تبلیغات"
+
+msgid "عنوان"
+msgstr "عنوان"
+
+msgid "توضیحات"
+msgstr "توضیحات"
+
+msgid "تصویر"
+msgstr "تصویر"
+
+msgid "لینک"
+msgstr "لینک"
+
+msgid "موقعیت نمایش"
+msgstr "موقعیت نمایش"
+
+msgid "صفحه اصلی"
+msgstr "صفحه اصلی"
+
+msgid "بین محصولات"
+msgstr "بین محصولات"
+
+msgid "نوار کناری"
+msgstr "نوار کناری"
+
+msgid "فعال"
+msgstr "فعال"
+
+msgid "تاریخ شروع"
+msgstr "تاریخ شروع"
+
+msgid "تاریخ پایان"
+msgstr "تاریخ پایان"
+
+msgid "مشاهده بیشتر"
+msgstr "مشاهده بیشتر"
+
+# Messages
+msgid "پیام شما با موفقیت ارسال شد."
+msgstr "پیام شما با موفقیت ارسال شد."
+
+msgid "محصول"
+msgstr "محصول"
+
+msgid "تایید شد."
+msgstr "تایید شد."
+
+msgid "حذف شد."
+msgstr "حذف شد."
+
+msgid "به‌روزرسانی شد."
+msgstr "به‌روزرسانی شد."
+
+# Error Messages
+msgid "نام دسته‌بندی (دری) الزامی است."
+msgstr "نام دسته‌بندی (دری) الزامی است."
+
+# Menu
+msgid "منو"
+msgstr "منو"
+
+msgid "پروفایل من"
+msgstr "پروفایل من"
+
+# Footer
+msgid "دیل زون"
+msgstr "سودآوا"
+
+msgid "تمامی حقوق محفوظ است."
+msgstr "تمامی حقوق محفوظ است." 

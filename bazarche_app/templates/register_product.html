@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% trans "ثبت محصول جدید" %}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .register-product-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .register-product-container h1 {
+        font-size: 1.8rem;
+        color: #276ef1;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    .register-product-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .register-product-container label {
+        font-size: 1rem;
+        color: #555;
+    }
+    .register-product-container input, .register-product-container select, .register-product-container textarea {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .register-product-container textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+    .register-product-container button {
+        padding: 0.8rem;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .register-product-container button:hover {
+        background: #218838;
+    }
+    .image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .image-preview-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .image-preview-item .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(255, 0, 0, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    .image-preview-item .remove-btn:hover {
+        background: rgba(255, 0, 0, 1);
+    }
+    .validation-error {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+    .validation-success {
+        color: #28a745;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('id_images');
+    const imagePreview = document.getElementById('image-preview');
+    const maxFiles = 5;
+    
+    imageInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        imagePreview.innerHTML = '';
+        
+        // اعتبارسنجی تعداد فایل‌ها
+        if (files.length > maxFiles) {
+            showValidationMessage(`حداکثر ${maxFiles} فایل مجاز است.`, 'error');
+            imageInput.value = '';
+            return;
+        }
+        
+        // نمایش preview
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'image-preview-item';
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview">
+                    <button type="button" class="remove-btn" onclick="removeImage(${index})">×</button>
+                `;
+                imagePreview.appendChild(previewItem);
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        showValidationMessage(`${files.length} فایل انتخاب شد. عکس‌ها به صورت خودکار فشرده خواهند شد.`, 'success');
+    });
+    
+    function showValidationMessage(message, type) {
+        const existingMessage = imagePreview.querySelector('.validation-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `validation-message validation-${type}`;
+        messageDiv.textContent = message;
+        imagePreview.appendChild(messageDiv);
+    }
+    
+    window.removeImage = function(index) {
+        const dt = new DataTransfer();
+        const files = Array.from(imageInput.files);
+        files.splice(index, 1);
+        
+        files.forEach(file => dt.items.add(file));
+        imageInput.files = dt.files;
+        
+        // Trigger change event to update preview
+        imageInput.dispatchEvent(new Event('change'));
+    };
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "ثبت محصول جدید" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                         <div class="mb-3">
+                            <label for="id_category" class="form-label">{{ form.category.label }}</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger">{{ form.category.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_city" class="form-label">{{ form.city.label }}</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="text-danger">{{ form.city.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                         <div class="mb-3">
+                            <label for="id_price" class="form-label">{{ form.price.label }}</label>
+                            {{ form.price }}
+                            {% if form.price.errors %}
+                                <div class="text-danger">{{ form.price.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                         <div class="mb-3">
+                            <label for="id_discount_price" class="form-label">{{ form.discount_price.label }}</label>
+                            {{ form.discount_price }}
+                            {% if form.discount_price.errors %}
+                                <div class="text-danger">{{ form.discount_price.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_tags" class="form-label">{{ form.tags.label }}</label>
+                            <div class="form-check">
+                                {{ form.tags }}
+                            </div>
+                             {% if form.tags.errors %}
+                                <div class="text-danger">{{ form.tags.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                         <div class="mb-3">
+                            <label for="id_price_range" class="form-label">{{ form.price_range.label }}</label>
+                            {{ form.price_range }}
+                            {% if form.price_range.errors %}
+                                <div class="text-danger">{{ form.price_range.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_seller_contact" class="form-label">{{ form.seller_contact.label }}</label>
+                            {{ form.seller_contact }}
+                            {% if form.seller_contact.errors %}
+                                <div class="text-danger">{{ form.seller_contact.errors }}</div>
+                            {% endif %}
+                            <div class="form-text">شماره تماس یا ایمیل خود را وارد کنید تا خریداران بتوانند با شما تماس بگیرند</div>
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            شماره تماس شما به صورت خودکار در آگهی نمایش داده خواهد شد.
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_images" class="form-label">تصاویر محصول (حداقل ۱ و حداکثر ۵ تصویر)</label>
+                            <input type="file" name="images" id="id_images" class="form-control" accept="image/*" multiple required>
+                            <div class="form-text">
+                                <ul class="mb-0 mt-2">
+                                    <li>حداقل ۱ و حداکثر ۵ تصویر انتخاب کنید</li>
+                                    <li>عکس‌ها به صورت خودکار فشرده می‌شوند</li>
+                                    <li>هر نوع فایل عکس قابل آپلود است</li>
+                                </ul>
+                            </div>
+                            <div id="image-preview" class="mt-2"></div>
+                        </div>
+
+                         <div class="mb-3 form-check">
+                            {{ form.terms_accepted }} <label class="form-check-label" for="id_terms_accepted">
+                                {% trans "قوانین و مقررات را" %} <a href="{% url 'app:terms' %}" target="_blank">{% trans "مطالعه کرده" %}</a> {% trans "و می‌پذیرم" %}
+                            </label>
+                             {% if form.terms_accepted.errors %}
+                                <div class="text-danger">{{ form.terms_accepted.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">{% trans "ثبت محصول" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

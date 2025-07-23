@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .edit-product-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .edit-product-container h1 {
+        font-size: 1.8rem;
+        color: #276ef1;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    .edit-product-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .edit-product-container label {
+        font-size: 1rem;
+        color: #555;
+    }
+    .edit-product-container input, .edit-product-container select, .edit-product-container textarea {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .edit-product-container textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+    .edit-product-container button {
+        padding: 0.8rem;
+        background: #276ef1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .edit-product-container button:hover {
+        background: #1746c4;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-product-container">
+    <h1>ویرایش محصول</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="name_fa">نام محصول (فارسی)</label>
+        <input type="text" id="name_fa" name="name_fa" value="{{ product.name_fa }}" required>
+
+        <label for="name_ps">نام محصول (پشتو)</label>
+        <input type="text" id="name_ps" name="name_ps" value="{{ product.name_ps }}">
+
+        <label for="name_en">نام محصول (انگلیسی)</label>
+        <input type="text" id="name_en" name="name_en" value="{{ product.name_en }}">
+
+        <label for="description_fa">توضیحات (فارسی)</label>
+        <textarea id="description_fa" name="description_fa">{{ product.description_fa }}</textarea>
+
+        <label for="description_ps">توضیحات (پشتو)</label>
+        <textarea id="description_ps" name="description_ps">{{ product.description_ps }}</textarea>
+
+        <label for="description_en">توضیحات (انگلیسی)</label>
+        <textarea id="description_en" name="description_en">{{ product.description_en }}</textarea>
+
+        <label for="category">دسته‌بندی</label>
+        <select id="category" name="category">
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>
+                {{ category.name_fa }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="price">قیمت</label>
+        <input type="number" id="price" name="price" value="{{ product.price }}">
+
+        <label for="discount_price">قیمت تخفیف‌دار</label>
+        <input type="number" id="discount_price" name="discount_price" value="{{ product.discount_price }}">
+
+        <label for="city">شهر</label>
+        <input type="text" id="city" name="city" value="{{ product.city }}">
+
+        <label for="seller_contact">اطلاعات تماس فروشنده</label>
+        <input type="text" id="seller_contact" name="seller_contact" value="{{ product.seller_contact }}">
+
+        <label for="tags">برچسب‌ها</label>
+        <select id="tags" name="tags" multiple>
+            {% for tag in tags %}
+            <option value="{{ tag.id }}" {% if tag.id in product.tags.values_list('id', flat=True) %}selected{% endif %}>
+                {{ tag.name }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">ذخیره تغییرات</button>
+    </form>
+</div>
+{% endblock %}

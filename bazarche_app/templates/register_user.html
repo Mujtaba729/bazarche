@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "ثبت نام کاربر" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "ثبت نام" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_contact" class="form-label">{{ form.contact.label }}</label>
+                            {{ form.contact }}
+                            {% if form.contact.errors %}
+                                <div class="text-danger">{{ form.contact.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label">{{ form.password.label }}</label>
+                            {{ form.password }}
+                            {% if form.password.help_text %}
+                                <div class="form-text">{{ form.password.help_text }}</div>
+                            {% endif %}
+                            {% if form.password.errors %}
+                                <div class="text-danger">{{ form.password.errors }}</div>
+                            {% endif %}
+                            <div class="alert alert-warning mt-2" role="alert">
+                                لطفاً رمز عبور و شناسه کاربری خود را در جای امن یادداشت کنید. در صورت فراموشی رمز عبور، فقط با شناسه کاربری می‌توانید رمز جدید تعیین کنید.
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            {{ form.terms_accepted }} <label class="form-check-label" for="id_terms_accepted">
+                                {% trans "قوانین و مقررات را" %} <a href="{% url 'app:terms' %}" target="_blank">{% trans "مطالعه کرده" %}</a> {% trans "و می‌پذیرم" %}
+                            </label>
+                             {% if form.terms_accepted.errors %}
+                                <div class="text-danger">{{ form.terms_accepted.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">{% trans "ثبت نام" %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

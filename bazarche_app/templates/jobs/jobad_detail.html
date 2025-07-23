@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}جزئیات آگهی شغلی{% endblock %}
+
+{% block content %}
+<div class="jobad-detail-container">
+    <div class="jobad-detail-card">
+        <h1 class="jobad-detail-title">{{ job.title }}</h1>
+        {% if job.city %}<div class="jobad-detail-city">شهر: {{ job.city.name }}</div>{% endif %}
+        <div class="jobad-detail-date">تاریخ ثبت: {{ job.created_at|date:'Y/m/d' }}</div>
+        <div class="jobad-detail-description">{{ job.description|linebreaksbr }}</div>
+        <div class="jobad-detail-contact">اطلاعات تماس: <span>{{ job.contact }}</span></div>
+        <a href="{% url 'app:jobs_list' %}" class="btn btn-secondary jobad-back-btn">بازگشت به لیست کاریابی</a>
+    </div>
+</div>
+<style>
+.jobad-detail-container {
+    max-width: 600px;
+    margin: 2.5rem auto;
+    padding: 1rem;
+}
+.jobad-detail-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+.jobad-detail-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #276ef1;
+    margin-bottom: 0.5rem;
+}
+.jobad-detail-city {
+    color: #276ef1;
+    font-size: 1.05rem;
+}
+.jobad-detail-date {
+    color: #888;
+    font-size: 0.98rem;
+}
+.jobad-detail-description {
+    color: #333;
+    font-size: 1.08rem;
+    line-height: 1.7;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+.jobad-detail-contact {
+    color: #1a7f37;
+    font-size: 1.05rem;
+    font-weight: 500;
+}
+.jobad-back-btn {
+    margin-top: 1.2rem;
+    min-width: 160px;
+}
+@media (max-width: 600px) {
+    .jobad-detail-card {
+        padding: 1rem 0.5rem;
+        border-radius: 8px;
+    }
+    .jobad-detail-title {
+        font-size: 1.1rem;
+    }
+}
+</style>
+{% endblock %} 

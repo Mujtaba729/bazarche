@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-07 03:25+0430\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+# Website Navigation
+msgid "خانه"
+msgstr "Home"
+
+msgid "درباره ما"
+msgstr "About Us"
+
+msgid "تماس با ما"
+msgstr "Contact Us"
+
+msgid "ثبت نام"
+msgstr "Register"
+
+msgid "ورود"
+msgstr "Login"
+
+msgid "خروج"
+msgstr "Logout"
+
+msgid "حساب من"
+msgstr "My Account"
+
+msgid "پروفایل"
+msgstr "Profile"
+
+msgid "ثبت آگهی"
+msgstr "Post Ad"
+
+msgid "جستجو"
+msgstr "Search"
+
+msgid "انتخاب شهر"
+msgstr "Select City"
+
+msgid "همه شهرها"
+msgstr "All Cities"
+
+msgid "انتخاب زبان"
+msgstr "Select Language"
+
+msgid "فارسی"
+msgstr "فارسی"
+
+msgid "پشتو"
+msgstr "پښتو"
+
+msgid "English"
+msgstr "English"
+
+# Home Page
+msgid "به دیل زون خوش آمدید"
+msgstr "Welcome to SoodAva"
+
+msgid "بزرگترین بازار آنلاین افغانستان"
+msgstr "Afghanistan's Largest Online Marketplace"
+
+msgid "دسته‌بندی‌ها"
+msgstr "Categories"
+
+msgid "محصول مورد نظر خود را پیدا کنید"
+msgstr "Find your desired product"
+
+msgid "محصولات"
+msgstr "Products"
+
+msgid "محصولات ویژه، پیشنهادی و تخفیف‌دار در ابتدا نمایش داده می‌شوند"
+msgstr "Featured, suggested, and discounted products are shown first"
+
+msgid "محصولی یافت نشد"
+msgstr "No products found"
+
+msgid "هیچ محصولی با فیلترهای انتخابی شما یافت نشد."
+msgstr "No products found with your selected filters."
+
+# Product Details
+msgid "قیمت:"
+msgstr "Price:"
+
+msgid "قیمت با تخفیف:"
+msgstr "Discounted Price:"
+
+msgid "افغانی"
+msgstr "AFN"
+
+msgid "مشاهده جزئیات"
+msgstr "View Details"
+
+msgid "محصولات ویژه"
+msgstr "Featured Products"
+
+msgid "محصولات پیشنهادی"
+msgstr "Suggested Products"
+
+msgid "تخفیف‌های ویژه"
+msgstr "Special Discounts"
+
+msgid "مشاهده همه"
+msgstr "View All"
+
+# Pagination
+msgid "قبلی"
+msgstr "Previous"
+
+msgid "بعدی"
+msgstr "Next"
+
+msgid "صفحه"
+msgstr "Page"
+
+msgid "از"
+msgstr "of"
+
+# Advertisement
+msgid "تبلیغ"
+msgstr "Advertisement"
+
+msgid "تبلیغات"
+msgstr "Advertisements"
+
+msgid "عنوان"
+msgstr "Title"
+
+msgid "توضیحات"
+msgstr "Description"
+
+msgid "تصویر"
+msgstr "Image"
+
+msgid "لینک"
+msgstr "Link"
+
+msgid "موقعیت نمایش"
+msgstr "Display Position"
+
+msgid "صفحه اصلی"
+msgstr "Home Page"
+
+msgid "بین محصولات"
+msgstr "Between Products"
+
+msgid "نوار کناری"
+msgstr "Sidebar"
+
+msgid "فعال"
+msgstr "Active"
+
+msgid "تاریخ شروع"
+msgstr "Start Date"
+
+msgid "تاریخ پایان"
+msgstr "End Date"
+
+msgid "مشاهده بیشتر"
+msgstr "Learn More"
+
+# Messages
+msgid "پیام شما با موفقیت ارسال شد."
+msgstr "Your message was sent successfully."
+
+msgid "محصول"
+msgstr "Product"
+
+msgid "تایید شد."
+msgstr "approved."
+
+msgid "حذف شد."
+msgstr "deleted."
+
+msgid "به‌روزرسانی شد."
+msgstr "updated."
+
+# Error Messages
+msgid "نام دسته‌بندی (دری) الزامی است."
+msgstr "Category name (Pashto) is required."
+
+# Menu
+msgid "منو"
+msgstr "Menu"
+
+msgid "پروفایل من"
+msgstr "My Profile"
+
+# Footer
+msgid "دیل زون"
+msgstr "SoodAva"
+
+msgid "تمامی حقوق محفوظ است."
+msgstr "All rights reserved." 

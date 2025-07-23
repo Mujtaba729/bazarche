@@ -1,0 +1,814 @@
+{% load i18n %}
+{% load static %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+<style>
+/* Modern Mobile-First Navbar */
+.mobile-navbar {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* Logo Section */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 1rem; /* Smaller font */
+}
+
+.navbar-brand img {
+    height: 28px; /* Smaller logo */
+    margin-left: 0.5rem;
+}
+
+/* Search Section */
+.search-section {
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-form {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem; /* Smaller padding */
+    border: 2px solid #e9ecef;
+    border-radius: 10px; /* Smaller border radius */
+    font-size: 0.85rem; /* Smaller font */
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-btn {
+    position: absolute;
+    left: 0.4rem; /* Smaller position */
+    top: 50%;
+    transform: translateY(-50%);
+    background: #667eea;
+    border: none;
+    border-radius: 6px; /* Smaller border radius */
+    padding: 0.4rem; /* Smaller padding */
+    color: #fff;
+    font-size: 0.8rem; /* Smaller font */
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-btn {
+    background: none;
+    border: none;
+    padding: 0.4rem; /* Smaller padding */
+    border-radius: 6px; /* Smaller border radius */
+    color: #6c757d;
+    font-size: 1rem; /* Smaller icon */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-btn:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.nav-btn.active {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+/* User Menu */
+.user-menu {
+    position: relative;
+}
+
+.user-btn {
+    background: #667eea;
+    border: none;
+    border-radius: 6px; /* Smaller border radius */
+    padding: 0.4rem 0.6rem; /* Smaller padding */
+    color: #fff;
+    font-size: 0.8rem; /* Smaller font */
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.2rem; /* Smaller gap */
+}
+
+.user-btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 0.5rem;
+    min-width: 200px;
+    z-index: 1001;
+    margin-top: 0.5rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.dropdown-item.active {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: #e9ecef;
+}
+
+/* City Dropdown Specific Styles */
+.city-dropdown {
+    max-height: 300px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f8f9fa;
+}
+
+.city-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.city-dropdown::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 3px;
+}
+
+.city-dropdown::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 3px;
+}
+
+.city-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #5a6fd8;
+}
+
+/* Mobile Menu */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    color: #6c757d;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1002;
+    display: none;
+}
+
+.mobile-menu.show {
+    display: block;
+}
+
+.mobile-menu-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    padding: 1rem;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-menu.show .mobile-menu-content {
+    transform: translateX(0);
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 1rem;
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    padding: 0.25rem;
+}
+
+.mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.mobile-nav-item:hover {
+    background: #f8f9fa;
+    color: #667eea;
+}
+
+.mobile-nav-item.active {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+/* Mobile City Selection Styles */
+.mobile-city-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #e9ecef;
+}
+
+/* Mobile Language Selection Styles */
+.mobile-language-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #e9ecef;
+}
+
+.mobile-language-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.mobile-language-header i {
+    color: #667eea;
+    font-size: 1rem;
+}
+
+.mobile-language-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-language-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #e9ecef;
+}
+
+.mobile-language-option:hover {
+    background: #667eea;
+    color: #fff;
+    text-decoration: none;
+}
+
+.mobile-language-option.active {
+    background: #667eea;
+    color: #fff;
+}
+
+@media (max-width: 480px) {
+    .mobile-city-section {
+        padding: 0.75rem;
+        margin: 0.75rem 0;
+    }
+    
+    .mobile-city-header {
+        font-size: 0.85rem;
+    }
+    
+    .mobile-city-option {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .current-city {
+        font-size: 0.85rem;
+    }
+}
+
+.mobile-city-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.mobile-city-header i {
+    color: #667eea;
+    font-size: 1rem;
+}
+
+.mobile-city-current {
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #e9ecef;
+}
+
+.current-city {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 0.9rem;
+}
+
+.mobile-city-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.mobile-city-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    background: #fff;
+    border: 1px solid #e9ecef;
+}
+
+.mobile-city-option:hover {
+    background: #667eea;
+    color: #fff;
+    text-decoration: none;
+}
+
+.mobile-city-option.active {
+    background: #667eea;
+    color: #fff;
+}
+
+.mobile-city-option i {
+    font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .mobile-navbar {
+        padding: 0.4rem 0.6rem; /* Smaller padding */
+    }
+    
+    .navbar-container {
+        gap: 0.4rem; /* Smaller gap */
+    }
+    
+    .navbar-brand {
+        font-size: 0.9rem; /* Smaller font */
+    }
+    
+    .navbar-brand img {
+        height: 24px; /* Smaller logo */
+    }
+    
+    .search-section {
+        max-width: none;
+        flex: 1;
+    }
+    
+    .search-input {
+        padding: 0.5rem 0.6rem; /* Smaller padding */
+        font-size: 0.8rem; /* Smaller font */
+    }
+    
+    .nav-menu {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-navbar {
+        padding: 0.3rem 0.5rem; /* Even smaller padding */
+    }
+    
+    .navbar-brand {
+        font-size: 0.8rem; /* Smaller font */
+    }
+    
+    .navbar-brand img {
+        height: 20px; /* Smaller logo */
+    }
+    
+    .search-input {
+        padding: 0.4rem 0.5rem; /* Smaller padding */
+        font-size: 0.75rem; /* Smaller font */
+    }
+    
+    .search-btn {
+        padding: 0.3rem; /* Smaller padding */
+        font-size: 0.7rem; /* Smaller font */
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .nav-btn:hover,
+    .user-btn:hover,
+    .dropdown-item:hover,
+    .mobile-nav-item:hover {
+        transform: none;
+    }
+    
+    .nav-btn:active,
+    .user-btn:active,
+    .dropdown-item:active,
+    .mobile-nav-item:active {
+        transform: scale(0.95);
+    }
+}
+</style>
+
+<nav class="mobile-navbar">
+    <div class="navbar-container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="{% url 'app:home' %}">
+            <img src="{% static 'logo-1.png' %}" alt="SoodAva">
+            <span class="soodava-brand" style="flex-direction:column;align-items:flex-start;">
+              <span class="soodava-main" style="font-size:2rem;line-height:1.1;">
+                SoodAva
+              </span>
+              <span class="soodava-sub" style="font-size:0.95rem;color:#888;margin-top:0.1rem;">سود آوا</span>
+            </span>
+        </a>
+        
+        <!-- Search -->
+        <div class="search-section">
+            <form class="search-form" method="get" action="{% url 'app:home' %}">
+                <input type="text" class="search-input" name="q" placeholder="{% trans 'جستجو' %}..." value="{{ request.GET.q|default:'' }}">
+                <button type="submit" class="search-btn">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <div class="nav-menu d-none d-md-flex">
+            <!-- Home Button -->
+            <a href="{% url 'app:home' %}" class="nav-btn {% if request.path == '/' %}active{% endif %}" title="{% trans 'خانه' %}">
+                <i class="bi bi-house-door"></i>
+            </a>
+            
+            <!-- Language Switcher -->
+            <div class="language-menu">
+                <button class="nav-btn" onclick="toggleLanguageDropdown()">
+                    <i class="bi bi-translate"></i>
+                </button>
+                <div class="dropdown-menu" id="languageDropdown" style="display: none;">
+                    <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'fa' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        فارسی
+                    </a>
+                    <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'ps' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        پشتو
+                    </a>
+                    <a href="{% url 'app:set_language' %}?lang=en&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        English
+                    </a>
+                </div>
+            </div>
+            
+            <button class="nav-btn" onclick="toggleCityDropdown()">
+                <i class="bi bi-geo-alt"></i>
+            </button>
+            
+            <!-- About Us Button -->
+            <a href="{% url 'app:about' %}" class="nav-btn {% if request.path == '/app/about/' %}active{% endif %}" title="{% trans 'درباره ما' %}">
+                <i class="bi bi-info-circle"></i>
+            </a>
+            
+            {% if user.is_authenticated %}
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserDropdown()">
+                    <i class="bi bi-person"></i>
+                    <span>{% trans "حساب من" %}</span>
+                </button>
+                <div class="dropdown-menu" id="userDropdown" style="display: none;">
+                    <a href="{% url 'app:user_dashboard' %}" class="dropdown-item">
+                        <i class="bi bi-person"></i>
+                        {% trans "پروفایل" %}
+                    </a>
+                    <a href="{% url 'app:register_product' %}" class="dropdown-item">
+                        <i class="bi bi-plus-circle"></i>
+                        {% trans "ثبت آگهی" %}
+                    </a>
+                    <hr class="dropdown-divider">
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
+                        خروج
+                      </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="nav-btn">
+                <i class="bi bi-box-arrow-in-right"></i>
+            </a>
+            <a href="{% url 'app:register_user' %}" class="nav-btn">
+                <i class="bi bi-person-plus"></i>
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle d-md-none" onclick="toggleMobileMenu()">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    
+    <!-- City Dropdown -->
+    <div class="dropdown-menu city-dropdown" id="cityDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; margin-top: 0.5rem; max-height: 300px; overflow-y: auto;">
+        <a href="{% url 'app:home' %}" class="dropdown-item">
+            <i class="bi bi-globe"></i>
+            {% trans "همه شهرها" %}
+        </a>
+        <hr class="dropdown-divider">
+        {% for city in cities %}
+        <a href="{% url 'app:home' %}?city_id={{ city.id }}" class="dropdown-item {% if selected_city_id == city.id|stringformat:'s' %}active{% endif %}">
+            <i class="bi bi-geo-alt"></i>
+            {{ city.name }}
+        </a>
+        {% endfor %}
+    </div>
+    
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <h5>{% trans "منو" %}</h5>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-nav">
+            <!-- Language Selection Section -->
+            <div class="mobile-language-section">
+                <div class="mobile-language-header">
+                    <i class="bi bi-translate"></i>
+                    <span>{% trans "انتخاب زبان" %}</span>
+                </div>
+                <div class="mobile-language-options">
+                    <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'fa' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        فارسی
+                    </a>
+                    <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'ps' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        پشتو
+                    </a>
+                    <a href="{% url 'app:set_language' %}?lang=en&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                        <i class="bi bi-flag"></i>
+                        English
+                    </a>
+                </div>
+            </div>
+            
+            <a href="{% url 'app:home' %}" class="mobile-nav-item {% if request.path == '/' %}active{% endif %}">
+                <i class="bi bi-house-door"></i>
+                {% trans "خانه" %}
+            </a>
+            
+            <!-- City Selection Section -->
+            <div class="mobile-city-section">
+                <div class="mobile-city-header">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>{% trans "انتخاب شهر" %}</span>
+                </div>
+                <div class="mobile-city-current">
+                    <span class="current-city" style="display:flex;flex-direction:column;align-items:center;">
+                      <span style="font-size:1.1rem;line-height:1.1;">
+                        <span style="color:#1976d2;font-weight:900;">Sood</span><span style="color:#43a047;font-weight:900;">Ava</span>
+                      </span>
+                      <span style="font-size:0.95rem;color:#888;margin-top:0.1rem;">سود آوا</span>
+                    </span>
+                </div>
+                <div class="mobile-city-options">
+                    <a href="{% url 'app:home' %}" class="mobile-city-option">
+                        <i class="bi bi-globe"></i>
+                        {% trans "همه شهرها" %}
+                    </a>
+                    {% for city in cities %}
+                    <a href="{% url 'app:home' %}?city_id={{ city.id }}" class="mobile-city-option {% if selected_city_id == city.id|stringformat:'s' %}active{% endif %}">
+                        <i class="bi bi-geo-alt"></i>
+                        {{ city.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            {% if user.is_authenticated %}
+                                <a href="{% url 'app:user_dashboard' %}" class="mobile-nav-item">
+                        <i class="bi bi-person"></i>
+                        {% trans "پروفایل من" %}
+                    </a>
+                    <a href="{% url 'app:register_product' %}" class="mobile-nav-item">
+                        <i class="bi bi-plus-circle"></i>
+                        {% trans "ثبت آگهی" %}
+                    </a>
+                    <hr class="dropdown-divider">
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="mobile-nav-item" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
+                        خروج
+                      </button>
+                    </form>
+            {% else %}
+            <a href="{% url 'login' %}" class="mobile-nav-item">
+                <i class="bi bi-box-arrow-in-right"></i>
+                {% trans "ورود" %}
+            </a>
+            <a href="{% url 'app:register_user' %}" class="mobile-nav-item">
+                <i class="bi bi-person-plus"></i>
+                {% trans "ثبت نام" %}
+            </a>
+            {% endif %}
+            
+            <hr class="dropdown-divider">
+            
+            <a href="{% url 'app:about' %}" class="mobile-nav-item {% if request.path == '/app/about/' %}active{% endif %}">
+                <i class="bi bi-info-circle"></i>
+                {% trans "درباره ما" %}
+            </a>
+            <a href="{% url 'app:contact' %}" class="mobile-nav-item {% if request.path == '/app/contact/' %}active{% endif %}">
+                <i class="bi bi-envelope"></i>
+                {% trans "تماس با ما" %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleCityDropdown() {
+    const dropdown = document.getElementById('cityDropdown');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+}
+
+
+
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('show');
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    const languageDropdown = document.getElementById('languageDropdown');
+    const cityDropdown = document.getElementById('cityDropdown');
+    const userDropdown = document.getElementById('userDropdown');
+
+    
+    if (!event.target.closest('.language-menu') && !event.target.closest('#languageDropdown')) {
+        if (languageDropdown) languageDropdown.style.display = 'none';
+    }
+    
+    if (!event.target.closest('.nav-btn') && !event.target.closest('#cityDropdown')) {
+        if (cityDropdown) cityDropdown.style.display = 'none';
+    }
+    
+
+    
+    if (!event.target.closest('.user-menu') && !event.target.closest('#userDropdown')) {
+        if (userDropdown) userDropdown.style.display = 'none';
+    }
+});
+
+// Prevent dropdown from closing when scrolling inside it
+document.addEventListener('scroll', function(event) {
+    const cityDropdown = document.getElementById('cityDropdown');
+    if (cityDropdown && cityDropdown.style.display === 'block') {
+        event.stopPropagation();
+    }
+});
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (!event.target.closest('.mobile-menu-content') && !event.target.closest('.mobile-menu-toggle')) {
+        mobileMenu.classList.remove('show');
+    }
+});
+</script>

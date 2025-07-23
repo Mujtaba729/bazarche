@@ -1,0 +1,229 @@
+{% load static %}
+{% load i18n %}
+
+<div class="advertisement-container">
+    <div class="advertisement-card">
+        {% if advertisement.video %}
+            <div class="advertisement-media">
+                <video controls class="advertisement-video">
+                    <source src="{{ advertisement.video.url }}" type="video/mp4">
+                    {% trans "مرورگر شما از ویدیو پشتیبانی نمی‌کند." %}
+                </video>
+            </div>
+        {% elif advertisement.image %}
+            <div class="advertisement-media">
+                <img src="{{ advertisement.image.url }}" alt="{{ advertisement.title }}" class="advertisement-image">
+            </div>
+        {% endif %}
+        <div class="advertisement-content">
+            <h3 class="advertisement-title">{{ advertisement.title }}</h3>
+            {% if advertisement.description %}
+                <p class="advertisement-description">{{ advertisement.description }}</p>
+            {% endif %}
+            {% if advertisement.link %}
+                <a href="{{ advertisement.link }}" class="advertisement-link" target="_blank">{% trans "مشاهده بیشتر" %}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .advertisement-container {
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+    
+    .advertisement-card {
+        background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 3px solid #ff6b6b;
+        position: relative;
+    }
+    
+    .advertisement-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 32px rgba(255, 107, 107, 0.2);
+    }
+    
+    .advertisement-media {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .advertisement-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .advertisement-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .advertisement-card:hover .advertisement-image {
+        transform: scale(1.05);
+    }
+    
+    .advertisement-content {
+        padding: 1.2rem;
+        background: rgba(255, 255, 255, 0.95);
+    }
+    
+    .advertisement-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #e03131;
+        margin-bottom: 0.8rem;
+        text-align: center;
+    }
+    
+    .advertisement-description {
+        color: #495057;
+        font-size: 1rem;
+        line-height: 1.5;
+        margin-bottom: 1.2rem;
+        text-align: center;
+    }
+    
+    .advertisement-link {
+        display: inline-block;
+        padding: 0.7rem 1.8rem;
+        background: linear-gradient(45deg, #ff6b6b, #fa5252);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        margin: 0 auto;
+    }
+    
+    .advertisement-link:hover {
+        background: linear-gradient(45deg, #fa5252, #e03131);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        color: white;
+    }
+    
+    /* Mobile Responsive Design for Advertisements */
+    @media (max-width: 768px) {
+        .advertisement-container {
+            margin-bottom: 1.5rem;
+            padding: 0 0.5rem;
+        }
+        
+        .advertisement-card {
+            border-radius: 16px;
+            border-width: 2px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .advertisement-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(255, 107, 107, 0.15);
+        }
+        
+        .advertisement-media {
+            height: 180px;
+        }
+        
+        .advertisement-content {
+            padding: 1rem;
+        }
+        
+        .advertisement-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+        }
+        
+        .advertisement-description {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        
+        .advertisement-link {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.95rem;
+            border-radius: 40px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .advertisement-container {
+            margin-bottom: 1rem;
+            padding: 0 0.25rem;
+        }
+        
+        .advertisement-card {
+            border-radius: 12px;
+            border-width: 1px;
+        }
+        
+        .advertisement-media {
+            height: 150px;
+        }
+        
+        .advertisement-content {
+            padding: 0.8rem;
+        }
+        
+        .advertisement-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .advertisement-description {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .advertisement-link {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            border-radius: 30px;
+        }
+    }
+    
+    /* Touch-friendly interactions for mobile */
+    @media (hover: none) and (pointer: coarse) {
+        .advertisement-card:hover {
+            transform: none;
+        }
+        
+        .advertisement-card:active {
+            transform: scale(0.98);
+        }
+        
+        .advertisement-link:hover {
+            transform: none;
+        }
+        
+        .advertisement-link:active {
+            transform: scale(0.95);
+        }
+    }
+    
+    /* High contrast for better visibility on mobile */
+    @media (max-width: 768px) {
+        .advertisement-card {
+            background: linear-gradient(135deg, #fff8f8 0%, #fff5f5 100%);
+        }
+        
+        .advertisement-title {
+            color: #d63031;
+        }
+        
+        .advertisement-description {
+            color: #2d3436;
+        }
+    }
+</style> 

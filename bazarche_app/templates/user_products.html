@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'محصولات من' %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-box-seam me-2"></i>
+                        {% trans 'محصولات من' %}
+                    </h5>
+                    <a href="{% url 'app:register_product' %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        {% trans 'ثبت محصول جدید' %}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if products %}
+                        <div class="row">
+                            {% for product in products %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card h-100 product-card">
+                                        {% if product.images.first %}
+                                            <img src="{{ product.images.first.image.url }}" class="card-img-top" alt="{{ product.name_fa }}" style="height: 200px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ product.name_fa }}</h5>
+                                            <p class="card-text">
+                                                {% if product.price %}
+                                                    <strong>{% trans 'قیمت' %}:</strong> {{ product.price }} {% trans 'افغانی' %}
+                                                {% endif %}
+                                            </p>
+                                            <div class="d-flex gap-2">
+                                                <a href="{% url 'app:product_detail' product.id %}" class="btn btn-primary btn-sm flex-grow-1">
+                                                    <i class="bi bi-eye me-1"></i>
+                                                    {% trans 'مشاهده' %}
+                                                </a>
+                                                <form method="post" action="{% url 'app:delete_user_product' product.id %}" class="d-inline flex-grow-1">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('{% trans 'آیا از حذف این محصول اطمینان دارید؟' %}')">
+                                                        <i class="bi bi-trash me-1"></i>
+                                                        {% trans 'حذف' %}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="mt-3">{% trans 'شما هنوز محصولی ثبت نکرده‌اید' %}</h5>
+                            <p class="text-muted">{% trans 'برای شروع، روی دکمه "ثبت محصول جدید" کلیک کنید' %}</p>
+                            <a href="{% url 'app:register_product' %}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-1"></i>
+                                {% trans 'ثبت محصول جدید' %}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .card-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        height: 2.4em;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+</style>
+{% endblock %} 

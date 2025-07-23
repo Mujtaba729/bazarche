@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "ویرایش پروفایل" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "ویرایش پروفایل" %}</h5>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_name" class="form-label">{% trans "نام و نام خانوادگی" %}</label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_contact" class="form-label">{% trans "شماره تماس یا ایمیل" %}</label>
+                                    {{ form.contact }}
+                                    {% if form.contact.errors %}
+                                        <div class="text-danger">{{ form.contact.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_password" class="form-label">{% trans "رمز عبور" %}</label>
+                                    {{ form.password }}
+                                    {% if form.password.help_text %}
+                                        <div class="form-text">{{ form.password.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.password.errors %}
+                                        <div class="text-danger">{{ form.password.errors }}</div>
+                                    {% endif %}
+                                    <div class="alert alert-warning mt-2" role="alert">
+                                        لطفاً رمز عبور و شناسه کاربری خود را در جای امن یادداشت کنید. در صورت فراموشی رمز عبور، فقط با شناسه کاربری می‌توانید رمز جدید تعیین کنید.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="id_avatar" class="form-label">{% trans "تصویر پروفایل (اختیاری)" %}</label>
+                                    {{ form.avatar }}
+                                    {% if form.avatar.errors %}
+                                        <div class="text-danger">{{ form.avatar.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if form.instance.avatar %}
+                            <div class="mb-3">
+                                <label class="form-label">{% trans "تصویر پروفایل فعلی" %}</label>
+                                <div class="mb-2">
+                                    <img src="{{ form.instance.avatar.url }}" alt="تصویر پروفایل" class="img-thumbnail" style="max-width: 150px;">
+                                </div>
+                            </div>
+                        {% endif %}
+
+
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>{% trans "ذخیره تغییرات" %}
+                            </button>
+                            
+                            <div>
+                                <a href="{% url 'app:change_password' %}" class="btn btn-outline-warning me-2">
+                                    <i class="bi bi-key me-2"></i>{% trans "تغییر رمز عبور" %}
+                                </a>
+                                <a href="{% url 'app:user_dashboard' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-right me-2"></i>{% trans "بازگشت" %}
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

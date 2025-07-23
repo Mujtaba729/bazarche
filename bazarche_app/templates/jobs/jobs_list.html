@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}استخدام و کاریابی{% endblock %}
+
+{% block content %}
+<div class="jobs-container">
+    <section class="jobs-header">
+        <h1 class="jobs-title">استخدام و کاریابی</h1>
+        {% if user.is_authenticated %}
+        <a href="{% url 'app:jobad_create' %}" class="btn btn-success jobs-create-btn">ثبت آگهی شغلی جدید</a>
+        {% else %}
+        <a href="{% url 'app:login' %}" class="btn btn-success jobs-create-btn">برای ثبت آگهی وارد شوید</a>
+        {% endif %}
+    </section>
+    <!-- Search Section (separated) -->
+    <section class="jobs-search-section">
+        <form method="get" class="jobs-search-form">
+            <input type="text" name="q" value="{{ query }}" placeholder="جستجوی عنوان یا توضیحات شغل..." class="form-control jobs-search-input">
+            <select name="city" class="form-control jobs-search-select">
+                <option value="">همه شهرها</option>
+                {% for city in cities %}
+                    <option value="{{ city.id }}" {% if city.id|stringformat:'s' == selected_city %}selected{% endif %}>{{ city.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary jobs-search-btn">جستجو</button>
+        </form>
+    </section>
+    <section class="jobs-list-section">
+        {% if jobs %}
+            <div class="jobs-list">
+                {% for job in jobs %}
+                <a href="{% url 'app:jobad_detail' job.pk %}" class="job-card jobad-link" tabindex="0">
+                    <div class="job-card-header">
+                        <span class="job-title">{{ job.title }}</span>
+                        {% if job.city %}<span class="job-city">{{ job.city.name }}</span>{% endif %}
+                    </div>
+                    <div class="job-description">{{ job.description|truncatechars:80 }}</div>
+                    <div class="job-contact">تماس: <span class="contact-link" style="color: #1a7f37;">{{ job.contact }}</span></div>
+                    <div class="job-date">تاریخ ثبت: {{ job.created_at|date:'Y/m/d' }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-jobs">هیچ آگهی شغلی یافت نشد.</div>
+        {% endif %}
+    </section>
+</div>
+<style>
+.jobs-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.jobs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.jobs-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #276ef1;
+}
+.jobs-create-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+}
+.jobs-search-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.7rem 0.7rem 0.4rem 0.7rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.jobs-search-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.jobs-search-input, .jobs-search-select {
+    flex: 1 1 180px;
+    min-width: 120px;
+    padding: 0.22rem 0.5rem;
+    font-size: 0.95rem;
+    height: 1.7rem;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    background: #fafdff;
+    box-shadow: none;
+}
+.jobs-search-btn {
+    min-width: 90px;
+}
+.jobs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: flex-start;
+}
+.job-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid #e3e6ea;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.job-title {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+}
+.job-city {
+    font-size: 0.95rem;
+    color: #276ef1;
+    background: #eaf1fe;
+    border-radius: 6px;
+    padding: 0.2rem 0.7rem;
+}
+.job-description {
+    margin-bottom: 0.5rem;
+    color: #444;
+    font-size: 1rem;
+    flex: 1 1 auto;
+    max-height: 60px; /* محدودیت ارتفاع */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.job-contact {
+    color: #1a7f37;
+    font-size: 0.98rem;
+    margin-bottom: 0.2rem;
+}
+.job-date {
+    color: #888;
+    font-size: 0.92rem;
+}
+.empty-jobs {
+    text-align: center;
+    color: #888;
+    padding: 2rem 0;
+}
+.jobad-link {
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.jobad-link:hover {
+    box-shadow: 0 4px 16px rgba(39,110,241,0.10);
+    transform: translateY(-2px) scale(1.02);
+}
+@media (max-width: 900px) {
+    .jobs-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .jobs-container {
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+    .jobs-header {
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+    .jobs-title {
+        font-size: 1.2rem;
+    }
+    .job-card {
+        padding: 0.7rem 0.5rem;
+    }
+    .jobs-list {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.7rem;
+    }
+    .jobs-search-section {
+        padding: 0.7rem 0.3rem 0.5rem 0.3rem;
+    }
+}
+.contact-link {
+    transition: all 0.2s ease;
+    border-bottom: 1px dotted currentColor;
+}
+.contact-link:hover {
+    color: #0f5132 !important;
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+}
+</style>
+<script>
+// حذف تابع toggleJobDesc چون دیگر نیازی نیست
+</script>
+{% endblock %} 

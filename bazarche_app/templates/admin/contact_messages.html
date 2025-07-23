@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}پیام‌های تماس - مدیریت{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white;">
+                    <h4 class="mb-0">
+                        <i class="bi bi-envelope me-2"></i>پیام‌های تماس
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- آمار کلی -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h5>{{ total_messages }}</h5>
+                                    <small>کل پیام‌ها</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h5>{{ today_messages }}</h5>
+                                    <small>پیام‌های امروز</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- فیلترها -->
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <form method="get" class="d-flex">
+                                <input type="text" name="q" class="form-control me-2" placeholder="جستجو در پیام‌ها..." value="{{ search_query }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" onchange="window.location.href='?date=' + this.value + '&q={{ search_query }}'">
+                                <option value="">همه تاریخ‌ها</option>
+                                <option value="today" {% if date_filter == 'today' %}selected{% endif %}>امروز</option>
+                                <option value="week" {% if date_filter == 'week' %}selected{% endif %}>هفته گذشته</option>
+                                <option value="month" {% if date_filter == 'month' %}selected{% endif %}>ماه گذشته</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- لیست پیام‌ها -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>فرستنده</th>
+                                    <th>موضوع</th>
+                                    <th>پیام</th>
+                                    <th>تاریخ</th>
+                                    <th>کاربر</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for message in messages %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ message.email|default:"ناشناس" }}</strong>
+                                    </td>
+                                    <td>{{ message.subject }}</td>
+                                    <td>
+                                        <span class="text-muted">{{ message.message|truncatechars:100 }}</span>
+                                        {% if message.message|length > 100 %}
+                                        <button class="btn btn-sm btn-outline-info" onclick="showFullMessage('{{ message.id }}')">
+                                            بیشتر
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ message.timestamp|date:"Y/m/d H:i" }}</small>
+                                    </td>
+                                    <td>
+                                        {% if message.user %}
+                                        <span class="badge bg-success">{{ message.user.username }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">مهمان</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">
+                                        <i class="bi bi-inbox me-2"></i>هیچ پیامی یافت نشد
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal برای نمایش پیام کامل -->
+<div class="modal fade" id="messageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">متن کامل پیام</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="messageContent">
+                <!-- محتوا اینجا قرار می‌گیرد -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showFullMessage(messageId) {
+    // اینجا می‌توانید AJAX request برای دریافت پیام کامل ارسال کنید
+    // فعلاً از یک پیام نمونه استفاده می‌کنیم
+    document.getElementById('messageContent').innerHTML = 'در حال بارگذاری...';
+    var modal = new bootstrap.Modal(document.getElementById('messageModal'));
+    modal.show();
+}
+</script>
+{% endblock %} 

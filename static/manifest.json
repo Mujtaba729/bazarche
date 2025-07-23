@@ -1,0 +1,36 @@
+{
+  "name": "SoodAva",
+  "short_name": "SoodAva",
+  "description": "سود آوا - خرید و فروش آنلاین",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#276ef1",
+  "theme_color": "#276ef1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/static/logo-1.png",
+      "sizes": "483x483",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "business", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/static/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/static/screenshot-narrow.png", 
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
+} 

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+media/
+staticfiles/
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# MySQL dumps
+*.sql
+
+# Env files
+.env
+.env.*
+
+# Node.js (if you have frontend assets)
+node_modules/
+
+# Misc
+*.bak
+*.swp
+*.tmp
+
+# Ignore migrations cache (but not migrations themselves)
+**/__pycache__/ 

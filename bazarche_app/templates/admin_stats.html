@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .stats-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .stats-container h1 {
+        font-size: 1.8rem;
+        color: #276ef1;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    .stat-card {
+        background: #f9f9f9;
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .stat-card h2 {
+        font-size: 2rem;
+        color: #276ef1;
+        margin-bottom: 0.5rem;
+    }
+    .stat-card p {
+        font-size: 1rem;
+        color: #555;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-container">
+    <h1>آمار مدیریت</h1>
+    
+    <!-- لینک‌های سریع -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{% url 'app:contact_messages' %}" class="btn btn-primary">
+                    <i class="bi bi-envelope me-2"></i>پیام‌های تماس
+                </a>
+                <a href="{% url 'app:abuse_reports' %}" class="btn btn-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>گزارش‌های تخلف
+                </a>
+                <a href="{% url 'app:manage_products' %}" class="btn btn-info">
+                    <i class="bi bi-box me-2"></i>مدیریت محصولات
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h2>{{ total_products }}</h2>
+            <p>تعداد کل محصولات</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ total_categories }}</h2>
+            <p>تعداد کل دسته‌بندی‌ها</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ total_users }}</h2>
+            <p>تعداد کل کاربران</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ total_feedbacks }}</h2>
+            <p>تعداد کل بازخوردها</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

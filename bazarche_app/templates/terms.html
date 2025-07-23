@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "قوانین و مقررات" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{% trans "قوانین و مقررات" %}</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="mb-3">{% trans "مقررات عمومی" %}</h5>
+                    <p>{% trans "با استفاده از خدمات " %}<span class="soodava-main"><span class="soodava-sood">Sood</span><span class="soodava-ava">Ava</span></span>{% trans "، شما موافقت می‌کنید که به قوانین و مقررات زیر پایبند باشید:" %}</p>
+                    
+                    <h6 class="mt-4">{% trans "1. شرایط استفاده" %}</h6>
+                    <ul>
+                        <li>{% trans "شما باید حداقل 18 سال سن داشته باشید." %}</li>
+                        <li>{% trans "اطلاعات ارائه شده باید دقیق و معتبر باشد." %}</li>
+                        <li>{% trans "شما مسئول حفظ امنیت حساب کاربری خود هستید." %}</li>
+                    </ul>
+
+                    <h6 class="mt-4">{% trans "2. قوانین آگهی‌ها" %}</h6>
+                    <ul>
+                        <li>{% trans "آگهی‌ها باید دقیق و صادقانه باشند." %}</li>
+                        <li>{% trans "محتوای آگهی نباید توهین‌آمیز یا غیرقانونی باشد." %}</li>
+                        <li>{% trans "تصاویر باید مرتبط با محصول باشند." %}</li>
+                    </ul>
+
+                    <h6 class="mt-4">{% trans "3. مسئولیت‌ها" %}</h6>
+                    <ul>
+                        <li>{% trans "شما مسئول محتوای آگهی‌های خود هستید." %}</li>
+                        <li>{% trans "شما باید با خریداران و فروشندگان با احترام رفتار کنید." %}</li>
+                        <li>{% trans "شما باید از قوانین محلی و کشوری پیروی کنید." %}</li>
+                    </ul>
+
+                    <h6 class="mt-4">{% trans "4. محدودیت‌ها" %}</h6>
+                    <ul>
+                        <li>{% trans "فروش اقلام غیرقانونی ممنوع است." %}</li>
+                        <li>{% trans "استفاده از محتوای غیرمجاز ممنوع است." %}</li>
+                        <li>{% trans "تقلب و کلاهبرداری ممنوع است." %}</li>
+                    </ul>
+
+                    <div class="alert alert-info mt-4">
+                        <p class="mb-0">{% trans "توجه: این قوانین ممکن است در آینده تغییر کنند. لطفاً به طور منظم این صفحه را بررسی کنید." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

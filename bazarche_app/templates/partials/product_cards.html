@@ -1,0 +1,9 @@
+<div class="row">
+  {% for product in products %}
+  <div class="col-md-4 mb-4">
+    {% include 'partials/product_card.html' with product=product %}
+  </div>
+  {% empty %}
+  <p>هیچ محصولی یافت نشد.</p>
+  {% endfor %}
+</div>

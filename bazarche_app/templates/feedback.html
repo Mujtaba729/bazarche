@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block extra_head %}
+<style>
+    .feedback-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .feedback-container h1 {
+        font-size: 1.8rem;
+        color: #276ef1;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+    .feedback-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .feedback-container label {
+        font-size: 1rem;
+        color: #555;
+    }
+    .feedback-container input, .feedback-container textarea {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .feedback-container textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+    .feedback-container button {
+        padding: 0.8rem;
+        background: #276ef1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+    .feedback-container button:hover {
+        background: #1746c4;
+    }
+    .feedback-container .message {
+        text-align: center;
+        font-size: 1rem;
+        color: #276ef1;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="feedback-container">
+    <h1>{% trans "ارسال بازخورد" %}</h1>
+    {% if messages %}
+        <div class="message">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">{% trans "نام شما" %}</label>
+        <input type="text" id="name" name="name" placeholder="{% trans 'نام خود را وارد کنید' %}" required>
+
+        <label for="email">{% trans "ایمیل شما" %}</label>
+        <input type="email" id="email" name="email" placeholder="{% trans 'ایمیل خود را وارد کنید' %}" required>
+
+        <label for="message">{% trans "پیام شما" %}</label>
+        <textarea id="message" name="message" placeholder="{% trans 'پیام خود را بنویسید' %}" required></textarea>
+
+        <button type="submit">{% trans "ارسال" %}</button>
+    </form>
+</div>
+{% endblock %}

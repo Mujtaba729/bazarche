@@ -1,0 +1,258 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SoodAva{% endblock %}</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#276ef1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SoodAva">
+    <meta name="msapplication-TileColor" content="#276ef1">
+    <meta name="msapplication-config" content="/static/browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static 'favicon-96x96.png' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'web-app-manifest-192x192.png' %}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'web-app-manifest-512x512.png' %}">
+    <!-- حذف تگ‌های قدیمی لوگو -->
+    <!-- PWA Icons -->
+    <!-- <link rel="icon" type="image/png" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="152x152" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="167x167" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="120x120" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="76x76" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="60x60" href="{% static 'logo-1.png' %}"> -->
+    <!-- <link rel="apple-touch-icon" sizes="40x40" href="{% static 'logo-1.png' %}"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/site-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile-enhancements.css' %}">
+    <link rel="stylesheet" href="{% static 'css/button-hierarchy.css' %}">
+    {% block extra_head %}{% endblock %}
+    <style>
+      body {
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      
+      /* Mobile-First Layout */
+      .main-wrapper {
+        margin-top: 80px; /* Space for fixed navbar */
+        min-height: calc(100vh - 80px);
+        background: #f8f9fa;
+      }
+      
+      .landing-page .main-wrapper {
+        margin-top: 0;
+      }
+      
+      /* Content Container */
+      .content-container {
+        padding: 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      @media (max-width: 768px) {
+        .main-wrapper {
+          margin-top: 70px;
+        }
+        
+        .content-container {
+          padding: 0.5rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .main-wrapper {
+          margin-top: 65px;
+        }
+        
+        .content-container {
+          padding: 0.25rem;
+        }
+      }
+      
+      /* Messages */
+      .messages-container {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        padding: 0.5rem 1rem;
+      }
+      
+      .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem;
+      }
+    </style>
+</head>
+<body class="{% if request.resolver_match.url_name == 'landing' %}landing-page{% endif %}">
+    <!-- Fixed Navbar -->
+    {% include 'partials/navbar.html' %}
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <div class="content-container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-4 mt-4">
+        <div class="soodava-brand" style="flex-direction:column;align-items:center;justify-content:center;">
+          <span class="soodava-main" style="font-size:2rem;line-height:1.1;">SoodAva</span>
+          <span class="soodava-sub" style="font-size:1rem;color:#fff;margin-top:0.1rem;">سود آوا</span>
+        </div>
+        <p class="mt-2">&copy; 2025 SoodAva. {% trans "تمام حقوق محفوظ است." %} | <a href="{% url 'app:terms' %}" class="text-white">{% trans "قوانین و مقررات" %}</a></p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/site-enhancements.js' %}"></script>
+    <script src="{% static 'js/mobile-enhancements.js' %}"></script>
+    
+    <!-- PWA Service Worker -->
+    <script>
+        // ثبت Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{% static "service-worker.js" %}')
+                    .then(function(registration) {
+                        console.log('Service Worker با موفقیت ثبت شد:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('خطا در ثبت Service Worker:', error);
+                    });
+            });
+        }
+        
+        // نمایش نصب PWA برای همه مرورگرها
+        let deferredPrompt;
+        
+        // برای Chrome/Edge
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+        
+        // برای Safari/iOS
+        if (navigator.standalone === undefined) {
+            // iOS Safari
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (isIOS) {
+                showIOSInstallButton();
+            }
+        }
+        
+        // برای Firefox
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                if (registration.active) {
+                    showFirefoxInstallButton();
+                }
+            });
+        }
+        
+        function showInstallButton() {
+            const installButton = document.createElement('button');
+            installButton.textContent = 'نصب اپلیکیشن';
+            installButton.className = 'btn btn-primary position-fixed';
+            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            installButton.onclick = () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('کاربر PWA را نصب کرد');
+                        }
+                        deferredPrompt = null;
+                        installButton.remove();
+                    });
+                }
+            };
+            document.body.appendChild(installButton);
+            
+            // حذف دکمه بعد از ۱۵ ثانیه
+            setTimeout(() => {
+                if (installButton.parentNode) {
+                    installButton.remove();
+                }
+            }, 15000);
+        }
+        
+        function showIOSInstallButton() {
+            const installButton = document.createElement('button');
+            installButton.textContent = 'نصب در صفحه اصلی';
+            installButton.className = 'btn btn-success position-fixed';
+            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            installButton.onclick = () => {
+                alert('برای نصب: ۱. دکمه Share رو بزن ۲. Add to Home Screen رو انتخاب کن');
+            };
+            document.body.appendChild(installButton);
+            
+            setTimeout(() => {
+                if (installButton.parentNode) {
+                    installButton.remove();
+                }
+            }, 15000);
+        }
+        
+        function showFirefoxInstallButton() {
+            const installButton = document.createElement('button');
+            installButton.textContent = 'نصب اپلیکیشن';
+            installButton.className = 'btn btn-warning position-fixed';
+            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            installButton.onclick = () => {
+                alert('برای نصب: ۱. آدرس بار رو بزن ۲. دکمه نصب رو بزن');
+            };
+            document.body.appendChild(installButton);
+            
+            setTimeout(() => {
+                if (installButton.parentNode) {
+                    installButton.remove();
+                }
+            }, 15000);
+        }
+        
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

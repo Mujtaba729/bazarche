@@ -1,0 +1,390 @@
+/* Button Hierarchy and Icon Improvements */
+
+/* Primary Actions - Most Important */
+.btn-primary-action {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 0.6rem 1rem !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    min-height: 44px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-primary-action::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.btn-primary-action:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4c93 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.btn-primary-action:hover::before {
+    left: 100% !important;
+}
+
+.btn-primary-action i {
+    font-size: 0.9rem !important;
+}
+
+/* Secondary Actions - Medium Importance */
+.btn-secondary-action {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    padding: 0.5rem 0.8rem !important;
+    border-radius: 10px !important;
+    border: 2px solid #e9ecef !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.3rem !important;
+    min-height: 40px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+.btn-secondary-action:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    transform: translateY(-2px) !important;
+    border-color: transparent !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.25) !important;
+    text-decoration: none !important;
+}
+
+.btn-secondary-action i {
+    font-size: 0.8rem !important;
+}
+
+/* Tertiary Actions - Less Important */
+.btn-tertiary-action {
+    background: transparent !important;
+    color: #6c757d !important;
+    font-weight: 500 !important;
+    font-size: 0.75rem !important;
+    padding: 0.4rem 0.6rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.2rem !important;
+    min-height: 36px !important;
+}
+
+.btn-tertiary-action:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    transform: translateY(-1px) !important;
+    text-decoration: none !important;
+}
+
+.btn-tertiary-action i {
+    font-size: 0.75rem !important;
+}
+
+/* Contact Button - Special Styling */
+.contact-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem !important;
+    padding: 0.5rem !important;
+    border-radius: 10px !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+    min-height: 40px !important;
+    width: 100% !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.contact-btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.contact-btn:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4c93 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.contact-btn:hover::before {
+    left: 100% !important;
+}
+
+.contact-btn i {
+    font-size: 0.7rem !important;
+}
+
+/* Registration Required Button */
+.contact-btn.registration-required {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    font-weight: 700 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.contact-btn.registration-required::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+.contact-btn.registration-required:hover::before {
+    left: 100% !important;
+}
+
+/* Icon Sizing Based on Importance */
+.icon-primary {
+    font-size: 1.2rem !important;
+    color: #667eea !important;
+}
+
+.icon-secondary {
+    font-size: 1rem !important;
+    color: #6c757d !important;
+}
+
+.icon-tertiary {
+    font-size: 0.8rem !important;
+    color: #adb5bd !important;
+}
+
+/* Mobile-specific button improvements */
+@media (max-width: 480px) {
+    .btn-primary-action {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 0.8rem !important;
+        min-height: 40px !important;
+    }
+    
+    .btn-primary-action i {
+        font-size: 0.8rem !important;
+    }
+    
+    .btn-secondary-action {
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.6rem !important;
+        min-height: 36px !important;
+    }
+    
+    .btn-secondary-action i {
+        font-size: 0.75rem !important;
+    }
+    
+    .btn-tertiary-action {
+        font-size: 0.7rem !important;
+        padding: 0.3rem 0.5rem !important;
+        min-height: 32px !important;
+    }
+    
+    .btn-tertiary-action i {
+        font-size: 0.7rem !important;
+    }
+    
+    .contact-btn {
+        font-size: 0.75rem !important;
+        padding: 0.4rem !important;
+        min-height: 36px !important;
+    }
+    
+    .contact-btn i {
+        font-size: 0.65rem !important;
+    }
+    
+    .icon-primary {
+        font-size: 1rem !important;
+    }
+    
+    .icon-secondary {
+        font-size: 0.9rem !important;
+    }
+    
+    .icon-tertiary {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary-action:hover,
+    .btn-secondary-action:hover,
+    .btn-tertiary-action:hover,
+    .contact-btn:hover {
+        transform: none !important;
+    }
+    
+    .btn-primary-action:active,
+    .btn-secondary-action:active,
+    .btn-tertiary-action:active,
+    .contact-btn:active {
+        transform: scale(0.95) !important;
+    }
+    
+    /* Ensure all buttons are clickable */
+    .btn-primary-action,
+    .btn-secondary-action,
+    .btn-tertiary-action,
+    .contact-btn {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* Allow scrolling on product cards */
+    .product-card {
+        touch-action: pan-y !important;
+    }
+    
+    /* Remove hover effects on touch */
+    .product-card:hover,
+    .category-card:hover,
+    .action-card:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Focus states for accessibility */
+.btn-primary-action:focus,
+.btn-secondary-action:focus,
+.btn-tertiary-action:focus,
+.contact-btn:focus {
+    outline: 2px solid #667eea !important;
+    outline-offset: 2px !important;
+}
+
+/* Loading states */
+.btn-primary-action.loading,
+.btn-secondary-action.loading,
+.btn-tertiary-action.loading,
+.contact-btn.loading {
+    opacity: 0.7 !important;
+    pointer-events: none !important;
+}
+
+/* Success states */
+.btn-primary-action.success,
+.btn-secondary-action.success,
+.btn-tertiary-action.success,
+.contact-btn.success {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
+    color: #fff !important;
+}
+
+/* Error states */
+.btn-primary-action.error,
+.btn-secondary-action.error,
+.btn-tertiary-action.error,
+.contact-btn.error {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+    color: #fff !important;
+}
+
+/* Disabled states */
+.btn-primary-action:disabled,
+.btn-secondary-action:disabled,
+.btn-tertiary-action:disabled,
+.contact-btn:disabled {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+}
+
+/* Compact button groups */
+.btn-group-compact {
+    display: flex !important;
+    gap: 0.25rem !important;
+    flex-wrap: wrap !important;
+}
+
+.btn-group-compact .btn-primary-action,
+.btn-group-compact .btn-secondary-action,
+.btn-group-compact .btn-tertiary-action {
+    flex: 1 !important;
+    min-width: 0 !important;
+}
+
+/* Floating action button */
+.btn-floating {
+    position: fixed !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.2rem !important;
+    z-index: 1000 !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-floating:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5) !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+@media (max-width: 480px) {
+    .btn-floating {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1rem !important;
+        bottom: 0.75rem !important;
+        right: 0.75rem !important;
+    }
+} 

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+    .manage-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .manage-container h1 {
+        font-size: 1.8rem;
+        color: #276ef1;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .manage-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+    }
+    .manage-table th, .manage-table td {
+        padding: 1rem;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+    .manage-table th {
+        background: #f9f9f9;
+        color: #555;
+        font-weight: bold;
+    }
+    .manage-table tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .action-buttons a {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        color: white;
+        transition: background 0.3s ease;
+    }
+    .action-buttons .edit {
+        background: #276ef1;
+    }
+    .action-buttons .edit:hover {
+        background: #1746c4;
+    }
+    .action-buttons .delete {
+        background: #e80019;
+    }
+    .action-buttons .delete:hover {
+        background: #b00014;
+    }
+</style>
+{% endblock %}
+
+{% block title %}مدیریت محصولات{% endblock %}
+{% block content %}
+<div class="manage-container">
+    <h1>مدیریت محصولات</h1>
+    <table class="manage-table">
+        <thead>
+            <tr>
+                <th>شناسه</th>
+                <th>نام محصول</th>
+                <th>دسته‌بندی</th>
+                <th>قیمت</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name_display }}</td>
+                <td>{{ product.category.name_fa }}</td>
+                <td>{{ product.price|default:'نامشخص' }}</td>
+                <td>{% if product.is_approved %}تایید شده{% else %}در انتظار تایید{% endif %}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'edit_product' product.id %}" class="edit">ویرایش</a>
+                        <a href="{% url 'delete_product' product.id %}" class="delete" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

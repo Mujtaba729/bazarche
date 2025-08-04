@@ -7,7 +7,9 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+    # Use Railway settings if environment variable is set
+    settings_module = os.environ.get('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

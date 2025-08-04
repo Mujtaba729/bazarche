@@ -7,6 +7,13 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Import base settings but override DATABASES before import
+import sys
+sys.path.insert(0, str(BASE_DIR))
+
+# Temporarily set DATABASES to SQLite before importing settings
+os.environ['DJANGO_DB_ENGINE'] = 'sqlite3'
+
 # Import base settings
 from .settings import *
 

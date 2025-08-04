@@ -2,7 +2,21 @@
 Production settings for bazarche_project
 """
 import os
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Import base settings
 from .settings import *
+
+# Override database settings for production
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -20,13 +34,7 @@ ALLOWED_HOSTS = [
     '*',  # برای تست موقت
 ]
 
-# Database configuration for production
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 # Static files configuration
 STATIC_ROOT = BASE_DIR / 'staticfiles'

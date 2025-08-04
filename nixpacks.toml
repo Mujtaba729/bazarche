@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["zlib", "libjpeg", "freetype", "libpng", "libtiff", "libwebp", "openjpeg"]
-
-[phases.build]
-cmds = ["python manage.py collectstatic --noinput"]
-
-[start]
-cmd = "gunicorn bazarche_project.wsgi" 

@@ -111,15 +111,8 @@ WSGI_APPLICATION = 'bazarche_project.wsgi.application'
 # Database configuration
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bazarche',
-        'USER': 'root',
-        'PASSWORD': 'Mujtaba$729',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

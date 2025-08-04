@@ -1,9 +1,6 @@
 [phases.setup]
 nixPkgs = ["zlib", "libjpeg", "freetype", "libpng", "libtiff", "libwebp", "openjpeg"]
 
-[phases.install]
-cmds = ["pip install --upgrade pip"]
-
 [phases.build]
 cmds = ["python manage.py collectstatic --noinput"]
 

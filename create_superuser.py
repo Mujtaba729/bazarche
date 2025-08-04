@@ -19,9 +19,9 @@ if not User.objects.filter(is_superuser=True).exists():
     print("Creating superuser...")
     # Create superuser
     User.objects.create_superuser(
-        username=os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin'),
+        username=os.environ.get('DJANGO_SUPERUSER_USERNAME', 'MUJTABA'),
         email=os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com'),
-        password=os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123')
+        password=os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'Mujtaba$729')
     )
     print("Superuser created successfully!")
 else:

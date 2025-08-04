@@ -1,0 +1,1 @@
+web: gunicorn bazarche_project.wsgi --log-file - 

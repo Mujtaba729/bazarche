@@ -10,3 +10,5 @@ pillow==9.5.0
 requests==2.31.0
 PyJWT==2.8.0
 cryptography==42.0.5
+gunicorn==21.2.0
+whitenoise==6.6.0

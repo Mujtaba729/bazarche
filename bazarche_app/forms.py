@@ -5,11 +5,12 @@ from django.contrib.auth.models import User
 import re
 from django.utils.translation import gettext_lazy as _
 
+# This list is now deprecated - using database instead
 AFGHANISTAN_PROVINCES = [
     'کابل', 'هرات', 'بلخ', 'قندهار', 'ننگرهار', 'پکتیا', 'پکتیکا', 'خوست', 'غزنی', 'بامیان',
     'پروان', 'کاپیسا', 'لوگر', 'وردک', 'فراه', 'بادغیس', 'جوزجان', 'سرپل', 'سمنگان', 'تخار',
     'کندز', 'بدخشان', 'نورستان', 'لغمان', 'کنر', 'هلمند', 'زابل', 'ارزگان', 'دایکندی', 'فاریاب',
-    'پنجشیر'
+    'پنجشیر', 'نیمروز', 'غور'
 ]
 
 class UserFeedbackForm(forms.ModelForm):
@@ -29,22 +30,19 @@ class UserFeedbackForm(forms.ModelForm):
 
 class ProductForm(forms.ModelForm):
     category = forms.ModelChoiceField(
-        queryset=Category.objects.filter(name_fa__in=[
-            'وسایل نقلیه', 'لوازم دیجیتال', 'لوازم خانگی', 'وسایل شخصی',
-            'سرگرمی و فراغت', 'تجهیزات و صنعتی', 'املاک'
-        ]).order_by('order', 'name_fa'),
+        queryset=Category.objects.filter(parent__isnull=True).order_by('order', 'name_fa'),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='دسته‌بندی'
     )
     city = forms.ModelChoiceField(
-        queryset=City.objects.all(),
+        queryset=City.objects.all().order_by('order', 'name'),
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='شهر'
     )
     tags = forms.ModelChoiceField(
-        queryset=Tag.objects.all(),
+        queryset=Tag.objects.all().order_by('name_fa'),
         widget=forms.RadioSelect,
         required=True,
         label='وضعیت محصول'

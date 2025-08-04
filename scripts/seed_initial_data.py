@@ -3,7 +3,9 @@ import django
 import sys
 
 # تنظیم محیط Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+import os
+settings_module = os.environ.get('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 django.setup()
 
 from bazarche_app.models import City, Tag
@@ -12,7 +14,7 @@ AFGHANISTAN_PROVINCES = [
     'کابل', 'هرات', 'بلخ', 'قندهار', 'ننگرهار', 'پکتیا', 'پکتیکا', 'خوست', 'غزنی', 'بامیان',
     'پروان', 'کاپیسا', 'لوگر', 'وردک', 'فراه', 'بادغیس', 'جوزجان', 'سرپل', 'سمنگان', 'تخار',
     'کندز', 'بدخشان', 'نورستان', 'لغمان', 'کنر', 'هلمند', 'زابل', 'ارزگان', 'دایکندی', 'فاریاب',
-    'پنجشیر'
+    'پنجشیر', 'نیمروز', 'زابل', 'ارزگان', 'دایکندی', 'فاریاب', 'پنجشیر', 'کاپیسا', 'لوگر', 'وردک'
 ]
 
 for i, name in enumerate(AFGHANISTAN_PROVINCES):

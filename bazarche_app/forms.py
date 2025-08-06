@@ -41,29 +41,7 @@ class ProductForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='شهر'
     )
-    condition = forms.ChoiceField(
-        choices=[
-            ('new', 'نو'),
-            ('used', 'دست دوم'),
-        ],
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='وضعیت محصول'
-    )
-    # حذف فیلد tags چون وضعیت محصول با فیلد condition مدیریت می‌شود
-    price_range = forms.ChoiceField(
-        choices=[
-            ('0-1000', '0 - 1,000 افغانی'),
-            ('1000-5000', '1,000 - 5,000 افغانی'),
-            ('5000-10000', '5,000 - 10,000 افغانی'),
-            ('10000-50000', '10,000 - 50,000 افغانی'),
-            ('50000-100000', '50,000 - 100,000 افغانی'),
-            ('100000+', 'بیش از 100,000 افغانی'),
-        ],
-        required=True,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        label='رنج قیمت'
-    )
+    # فیلدهای condition و price_range حذف شدند چون کاربردی ندارند
     name = forms.CharField(
         max_length=200,
         widget=forms.TextInput(attrs={'class': 'form-control'}),
@@ -90,9 +68,8 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = [
-            'category', 'city', 'condition', 'price', 'discount_price',
-            'is_featured', 'is_discounted', 'seller_contact',
-            'price_range'
+            'category', 'city', 'price', 'discount_price',
+            'is_featured', 'is_discounted', 'seller_contact'
         ]
         widgets = {
             'price': forms.NumberInput(attrs={'class': 'form-control'}),

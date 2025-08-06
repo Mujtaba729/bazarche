@@ -638,10 +638,10 @@ def register_product(request):
                     user=request.user,
                     category=category,
                     city=city_instance,
-                    condition=form.cleaned_data.get('condition', 'new'),
+                    condition='new',  # پیش‌فرض نو
                     price=form.cleaned_data.get('price'),
                     discount_price=form.cleaned_data.get('discount_price'),
-                    price_range=form.cleaned_data.get('price_range'),
+                    price_range='100000+',  # پیش‌فرض بیش از 100,000 افغانی
                     is_featured=False,  # Set default False, user cannot set
                     is_discounted=False,  # Set default False, user cannot set
                     seller_contact=seller_contact,  # استفاده از شماره تماس وارد شده توسط کاربر

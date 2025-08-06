@@ -228,23 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             {% endif %}
                         </div>
 
-                        <div class="mb-3">
-                            <label for="id_tags" class="form-label">{{ form.tags.label }}</label>
-                            <div class="form-check">
-                                {{ form.tags }}
-                            </div>
-                             {% if form.tags.errors %}
-                                <div class="text-danger">{{ form.tags.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                         <div class="mb-3">
-                            <label for="id_price_range" class="form-label">{{ form.price_range.label }}</label>
-                            {{ form.price_range }}
-                            {% if form.price_range.errors %}
-                                <div class="text-danger">{{ form.price_range.errors }}</div>
-                            {% endif %}
-                        </div>
+                        <!-- فیلدهای tags و price_range حذف شدند -->
 
                         <div class="mb-3">
                             <label for="id_seller_contact" class="form-label">{{ form.seller_contact.label }}</label>

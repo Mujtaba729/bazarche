@@ -50,12 +50,7 @@ class ProductForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='وضعیت محصول'
     )
-    tags = forms.ModelChoiceField(
-        queryset=Tag.objects.all().order_by('name_fa'),
-        widget=forms.RadioSelect,
-        required=False,
-        label='برچسب‌ها'
-    )
+    # حذف فیلد tags چون وضعیت محصول با فیلد condition مدیریت می‌شود
     price_range = forms.ChoiceField(
         choices=[
             ('0-1000', '0 - 1,000 افغانی'),
@@ -96,7 +91,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'category', 'city', 'condition', 'price', 'discount_price',
-            'is_featured', 'is_discounted', 'seller_contact', 'tags',
+            'is_featured', 'is_discounted', 'seller_contact',
             'price_range'
         ]
         widgets = {
@@ -114,7 +109,6 @@ class ProductForm(forms.ModelForm):
             'is_featured': 'ویژه',
             'is_discounted': 'تخفیف‌دار',
             'seller_contact': 'اطلاعات تماس فروشنده',
-            'tags': 'برچسب‌ها',
         }
 
     def __init__(self, *args, **kwargs):

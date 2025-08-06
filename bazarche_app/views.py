@@ -593,6 +593,25 @@ def compress_image(image_file, max_size=(1920, 1080), quality=85):
 
 @csrf_protect
 @login_required
+def get_product_form_context(form):
+    """تابع کمکی برای ایجاد context فرم محصول"""
+    return {
+        'form': form,
+        'categories': Category.objects.filter(name_fa__in=[
+            'وسایل نقلیه',
+            'لوازم دیجیتال',
+            'لوازم خانگی',
+            'وسایل شخصی',
+            'سرگرمی و فراغت',
+            'تجهیزات و صنعتی',
+            'خدمات',
+            'املاک',
+            'اجتماعی',
+            'استخدام و کاریابی',
+            'کتاب و مجله',
+        ]).order_by('order', 'name_fa'),
+    }
+
 def register_product(request):
     current_lang = translation.get_language()
     if request.method == 'POST':
@@ -633,9 +652,6 @@ def register_product(request):
                 product.description_fa = description
 
             product.save()
-            tags_selected = form.cleaned_data['tags']
-            if tags_selected:
-                product.tags.set([tags_selected])
             # پاک کردن کش محصولات بعد از ثبت محصول جدید
             from .cache_manager import CacheManager
             CacheManager.clear_products_cache()
@@ -647,47 +663,13 @@ def register_product(request):
             if not images:
                 messages.error(request, "لطفا حداقل یک عکس برای محصول خود آپلود کنید.")
                 product.delete()
-                context = {
-                    'form': form,
-                    'categories': Category.objects.filter(name_fa__in=[
-                        'وسایل نقلیه',
-                        'لوازم دیجیتال',
-                        'لوازم خانگی',
-                        'وسایل شخصی',
-                        'سرگرمی و فراغت',
-                        'تجهیزات و صنعتی',
-                        'خدمات',
-                        'املاک',
-                        'اجتماعی',
-                        'استخدام و کاریابی',
-                        'کتاب و مجله',
-                    ]).order_by('order', 'name_fa'),
-                    'tags': Tag.objects.all().order_by('name_fa'),
-                }
-                return render(request, 'register_product.html', context)
+                return render(request, 'register_product.html', get_product_form_context(form))
             
             # بررسی حداکثر تعداد عکس (5 عکس)
             if len(images) > 5:
                 messages.error(request, "شما می‌توانید حداکثر ۵ عکس برای هر محصول آپلود کنید.")
                 product.delete()
-                context = {
-                    'form': form,
-                    'categories': Category.objects.filter(name_fa__in=[
-                        'وسایل نقلیه',
-                        'لوازم دیجیتال',
-                        'لوازم خانگی',
-                        'وسایل شخصی',
-                        'سرگرمی و فراغت',
-                        'تجهیزات و صنعتی',
-                        'خدمات',
-                        'املاک',
-                        'اجتماعی',
-                        'استخدام و کاریابی',
-                        'کتاب و مجله',
-                    ]).order_by('order', 'name_fa'),
-                    'tags': Tag.objects.all().order_by('name_fa'),
-                }
-                return render(request, 'register_product.html', context)
+                return render(request, 'register_product.html', get_product_form_context(form))
             
             # ذخیره عکس‌ها با فشرده‌سازی خودکار
             try:
@@ -699,67 +681,16 @@ def register_product(request):
             except Exception as e:
                 messages.error(request, f"خطا در آپلود عکس‌ها: {str(e)}")
                 product.delete()
-                context = {
-                    'form': form,
-                    'categories': Category.objects.filter(name_fa__in=[
-                        'وسایل نقلیه',
-                        'لوازم دیجیتال',
-                        'لوازم خانگی',
-                        'وسایل شخصی',
-                        'سرگرمی و فراغت',
-                        'تجهیزات و صنعتی',
-                        'خدمات',
-                        'املاک',
-                        'اجتماعی',
-                        'استخدام و کاریابی',
-                        'کتاب و مجله',
-                    ]).order_by('order', 'name_fa'),
-                    'tags': Tag.objects.all().order_by('name_fa'),
-                }
-                return render(request, 'register_product.html', context)
+                return render(request, 'register_product.html', get_product_form_context(form))
         else:
             messages.error(request, "فرم دارای خطا است. لطفا اصلاح کنید.")
-            context = {
-                'form': form,
-                'categories': Category.objects.filter(name_fa__in=[
-                    'وسایل نقلیه',
-                    'لوازم دیجیتال',
-                    'لوازم خانگی',
-                    'وسایل شخصی',
-                    'سرگرمی و فراغت',
-                    'تجهیزات و صنعتی',
-                    'خدمات',
-                    'املاک',
-                    'اجتماعی',
-                    'استخدام و کاریابی',
-                    'کتاب و مجله',
-                ]).order_by('order', 'name_fa'),
-                'tags': Tag.objects.all().order_by('name_fa'),
-            }
-            return render(request, 'register_product.html', context)
+            return render(request, 'register_product.html', get_product_form_context(form))
     else:
         form = ProductForm()
         # Remove is_featured and is_discounted fields from form
         form.fields.pop('is_featured', None)
         form.fields.pop('is_discounted', None)
-        context = {
-            'form': form,
-            'categories': Category.objects.filter(name_fa__in=[
-                'وسایل نقلیه',
-                'لوازم دیجیتال',
-                'لوازم خانگی',
-                'وسایل شخصی',
-                'سرگرمی و فراغت',
-                'تجهیزات و صنعتی',
-                'خدمات',
-                'املاک',
-                'اجتماعی',
-                'استخدام و کاریابی',
-                'کتاب و مجله',
-            ]).order_by('order', 'name_fa'),
-            'tags': Tag.objects.all().order_by('name_fa'),
-        }
-    return render(request, 'register_product.html', context)
+        return render(request, 'register_product.html', get_product_form_context(form))
 
 class ResetPasswordForm(forms.Form):
     profile_id = forms.CharField(label='شناسه کاربری', max_length=10, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'شناسه کاربری'}))

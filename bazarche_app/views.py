@@ -612,78 +612,91 @@ def get_product_form_context(form):
         ]).order_by('order', 'name_fa'),
     }
 
+@csrf_protect
+@login_required
 def register_product(request):
     current_lang = translation.get_language()
+    
+    # Ensure user is authenticated
+    if not request.user.is_authenticated:
+        messages.error(request, "لطفا ابتدا وارد شوید.")
+        return redirect('app:login')
+    
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            category = form.cleaned_data.get('category')
-            name = form.cleaned_data.get('name', '')
-            description = form.cleaned_data.get('description', '')
-            seller_contact = form.cleaned_data.get('seller_contact', '')
-            
-            city_value = form.cleaned_data.get('city')
-            if isinstance(city_value, City):
-                city_instance = city_value
-            else:
-                city_instance = City.objects.get(name=city_value)
-            product = Product(
-                user=request.user,
-                category=category,
-                city=city_instance,
-                condition=form.cleaned_data.get('condition', 'new'),
-                price=form.cleaned_data.get('price'),
-                discount_price=form.cleaned_data.get('discount_price'),
-                price_range=form.cleaned_data.get('price_range'),
-                is_featured=False,  # Set default False, user cannot set
-                is_discounted=False,  # Set default False, user cannot set
-                seller_contact=seller_contact,  # استفاده از شماره تماس وارد شده توسط کاربر
-                is_approved=True  # تغییر به True برای تایید خودکار
-            )
-            # Set name and description based on current language
-            if current_lang == 'ps':
-                product.name_ps = name
-                product.description_ps = description
-            elif current_lang == 'en':
-                product.name_en = name
-                product.description_en = description
-            else:
-                product.name_fa = name
-                product.description_fa = description
+        try:
+            form = ProductForm(request.POST, request.FILES)
+            if form.is_valid():
+                category = form.cleaned_data.get('category')
+                name = form.cleaned_data.get('name', '')
+                description = form.cleaned_data.get('description', '')
+                seller_contact = form.cleaned_data.get('seller_contact', '')
+                
+                city_value = form.cleaned_data.get('city')
+                if isinstance(city_value, City):
+                    city_instance = city_value
+                else:
+                    city_instance = City.objects.get(name=city_value)
+                product = Product(
+                    user=request.user,
+                    category=category,
+                    city=city_instance,
+                    condition=form.cleaned_data.get('condition', 'new'),
+                    price=form.cleaned_data.get('price'),
+                    discount_price=form.cleaned_data.get('discount_price'),
+                    price_range=form.cleaned_data.get('price_range'),
+                    is_featured=False,  # Set default False, user cannot set
+                    is_discounted=False,  # Set default False, user cannot set
+                    seller_contact=seller_contact,  # استفاده از شماره تماس وارد شده توسط کاربر
+                    is_approved=True  # تغییر به True برای تایید خودکار
+                )
+                # Set name and description based on current language
+                if current_lang == 'ps':
+                    product.name_ps = name
+                    product.description_ps = description
+                elif current_lang == 'en':
+                    product.name_en = name
+                    product.description_en = description
+                else:
+                    product.name_fa = name
+                    product.description_fa = description
 
-            product.save()
-            # پاک کردن کش محصولات بعد از ثبت محصول جدید
-            from .cache_manager import CacheManager
-            CacheManager.clear_products_cache()
-            
-            # اعتبارسنجی عکس‌ها
-            images = request.FILES.getlist('images')
-            
-            # بررسی وجود حداقل یک عکس
-            if not images:
-                messages.error(request, "لطفا حداقل یک عکس برای محصول خود آپلود کنید.")
-                product.delete()
+                product.save()
+                # پاک کردن کش محصولات بعد از ثبت محصول جدید
+                from .cache_manager import CacheManager
+                CacheManager.clear_products_cache()
+                
+                # اعتبارسنجی عکس‌ها
+                images = request.FILES.getlist('images')
+                
+                # بررسی وجود حداقل یک عکس
+                if not images:
+                    messages.error(request, "لطفا حداقل یک عکس برای محصول خود آپلود کنید.")
+                    product.delete()
+                    return render(request, 'register_product.html', get_product_form_context(form))
+                
+                # بررسی حداکثر تعداد عکس (5 عکس)
+                if len(images) > 5:
+                    messages.error(request, "شما می‌توانید حداکثر ۵ عکس برای هر محصول آپلود کنید.")
+                    product.delete()
+                    return render(request, 'register_product.html', get_product_form_context(form))
+                
+                # ذخیره عکس‌ها با فشرده‌سازی خودکار
+                try:
+                    for img in images:
+                        compressed_img = compress_image(img)
+                        ProductImage.objects.create(product=product, image=compressed_img)
+                    messages.success(request, "محصول شما با موفقیت ثبت شد و در سایت نمایش داده خواهد شد.")
+                    return redirect('app:home')
+                except Exception as e:
+                    messages.error(request, f"خطا در آپلود عکس‌ها: {str(e)}")
+                    product.delete()
+                    return render(request, 'register_product.html', get_product_form_context(form))
+            else:
+                messages.error(request, "فرم دارای خطا است. لطفا اصلاح کنید.")
                 return render(request, 'register_product.html', get_product_form_context(form))
-            
-            # بررسی حداکثر تعداد عکس (5 عکس)
-            if len(images) > 5:
-                messages.error(request, "شما می‌توانید حداکثر ۵ عکس برای هر محصول آپلود کنید.")
-                product.delete()
-                return render(request, 'register_product.html', get_product_form_context(form))
-            
-            # ذخیره عکس‌ها با فشرده‌سازی خودکار
-            try:
-                for img in images:
-                    compressed_img = compress_image(img)
-                    ProductImage.objects.create(product=product, image=compressed_img)
-                messages.success(request, "محصول شما با موفقیت ثبت شد و در سایت نمایش داده خواهد شد.")
-                return redirect('app:home')
-            except Exception as e:
-                messages.error(request, f"خطا در آپلود عکس‌ها: {str(e)}")
-                product.delete()
-                return render(request, 'register_product.html', get_product_form_context(form))
-        else:
-            messages.error(request, "فرم دارای خطا است. لطفا اصلاح کنید.")
+        except Exception as e:
+            messages.error(request, f"خطا در پردازش فرم: {str(e)}")
+            form = ProductForm()
             return render(request, 'register_product.html', get_product_form_context(form))
     else:
         form = ProductForm()

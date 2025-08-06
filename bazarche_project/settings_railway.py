@@ -27,7 +27,15 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.railway.app',
     'https://*.up.railway.app',
     'https://bazarche-production.up.railway.app',
+    'https://bazarche-production.up.railway.app',
+    'https://bazarche-production.up.railway.app/',
 ]
+
+# Additional CSRF settings
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # Application definition
 INSTALLED_APPS = [

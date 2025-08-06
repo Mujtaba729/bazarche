@@ -382,13 +382,6 @@
         
         <!-- Product Tags -->
         <div class="product-tags">
-            <!-- Product Condition -->
-            {% if product.condition == 'new' %}
-            <span class="condition-badge badge-new">نو</span>
-            {% elif product.condition == 'used' %}
-            <span class="condition-badge badge-used">دست دوم</span>
-            {% endif %}
-            
             <!-- Other Tags -->
             {% for tag in product.tags.all %}
                 {% if tag.name_fa != 'نو' and tag.name_fa != 'دست دوم' %}

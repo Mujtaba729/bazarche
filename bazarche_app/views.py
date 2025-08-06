@@ -591,8 +591,6 @@ def compress_image(image_file, max_size=(1920, 1080), quality=85):
         # اگر خطا رخ داد، فایل اصلی را برگردان
         return image_file
 
-@csrf_protect
-@login_required
 def get_product_form_context(form):
     """تابع کمکی برای ایجاد context فرم محصول"""
     return {

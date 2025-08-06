@@ -8,7 +8,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-jnbmyh*#%ux79z!^%n1$dhw^f3^k$-rzt&3=q*w@lq34)q62g+')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'bazarche-production-secret-key-2025-very-long-and-secure-key-for-production-use-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -197,9 +197,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGOUT_ON_GET = True
 
 # Security settings
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 # Logging
 LOGGING = {

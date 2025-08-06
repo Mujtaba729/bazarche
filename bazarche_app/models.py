@@ -112,6 +112,18 @@ class Product(models.Model):
         ('50000-100000', '50,000 - 100,000 افغانی'),
         ('100000+', 'بیش از 100,000 افغانی'),
     ], verbose_name=_('رنج قیمت'))
+    
+    # وضعیت محصول (نو یا دست دوم)
+    CONDITION_CHOICES = [
+        ('new', 'نو'),
+        ('used', 'دست دوم'),
+    ]
+    condition = models.CharField(
+        max_length=10, 
+        choices=CONDITION_CHOICES, 
+        default='new', 
+        verbose_name=_('وضعیت محصول')
+    )
 
     def clean(self):
         if self.is_discounted and not self.discount_price:

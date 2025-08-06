@@ -612,6 +612,7 @@ def register_product(request):
                 user=request.user,
                 category=category,
                 city=city_instance,
+                condition=form.cleaned_data.get('condition', 'new'),
                 price=form.cleaned_data.get('price'),
                 discount_price=form.cleaned_data.get('discount_price'),
                 price_range=form.cleaned_data.get('price_range'),

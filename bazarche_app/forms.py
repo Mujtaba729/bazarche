@@ -41,11 +41,20 @@ class ProductForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='شهر'
     )
+    condition = forms.ChoiceField(
+        choices=[
+            ('new', 'نو'),
+            ('used', 'دست دوم'),
+        ],
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='وضعیت محصول'
+    )
     tags = forms.ModelChoiceField(
         queryset=Tag.objects.all().order_by('name_fa'),
         widget=forms.RadioSelect,
-        required=True,
-        label='وضعیت محصول'
+        required=False,
+        label='برچسب‌ها'
     )
     price_range = forms.ChoiceField(
         choices=[
@@ -86,7 +95,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = [
-            'category', 'city', 'price', 'discount_price',
+            'category', 'city', 'condition', 'price', 'discount_price',
             'is_featured', 'is_discounted', 'seller_contact', 'tags',
             'price_range'
         ]

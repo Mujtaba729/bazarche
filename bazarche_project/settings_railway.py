@@ -60,10 +60,10 @@ LOGIN_URL = '/app/login/'
 LOGIN_REDIRECT_URL = '/app/dashboard/'
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
+# django-allauth settings (updated to remove deprecation warnings)
+ACCOUNT_LOGIN_METHODS = {'username', 'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_LOGOUT_ON_GET = True
 
 MIDDLEWARE = [

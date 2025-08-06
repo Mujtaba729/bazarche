@@ -42,7 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Additional CSRF settings
 CSRF_COOKIE_SECURE = False  # False for development
 CSRF_COOKIE_HTTPONLY = True
-CSRF_USE_SESSIONS = True
+CSRF_USE_SESSIONS = False  # Changed to False to avoid session issues
 CSRF_COOKIE_SAMESITE = 'Lax'
 
 
@@ -205,9 +205,12 @@ CACHES = {
     },
 }
 
-# استفاده از کش برای session
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'session'
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database instead of cache
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+SESSION_COOKIE_SECURE = False  # False for development
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 # django-allauth settings
 ACCOUNT_LOGIN_METHODS = {'username', 'email'}

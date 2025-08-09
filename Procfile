@@ -1,2 +1,2 @@
 web: gunicorn bazarche_project.wsgi --log-file - --timeout 120 --workers 2 --threads 2
-release: python manage.py migrate && python manage.py collectstatic --noinput && python manage.py seed_production_data 
+release: python manage.py migrate && python manage.py collectstatic --noinput && python manage.py seed_production_data && python manage.py create_admin 

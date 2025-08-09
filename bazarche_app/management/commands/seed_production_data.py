@@ -2,7 +2,7 @@ from bazarche_app.models import Category, City
 from django.core.management.base import BaseCommand
 
 CATEGORY_ICON_MAP = {
-    'وسایل نقلیه': 'bi-car',
+    'وسایل نقلیه': 'bi-car-front',
     'لوازم دیجیتال': 'bi-phone',
     'لوازم خانگی': 'bi-house',
     'وسایل شخصی': 'bi-person',
@@ -30,6 +30,11 @@ class Command(BaseCommand):
                 name_fa=name,
                 defaults={'icon': icon}
             )
+            # همواره آیکن را با مقدار درست بروزرسانی کن
+            if category.icon != icon:
+                category.icon = icon
+                category.save(update_fields=['icon'])
+                self.stdout.write(f'آیکن دسته "{name}" به {icon} بروزرسانی شد.')
             if created:
                 self.stdout.write(f'دسته‌بندی "{name}" اضافه شد.')
             else:

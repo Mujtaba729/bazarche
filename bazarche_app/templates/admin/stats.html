@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'آمار مدیریتی' %}{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h3 class="mb-3">{% trans 'داشبورد مدیریتی' %}</h3>
+  <div class="row g-3">
+    <div class="col-md-3"><div class="card p-3"><strong>{% trans 'کاربران کل' %}</strong><div>{{ total_users }}</div></div></div>
+    <div class="col-md-3"><div class="card p-3"><strong>{% trans 'کاربران 24ساعت اخیر' %}</strong><div>{{ new_users_24h }}</div></div></div>
+    <div class="col-md-3"><div class="card p-3"><strong>{% trans 'محصولات کل' %}</strong><div>{{ total_products }}</div></div></div>
+    <div class="col-md-3"><div class="card p-3"><strong>{% trans 'بازدید کل' %}</strong><div>{{ total_visits }}</div></div></div>
+  </div>
+
+  <div class="row g-3 mt-3">
+    <div class="col-md-6"><div class="card p-3">
+      <h6 class="mb-2">{% trans 'کاربران با بیشترین ثبت محصول' %}</h6>
+      <ul class="list-group">
+        {% for u in top_users_by_products %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ u.user__username }} (ID: {{ u.user__id }})</span>
+            <span class="badge bg-primary">{{ u.count }}</span>
+          </li>
+        {% empty %}
+          <li class="list-group-item">{% trans 'داده‌ای نیست' %}</li>
+        {% endfor %}
+      </ul>
+    </div></div>
+    <div class="col-md-6"><div class="card p-3">
+      <h6 class="mb-2">{% trans 'محصولات پربازدید' %}</h6>
+      <ul class="list-group">
+        {% for p in top_products %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ p.product__name_fa }} (ID: {{ p.product__id }})</span>
+            <span class="badge bg-success">{{ p.total_views }}</span>
+          </li>
+        {% empty %}
+          <li class="list-group-item">{% trans 'داده‌ای نیست' %}</li>
+        {% endfor %}
+      </ul>
+    </div></div>
+  </div>
+</div>
+{% endblock %}
+

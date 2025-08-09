@@ -21,9 +21,35 @@ class Command(BaseCommand):
             type=str,
             help='Backup file path for restore operation'
         )
+        parser.add_argument(
+            '--monitor-posts',
+            action='store_true',
+            help='Report users with high product posting rate in recent window'
+        )
 
     def handle(self, *args, **options):
         action = options['action']
+        if options.get('monitor_posts'):
+            from django.utils import timezone
+            from datetime import timedelta
+            from django.db import models as dj_models
+            window_minutes = 10
+            threshold = 15
+            since = timezone.now() - timedelta(minutes=window_minutes)
+            qs = (
+                Product.objects.filter(created_at__gte=since)
+                .values('user__username')
+                .annotate(count=dj_models.Count('id'))
+                .filter(count__gte=threshold)
+                .order_by('-count')
+            )
+            if qs:
+                self.stdout.write(self.style.WARNING(f"Users over threshold in last {window_minutes}m:"))
+                for row in qs:
+                    self.stdout.write(f" - {row['user__username']}: {row['count']}")
+            else:
+                self.stdout.write("No users above threshold in the last window.")
+            return
         
         if action == 'backup':
             self.backup_data()

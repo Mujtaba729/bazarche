@@ -7,15 +7,20 @@ class RateLimitMiddleware:
     Simple rate limiting middleware that limits requests per IP address.
     Limits to 60 requests per minute by default.
     """
-    RATE_LIMIT = 60
+    # Relaxed limits: effectively disabled for normal usage
+    RATE_LIMIT = 1000
     TIME_WINDOW = 60  # seconds
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        # Exempt healthcheck paths from rate limiting
+        # Exempt safe/readonly and infra paths
+        if request.method in ('GET', 'HEAD', 'OPTIONS'):
+            return self.get_response(request)
         if request.path.startswith('/health') or request.path.startswith('/app/health'):
+            return self.get_response(request)
+        if request.path.startswith('/media') or request.path.startswith('/static'):
             return self.get_response(request)
 
         ip = self.get_client_ip(request)

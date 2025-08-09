@@ -843,9 +843,21 @@ def admin_stats(request):
     except Exception:
         pass
 
+    # آمار کاربران
+    total_users = User.objects.count()
+    new_users_24h = User.objects.filter(date_joined__gte=timezone.now()-timezone.timedelta(hours=24)).count()
+    # کاربرانی که بیشترین محصول را ثبت کرده‌اند
+    top_users_by_products = (
+        Product.objects.values('user__id', 'user__username')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:10]
+    )
+
     context = {
         'total_visits': total_visits,
         'total_products': total_products,
+        'total_users': total_users,
+        'new_users_24h': new_users_24h,
         'approved_products': approved_products,
         'pending_products': pending_products,
         'featured_products': featured_products,
@@ -853,6 +865,7 @@ def admin_stats(request):
         'categories_stats': categories_stats,
         'top_products': top_products,
         'recent_logs': recent_logs,
+        'top_users_by_products': list(top_users_by_products),
     }
     return render(request, 'admin/stats.html', context)
 

@@ -7,14 +7,15 @@ class Command(BaseCommand):
     help = 'Create admin user for production'
 
     def add_arguments(self, parser):
-        parser.add_argument('--username', type=str, default='admin', help='Admin username')
-        parser.add_argument('--email', type=str, default='admin@soodava.com', help='Admin email')
-        parser.add_argument('--password', type=str, help='Admin password')
+        # ثابت می‌کنیم تا همیشه همین کاربر ساخته شود
+        parser.add_argument('--username', type=str, default='Mujtaba729', help='Admin username')
+        parser.add_argument('--email', type=str, default='Mujtabahabibi729@gmail.com', help='Admin email')
+        parser.add_argument('--password', type=str, default='Mujtaba$729', help='Admin password')
 
     def handle(self, *args, **options):
         username = options['username']
         email = options['email']
-        password = options.get('password') or 'admin123456'
+        password = options.get('password') or 'Mujtaba$729'
         
         # Check if admin already exists
         if User.objects.filter(username=username).exists():
@@ -23,21 +24,31 @@ class Command(BaseCommand):
             )
             return
         
-        # Create superuser
-        user = User.objects.create_superuser(
-            username=username,
-            email=email,
-            password=password
-        )
+        # Create or update superuser to desired credentials
+        user, created = User.objects.get_or_create(username=username, defaults={
+            'email': email,
+            'is_superuser': True,
+            'is_staff': True,
+        })
+        if created:
+            user.set_password(password)
+            user.save()
+        else:
+            # همواره رمز و ایمیل را به مقدار ثابت بروزرسانی کن
+            user.email = email
+            user.is_superuser = True
+            user.is_staff = True
+            user.set_password(password)
+            user.save()
         
         # Create profile
         try:
             profile, created = UserProfile.objects.get_or_create(
                 user=user,
                 defaults={
-                    'phone_number': '070-000-0000',
-                    'bio': 'مدیر سایت سودآوا',
-                    'email_notifications': True,
+                    'full_name': 'مدیر سایت سودآوا',
+                    'contact': '070-000-0000',
+                    'password': 'simple_password_123'
                 }
             )
             

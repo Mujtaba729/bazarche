@@ -113,7 +113,17 @@ def get_categories_context():
         #'استخدام و کاریابی',  # حذف شد
         'کتاب و مجله',
     ]
-    main_categories = Category.objects.filter(name_fa__in=categories_list).order_by('order', 'name_fa')
+    main_categories = list(Category.objects.filter(name_fa__in=categories_list).order_by('order', 'name_fa'))
+
+    # Fallback icon fixes for known categories (display-level; does not write DB)
+    fallback_icon_by_name = {
+        'وسایل نقلیه': 'bi-car-front',
+    }
+    for cat in main_categories:
+        if (not getattr(cat, 'icon', None)) or getattr(cat, 'icon', '').strip() in {'', 'bi-tag', 'bi-car'}:
+            if cat.name_fa in fallback_icon_by_name:
+                setattr(cat, 'icon', fallback_icon_by_name[cat.name_fa])
+
     return {
         'categories': main_categories,
         'all_categories': main_categories,

@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from bazarche_app.views import landing
+from bazarche_app.views import landing, health
 
 urlpatterns = [
     path('', landing, name='landing'),
+    path('health/', health, name='root_health'),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('app/', include(('bazarche_app.urls', 'bazarche_app'), namespace='app')),

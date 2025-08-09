@@ -199,7 +199,14 @@ ACCOUNT_LOGOUT_ON_GET = True
 # Security settings
 # وقتی پشت پروکسی Railway هستیم باید تنظیمات زیر فعال باشد
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+
+# از ریدایرکت اجباری HTTPS صرف‌نظر می‌کنیم مگر اینکه صراحتاً فعال شود
+# تا healthcheck داخلی Railway که روی HTTP است fail نشود
+SECURE_SSL_REDIRECT = os.getenv('FORCE_SSL_REDIRECT', '0') == '1'
+
+# مسیر سلامت از ریدایرکت معاف باشد در صورت فعال‌سازی
+SECURE_REDIRECT_EXEMPT = [r'^app/health/?$']
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year

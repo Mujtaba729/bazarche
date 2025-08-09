@@ -14,6 +14,10 @@ class RateLimitMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # Exempt healthcheck paths from rate limiting
+        if request.path.startswith('/health') or request.path.startswith('/app/health'):
+            return self.get_response(request)
+
         ip = self.get_client_ip(request)
         if not ip:
             return self.get_response(request)

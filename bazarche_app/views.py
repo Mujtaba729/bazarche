@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.core.files.base import ContentFile
-from PIL import Image
+from PIL import Image, ImageOps
 import io
 import os
 from django import forms
@@ -572,38 +572,54 @@ from django.contrib import messages
 from .forms import ProductForm
 from .models import Product, ProductImage
 
-def compress_image(image_file, max_size=(1920, 1080), quality=80):
+def compress_image(image_file, max_size=(1280, 1280), quality=82):
     """
-    فشرده‌سازی خودکار عکس‌ها
+    فشرده‌سازی سریع و پایدار:
+    - تصحیح Orientation با EXIF
+    - کاهش ابعاد به حداکثر max_size با الگوریتم سریع‌تر
+    - ذخیره به JPEG با progressive و subsampling برای سرعت/حجم مناسب
+    - پرهیز از فشرده‌سازی فایل‌های خیلی کوچک
     """
     try:
-        # اگر فایل کوچک است، فشرده‌سازی را رد کن (برای کاهش زمان پردازش)
+        # اگر فایل خیلی کوچک است، همان را برگردان (صرفه‌جویی در CPU)
         original_size_bytes = getattr(image_file, 'size', None)
-        if original_size_bytes is not None and original_size_bytes <= 300 * 1024:
+        if original_size_bytes is not None and original_size_bytes <= 500 * 1024:
             return image_file
 
-        # باز کردن عکس
+        # باز کردن تصویر
         img = Image.open(image_file)
-        
-        # تبدیل به RGB اگر RGBA باشد
+
+        # تصحیح Orientation مبتنی بر EXIF
+        try:
+            img = ImageOps.exif_transpose(img)
+        except Exception:
+            pass
+
+        # تبدیل به RGB اگر RGBA/LA/P باشد
         if img.mode in ('RGBA', 'LA', 'P'):
             img = img.convert('RGB')
-        
-        # تغییر اندازه اگر بزرگ باشد
+
+        # کاهش ابعاد اگر بزرگ است (الگوریتم سریع‌تر برای سرعت بهتر)
         if img.width > max_size[0] or img.height > max_size[1]:
-            img.thumbnail(max_size, Image.Resampling.BICUBIC)
-        
-        # ذخیره با کیفیت پایین‌تر
+            img.thumbnail(max_size, Image.Resampling.BILINEAR)
+
+        # ذخیره با پارامترهای سریع‌تر (بدون optimize که CPU‌بر است)
         output = io.BytesIO()
-        img.save(output, format='JPEG', quality=quality, optimize=True)
+        img.save(
+            output,
+            format='JPEG',
+            quality=quality,
+            optimize=False,
+            progressive=True,
+            subsampling=2
+        )
         output.seek(0)
-        
-        # ایجاد نام فایل جدید
+
+        # نام فایل خروجی
         filename = os.path.splitext(image_file.name)[0] + '.jpg'
-        
         return ContentFile(output.getvalue(), filename)
-    except Exception as e:
-        # اگر خطا رخ داد، فایل اصلی را برگردان
+    except Exception:
+        # در صورت خطا، فایل اصلی را استفاده کن
         return image_file
 
 def get_product_form_context(form):

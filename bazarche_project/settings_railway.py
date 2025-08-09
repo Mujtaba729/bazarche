@@ -162,6 +162,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Serving media via app (optional, controlled by env)
+SERVE_MEDIA = os.getenv('SERVE_MEDIA', '1') == '1'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cache settings

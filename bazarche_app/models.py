@@ -126,10 +126,16 @@ class Product(models.Model):
     )
 
     def clean(self):
+        # اگر محصول تخفیف‌دار است ولی قیمت تخفیف وارد نشده
         if self.is_discounted and not self.discount_price:
             raise ValidationError(_('برای محصولات تخفیف‌دار، قیمت با تخفیف الزامی است.'))
-        if self.discount_price and self.discount_price >= self.price:
-            raise ValidationError(_('قیمت با تخفیف باید کمتر از قیمت اصلی باشد.'))
+
+        # اگر قیمت تخفیف وارد شده، قیمت اصلی نیز باید وارد شود و قیمت تخفیف کمتر از قیمت اصلی باشد
+        if self.discount_price is not None:
+            if self.price is None:
+                raise ValidationError(_('برای وارد کردن قیمت تخفیف، قیمت اصلی نیز الزامی است.'))
+            if self.discount_price >= self.price:
+                raise ValidationError(_('قیمت با تخفیف باید کمتر از قیمت اصلی باشد.'))
 
     def save(self, *args, **kwargs):
         self.full_clean()

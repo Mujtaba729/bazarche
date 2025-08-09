@@ -11,8 +11,11 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# Use Railway settings if environment variable is set
-settings_module = os.environ.get('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+# Prefer production settings automatically on Railway
+if 'DJANGO_SETTINGS_MODULE' not in os.environ:
+    if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('RAILWAY_STATIC_URL') or os.environ.get('RAILWAY_PROJECT_ID'):
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings_railway')
+    else:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
 
 application = get_wsgi_application()

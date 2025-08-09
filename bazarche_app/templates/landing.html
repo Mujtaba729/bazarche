@@ -146,16 +146,10 @@
         .all-cities-btn {
             display: block;
             text-align: center;
-            color: rgba(255, 255, 255, 0.9);
+            color: #000; /* مشکی برای کنتراست بهتر روی زمینه روشن */
             text-decoration: none;
             margin-top: 1rem;
             font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .all-cities-btn:hover {
-            color: #fff;
-            transform: translateY(-1px);
         }
 
         /* Features Section */
@@ -185,14 +179,8 @@
             border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
             border: 1px solid #f1f3f4;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .feature-icon {
@@ -243,15 +231,7 @@
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .city-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
             text-decoration: none;
             color: inherit;
         }
@@ -300,7 +280,6 @@
             border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
@@ -311,11 +290,6 @@
             color: #667eea;
         }
 
-        .cta-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
-            color: #667eea;
-        }
 
         .cta-btn-secondary {
             background: rgba(255, 255, 255, 0.2);
@@ -323,11 +297,6 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-        .cta-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
-        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -382,27 +351,7 @@
             }
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-content {
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .features-section,
-        .cities-section,
-        .cta-section {
-            animation: fadeInUp 1s ease-out;
-        }
+        /* حذف انیمیشن‌های ورودی برای کاهش سنگینی و جلوگیری از پریشانی بصری */
     </style>
 </head>
 <body>

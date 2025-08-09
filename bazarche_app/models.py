@@ -316,3 +316,20 @@ class JobAdAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description', 'contact')
     list_filter = ('city', 'created_at')
     ordering = ('-created_at',)
+
+
+class AdminAlert(models.Model):
+    """هشدارهای مدیریتی برای فعالیت غیرمعمول کاربران"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_alerts', verbose_name=_('کاربر'))
+    count_last_hour = models.PositiveIntegerField(default=0, verbose_name=_('تعداد 1 ساعت اخیر'))
+    count_last_day = models.PositiveIntegerField(default=0, verbose_name=_('تعداد 24 ساعت اخیر'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('زمان ثبت'))
+    note = models.CharField(max_length=255, blank=True, verbose_name=_('توضیح'))
+
+    class Meta:
+        verbose_name = _('هشدار مدیریتی')
+        verbose_name_plural = _('هشدارهای مدیریتی')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Alert: {self.user.username} - {self.count_last_hour}/1h, {self.count_last_day}/24h"

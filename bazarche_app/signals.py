@@ -2,7 +2,7 @@ from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.conf import settings
 import os
-from .models import Product, ProductImage, UserProfile
+from .models import Product, ProductImage, UserProfile, AdminAlert
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count
@@ -47,6 +47,13 @@ def monitor_high_post_rate(sender, instance, created, **kwargs):
         count_1h = Product.objects.filter(user=user, created_at__gte=one_hour).count()
         count_1d = Product.objects.filter(user=user, created_at__gte=day).count()
         if count_1h >= 15 or count_1d >= 50:
+            # ذخیره هشدار در ادمین
+            AdminAlert.objects.create(
+                user=user,
+                count_last_hour=count_1h,
+                count_last_day=count_1d,
+                note='High posting rate'
+            )
             print(f"[ADMIN ALERT] User '{user.username}' (ID={user.id}) posted {count_1h} items in last 1h and {count_1d} in last 24h.")
     except Exception:
         pass

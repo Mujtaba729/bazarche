@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, SubCategory, AbuseReport, Advertisement, Request
+from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, SubCategory, AbuseReport, Advertisement, Request, AdminAlert
 
 @admin.register(MainCategory)
 class MainCategoryAdmin(admin.ModelAdmin):
@@ -118,3 +118,10 @@ class RequestAdmin(admin.ModelAdmin):
     def short_request(self, obj):
         return obj.request_text[:100] + '...' if len(obj.request_text) > 100 else obj.request_text
     short_request.short_description = 'درخواست'
+
+@admin.register(AdminAlert)
+class AdminAlertAdmin(admin.ModelAdmin):
+    list_display = ('user', 'count_last_hour', 'count_last_day', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('user__username',)
+    ordering = ('-created_at',)

@@ -30,6 +30,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://bazarche-production.up.railway.app',
     'https://bazarche-production.up.railway.app',
     'https://bazarche-production.up.railway.app/',
+    # Custom domain (soodava.com)
+    'https://soodava.com',
+    'https://www.soodava.com',
 ]
 
 # Additional CSRF settings

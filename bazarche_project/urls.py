@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.views.static import serve as django_serve
+from django.views.generic import RedirectView
+from django.templatetags.static import static
 import os
 from django.urls import path, include
 from django.conf import settings
@@ -25,6 +27,16 @@ from bazarche_app.views import landing, health
 urlpatterns = [
     path('', landing, name='landing'),
     path('health/', health, name='root_health'),
+    # استانداردهای عمومی در روت دامنه
+    path('robots.txt', lambda request: __import__('bazarche_app.views', fromlist=['robots']).views.robots(request), name='robots_root'),
+    path('sitemap.xml', lambda request: __import__('bazarche_app.views', fromlist=['sitemap']).views.sitemap(request), name='sitemap_root'),
+    path('favicon.ico', RedirectView.as_view(url=static('favicon.ico'), permanent=True)),
+    path('apple-touch-icon.png', RedirectView.as_view(url=static('apple-touch-icon.png'), permanent=True)),
+    # ریدایرکت مسیرهای رایج بدون /app
+    path('about', RedirectView.as_view(url='/app/about/', permanent=True)),
+    path('contact', RedirectView.as_view(url='/app/contact/', permanent=True)),
+    path('terms', RedirectView.as_view(url='/app/terms/', permanent=True)),
+    path('privacy', RedirectView.as_view(url='/app/privacy/', permanent=True)),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('app/', include(('bazarche_app.urls', 'bazarche_app'), namespace='app')),

@@ -160,9 +160,19 @@ def home(request):
     tag_id = request.GET.get('tag')
     page = request.GET.get('page', 1)
 
-    # نمایش همه محصولات بدون فیلتر دسته‌بندی در صفحه خانه
-    products = Product.objects.filter(is_approved=True).order_by('-created_at')
-    products_data = list(products)
+    # نمایش محصولات با امکان فیلتر بر اساس عبارت جستجو
+    products_qs = Product.objects.filter(is_approved=True)
+
+    # فیلتر جستجو در صفحه خانه اگر q وجود داشته باشد
+    if search_query:
+        products_qs = products_qs.filter(
+            Q(name_fa__icontains=search_query) |
+            Q(description_fa__icontains=search_query) |
+            Q(tags__name_fa__icontains=search_query)
+        ).distinct()
+
+    products_qs = products_qs.order_by('-created_at')
+    products_data = list(products_qs)
 
     # Get featured, suggested, and discounted products for priority
     featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)

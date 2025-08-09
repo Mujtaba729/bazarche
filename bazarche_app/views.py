@@ -572,11 +572,16 @@ from django.contrib import messages
 from .forms import ProductForm
 from .models import Product, ProductImage
 
-def compress_image(image_file, max_size=(1920, 1080), quality=85):
+def compress_image(image_file, max_size=(1920, 1080), quality=80):
     """
     فشرده‌سازی خودکار عکس‌ها
     """
     try:
+        # اگر فایل کوچک است، فشرده‌سازی را رد کن (برای کاهش زمان پردازش)
+        original_size_bytes = getattr(image_file, 'size', None)
+        if original_size_bytes is not None and original_size_bytes <= 300 * 1024:
+            return image_file
+
         # باز کردن عکس
         img = Image.open(image_file)
         
@@ -586,7 +591,7 @@ def compress_image(image_file, max_size=(1920, 1080), quality=85):
         
         # تغییر اندازه اگر بزرگ باشد
         if img.width > max_size[0] or img.height > max_size[1]:
-            img.thumbnail(max_size, Image.Resampling.LANCZOS)
+            img.thumbnail(max_size, Image.Resampling.BICUBIC)
         
         # ذخیره با کیفیت پایین‌تر
         output = io.BytesIO()

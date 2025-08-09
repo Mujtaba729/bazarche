@@ -1071,6 +1071,10 @@ def faq(request):
     context.update(get_categories_context())
     return render(request, 'faq.html', context)
 
+def health(request):
+    """ساده‌ترین هلت‌چک برای Railway"""
+    return HttpResponse("ok")
+
 def sitemap(request):
     """تولید فایل sitemap.xml"""
     # Get all approved products

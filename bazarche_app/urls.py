@@ -58,4 +58,5 @@ urlpatterns = [
     path('requests/', views.requests_list, name='requests_list'),
     path('requests/new/', views.request_create, name='request_create'),
     path('dashboard/delete-request/<int:pk>/', views.delete_user_request, name='delete_user_request'),
+    path('health/', views.health, name='health'),
 ]

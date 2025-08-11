@@ -550,8 +550,8 @@
         
         <!-- Search -->
         <div class="search-section">
-            <form class="search-form" method="get" action="{% url 'app:home' %}">
-                <input type="text" class="search-input" name="q" placeholder="{% trans 'جستجو' %}..." value="{{ request.GET.q|default:'' }}">
+            <form class="search-form" method="get" action="{% url 'app:home' %}#products">
+                <input type="text" class="search-input" name="q" placeholder="{% trans 'جستجو' %}..." value="{{ search_query|default:request.GET.q|default:'' }}">
                 <button type="submit" class="search-btn">
                     <i class="bi bi-search"></i>
                 </button>

@@ -246,6 +246,7 @@ def home(request):
             ('name_fa', 'نام (الف-ی)'),
             ('-name_fa', 'نام (ی-الف)'),
         ],
+        'search_query': search_query,
         **categories_context
     }
     

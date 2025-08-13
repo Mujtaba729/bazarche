@@ -112,6 +112,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'bazarche_app.context_processors.main_categories',
+                'bazarche_app.context_processors.search_query',
             ],
         },
     },

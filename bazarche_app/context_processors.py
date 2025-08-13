@@ -9,3 +9,7 @@ def site_stats(request):
 
 def main_categories(request):
     return {"main_categories": MainCategory.objects.all().order_by('order', 'name_fa')}
+
+def search_query(request):
+    """Always provide search_query to all templates"""
+    return {"search_query": request.GET.get('q', '')}

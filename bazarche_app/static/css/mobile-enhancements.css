@@ -14,6 +14,31 @@
     touch-action: manipulation !important;
 }
 
+/* Ensure buttons are fully clickable */
+button, .button, .search-btn, .user-btn {
+    pointer-events: auto !important;
+    z-index: 10 !important;
+    position: relative !important;
+    touch-action: manipulation !important;
+}
+
+/* Increase clickable area for buttons */
+button, .button {
+    padding: 1rem !important;
+    margin: 0.5rem 0 !important;
+}
+
+/* Fix z-index issues for overlapping elements */
+.product-card, .navbar, .mobile-menu-content {
+    z-index: 1 !important;
+}
+
+/* Remove unnecessary hover effects on mobile */
+button:hover, .button:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 /* Ultra-compact mobile design */
 @media (max-width: 480px) {
     /* Reduce main wrapper margin */
@@ -383,4 +408,4 @@
     .actions-grid {
         grid-template-columns: 1fr !important;
     }
-} 
+}

@@ -22,11 +22,6 @@ button, .button, .search-btn, .user-btn, a.btn {
     touch-action: manipulation;
 }
 
-/* Increase clickable area for specific buttons if needed, but avoid a generic rule */
-.btn-primary, .btn-secondary, .btn-danger, .btn-success {
-    margin: 0.5rem 0 !important;
-}
-
 /* Fix z-index issues for overlapping elements */
 .product-card, .navbar, .mobile-menu-content {
     z-index: 1 !important;
@@ -374,7 +369,7 @@ button:hover, .button:hover {
     -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* Compact search */
+/* --- FINAL SEARCH BAR FIX (Button on Left) --- */
 .search-form {
     position: relative;
     display: flex;
@@ -383,14 +378,14 @@ button:hover, .button:hover {
 
 .search-input {
     flex-grow: 1;
-    padding-right: 45px;
+    padding-left: 45px; /* Space for the button on the left */
     height: 40px;
     font-size: 0.85rem;
 }
 
 .search-btn {
     position: absolute;
-    right: 0;
+    left: 0; /* Position button on the left */
     top: 0;
     height: 100%;
     width: 45px;
@@ -405,6 +400,7 @@ button:hover, .button:hover {
     font-size: 1rem;
     color: #6c757d;
 }
+/* --- END OF SEARCH BAR FIX --- */
 
 /* Better mobile menu */
 .mobile-menu-toggle {

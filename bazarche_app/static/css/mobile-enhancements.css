@@ -1,12 +1,16 @@
 /* Mobile Enhancements for Bazarche App */
 
 /* Improve touch responsiveness */
+/*
 * {
     touch-action: pan-y !important;
 }
+*/
 
 .product-card {
+/*
     touch-action: pan-y !important;
+*/
 }
 
 .product-card .contact-btn,
@@ -277,6 +281,10 @@
 .mobile-nav-item {
     padding: 0.6rem 0.75rem !important;
     font-size: 0.9rem !important;
+}
+
+.mobile-nav-item.hide-mobile-logout-btn {
+    display: none !important;
 }
 
 /* Better button hierarchy */

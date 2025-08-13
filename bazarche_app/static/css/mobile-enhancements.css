@@ -1,7 +1,7 @@
 /* Mobile Enhancements for Bazarche App */
 
 /* Improve touch responsiveness */
-* {
+body, .main-wrapper, .content-container {
     touch-action: pan-y !important;
 }
 
@@ -15,7 +15,7 @@
 }
 
 /* Ensure buttons are fully clickable */
-button, .button, .search-btn, .user-btn {
+button, .button, .search-btn, .user-btn, a.btn {
     pointer-events: auto !important;
     z-index: 10 !important;
     position: relative !important;
@@ -376,12 +376,28 @@ button:hover, .button:hover {
 }
 
 /* Compact search */
-.search-input {
-    font-size: 0.8rem !important;
+.search-bar {
+    position: relative;
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Vertically center items */
 }
 
-.search-btn {
-    font-size: 0.75rem !important;
+.search-input {
+    font-size: 0.8rem !important;
+    padding-right: 40px !important; /* Add space for the button */
+}
+
+.search-bar .search-btn {
+    position: absolute;
+    right: 5px; /* Adjust position */
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    height: 100%; /* Make button height match the bar */
 }
 
 /* Better mobile menu */

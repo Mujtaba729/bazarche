@@ -1,16 +1,12 @@
 /* Mobile Enhancements for Bazarche App */
 
 /* Improve touch responsiveness */
-/*
 * {
     touch-action: pan-y !important;
 }
-*/
 
 .product-card {
-/*
     touch-action: pan-y !important;
-*/
 }
 
 .product-card .contact-btn,

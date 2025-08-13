@@ -170,6 +170,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // هیچ تاخیری یا انیمیشن اضافه ندارد
 
     document.querySelectorAll('form').forEach(form => {
+        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitBtn) {
+            // These lines were causing buttons to be unresponsive. Removed to allow default click behavior.
+            // submitBtn.onclick = null;
+            // submitBtn.ontouchstart = null;
+            // submitBtn.ontouchend = null;
+        }
         form.addEventListener('submit', function(e) {
             let valid = true;
             form.querySelectorAll('[required]').forEach(field => {

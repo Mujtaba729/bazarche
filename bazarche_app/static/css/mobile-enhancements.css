@@ -22,9 +22,9 @@ button, .button, .search-btn, .user-btn {
     touch-action: manipulation !important;
 }
 
-/* Increase clickable area for buttons */
-button, .button {
-    padding: 1rem !important;
+/* Increase clickable area for specific buttons if needed, but avoid a generic rule */
+.btn-primary, .btn-secondary, .btn-danger, .btn-success {
+    padding: 0.75rem 1.25rem !important;
     margin: 0.5rem 0 !important;
 }
 
@@ -408,4 +408,21 @@ button:hover, .button:hover {
     .actions-grid {
         grid-template-columns: 1fr !important;
     }
+}
+
+/* Adjust search button to be inside the search bar */
+.search-bar {
+    position: relative;
+}
+
+.search-bar .search-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
 }

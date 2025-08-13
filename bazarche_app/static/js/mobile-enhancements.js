@@ -20,15 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add smooth transitions
     addSmoothTransitions();
 
-    // پاکسازی eventهای اضافی از دکمه submit فرم‌های کلیدی
-    document.querySelectorAll('form').forEach(form => {
-        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-        if (submitBtn) {
-            submitBtn.onclick = null;
-            submitBtn.ontouchstart = null;
-            submitBtn.ontouchend = null;
-        }
-    });
+    // این کد باعث غیرفعال شدن دکمه‌های فرم می‌شد. برای رفع مشکل کامنت شد
+    // document.querySelectorAll('form').forEach(form => {
+    //     const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+    //     if (submitBtn) {
+    //         submitBtn.onclick = null;
+    //         submitBtn.ontouchstart = null;
+    //         submitBtn.ontouchend = null;
+    //     }
+    // });
 });
 
 // Optimize touch interactions for mobile
@@ -283,4 +283,4 @@ window.addEventListener('error', function(e) {
 // Add unhandled promise rejection handling
 window.addEventListener('unhandledrejection', function(e) {
     console.error('Unhandled promise rejection:', e.reason);
-}); 
+});

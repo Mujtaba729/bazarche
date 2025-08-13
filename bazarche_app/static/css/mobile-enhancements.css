@@ -6,25 +6,24 @@ body, .main-wrapper, .content-container {
 }
 
 .product-card {
-    touch-action: pan-y !important;
+    touch-action: pan-y;
 }
 
 .product-card .contact-btn,
 .product-card .delete-button {
-    touch-action: manipulation !important;
+    touch-action: manipulation;
 }
 
 /* Ensure buttons are fully clickable */
 button, .button, .search-btn, .user-btn, a.btn {
-    pointer-events: auto !important;
-    z-index: 10 !important;
-    position: relative !important;
-    touch-action: manipulation !important;
+    pointer-events: auto;
+    z-index: 10;
+    position: relative;
+    touch-action: manipulation;
 }
 
 /* Increase clickable area for specific buttons if needed, but avoid a generic rule */
 .btn-primary, .btn-secondary, .btn-danger, .btn-success {
-    padding: 0.75rem 1.25rem !important;
     margin: 0.5rem 0 !important;
 }
 
@@ -376,28 +375,35 @@ button:hover, .button:hover {
 }
 
 /* Compact search */
-.search-bar {
+.search-form {
     position: relative;
-    display: flex; /* Use flexbox for alignment */
-    align-items: center; /* Vertically center items */
+    display: flex;
+    align-items: center;
 }
 
 .search-input {
-    font-size: 0.8rem !important;
-    padding-right: 40px !important; /* Add space for the button */
+    flex-grow: 1;
+    padding-right: 45px;
+    height: 40px;
+    font-size: 0.85rem;
 }
 
-.search-bar .search-btn {
+.search-btn {
     position: absolute;
-    right: 5px; /* Adjust position */
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0.5rem;
-    background: none;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 45px;
+    background: transparent;
     border: none;
     cursor: pointer;
-    z-index: 10;
-    height: 100%; /* Make button height match the bar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #6c757d;
 }
 
 /* Better mobile menu */
@@ -424,21 +430,4 @@ button:hover, .button:hover {
     .actions-grid {
         grid-template-columns: 1fr !important;
     }
-}
-
-/* Adjust search button to be inside the search bar */
-.search-bar {
-    position: relative;
-}
-
-.search-bar .search-btn {
-    position: absolute;
-    right: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 0.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10;
 }

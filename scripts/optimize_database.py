@@ -13,7 +13,7 @@ def get_db_connection():
     try:
         # اطلاعات واقعی دیتابیس شما
         conn = psycopg2.connect(
-            host="144.91.73.42",
+            host="localhost",
             database="bazarche_db",
             user="bazarche_user",
             password="Mujtaba$729"
@@ -225,7 +225,7 @@ def setup_connection_pooling():
     # PgBouncer configuration
     config = """
 [databases]
-* = host=localhost port=5432
+bazarche_db = host=localhost port=5432 dbname=bazarche_db user=bazarche_user password=Mujtaba$729
 
 [pgbouncer]
 listen_addr = 127.0.0.1

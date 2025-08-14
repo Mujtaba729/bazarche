@@ -141,12 +141,25 @@
         position: relative;
       }
       
+      .ios-prompt-icon {
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      
       .ios-prompt-text h6 {
         color: #276ef1;
         margin-bottom: 10px;
         text-align: center;
         font-size: 16px;
         font-weight: bold;
+      }
+      
+      .ios-prompt-text p {
+        margin-bottom: 15px;
+        color: #666;
+        text-align: center;
+        font-size: 14px;
       }
       
       .ios-prompt-text ol {
@@ -211,8 +224,17 @@
           padding: 12px;
         }
         
+        .ios-prompt-icon {
+          font-size: 28px;
+          margin-bottom: 12px;
+        }
+        
         .ios-prompt-text h6 {
           font-size: 15px;
+        }
+        
+        .ios-prompt-text p {
+          font-size: 13px;
         }
         
         .ios-prompt-text ol {
@@ -247,6 +269,19 @@
         font-size: 16px;
         min-width: 40px;
         text-align: center;
+      }
+      
+      .share-button-real {
+        display: inline-block;
+        background: #007AFF;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 4px;
+        box-shadow: 0 2px 4px rgba(0, 122, 255, 0.3);
+        animation: pulse 2s infinite;
       }
       
       .share-icon {
@@ -348,10 +383,11 @@
                 prompt.className = 'ios-install-prompt';
                 prompt.innerHTML = `
                     <div class="ios-prompt-content">
+                        <div class="ios-prompt-icon">📱</div>
                         <div class="ios-prompt-text">
                             <h6>برای نصب اپلیکیشن</h6>
+                            <p>روی دکمه <span class="share-button-real">⬆️</span> کلیک کنید</p>
                             <ol>
-                                <li>روی دکمه <div class="share-button-demo">⬆️</div> کلیک کنید</li>
                                 <li>گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</li>
                                 <li>روی <strong>Add</strong> کلیک کنید</li>
                             </ol>

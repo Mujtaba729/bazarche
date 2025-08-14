@@ -90,7 +90,7 @@ http {
     site_config = """
 server {
     listen 80;
-    server_name your-domain.com;  # دامنه خودت رو بذار
+    server_name soodava.com www.soodava.com 144.91.73.42;
     
     # Security Headers
     add_header X-Frame-Options DENY;
@@ -113,7 +113,7 @@ server {
         gzip_static on;
         
         # Security
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
             expires 1y;
             add_header Cache-Control "public, immutable";
         }
@@ -153,12 +153,12 @@ server {
     # Health Check
     location /health/ {
         access_log off;
-        return 200 "healthy\n";
+        return 200 "healthy\\n";
         add_header Content-Type text/plain;
     }
     
     # Deny access to hidden files
-    location ~ /\. {
+    location ~ /\\. {
         deny all;
         access_log off;
         log_not_found off;

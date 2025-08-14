@@ -28,15 +28,21 @@ SECRET_KEY = 'django-insecure-jnbmyh*#%ux79z!^%n1$dhw^f3^k$-rzt&3=q*w@lq34)q62g+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.101', '*']
+ALLOWED_HOSTS = [
+    'soodava.com',
+    'www.soodava.com', 
+    '144.91.73.42',
+    'localhost',
+    '127.0.0.1',
+    '192.168.1.101'
+]
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.railway.app',
-    'https://*.up.railway.app',
-    'https://bazarche-production.up.railway.app',
-    'https://bazarche-production.up.railway.app',
-    'https://bazarche-production.up.railway.app/',
+    'https://soodava.com',
+    'https://www.soodava.com',
+    'http://144.91.73.42',
+    'http://localhost:8000'
 ]
 
 # Additional CSRF settings
@@ -130,7 +136,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bazarche_db',
         'USER': 'bazarche_user',
-        'PASSWORD': 'your_password',
+        'PASSWORD': 'Mujtaba$729',
         'HOST': 'localhost',
         'PORT': '5432',
         'OPTIONS': {

@@ -11,12 +11,12 @@ import os
 def get_db_connection():
     """Get database connection"""
     try:
-        # این مقادیر رو با اطلاعات دیتابیس خودت جایگزین کن
+        # اطلاعات واقعی دیتابیس شما
         conn = psycopg2.connect(
             host="localhost",
             database="bazarche_db",
             user="bazarche_user",
-            password="your_password"
+            password="Mujtaba$729"
         )
         return conn
     except Exception as e:

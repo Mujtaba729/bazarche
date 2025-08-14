@@ -15,7 +15,7 @@ body, .main-wrapper, .content-container {
 }
 
 /* Ensure buttons are fully clickable */
-button, .button, .search-btn, .user-btn, a.btn {
+button, .button, .search-btn, .user-btn, a.btn, .register-btn, .login-btn, .abuse-btn, .product-register-btn {
     position: relative !important;
     z-index: 999 !important;
     pointer-events: auto !important;
@@ -369,38 +369,57 @@ button:hover, .button:hover {
     -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* --- FINAL SEARCH BAR FIX (Button on Left) --- */
+/* --- SEARCH BAR FIX: دکمه سرچ سمت چپ و داخل نوار --- */
 .search-form {
     position: relative;
     display: flex;
     align-items: center;
 }
-
 .search-input {
     flex-grow: 1;
-    padding-left: 45px; /* Space for the button on the left */
+    padding-left: 0.8rem !important;
+    padding-right: 2.2rem !important; /* فضای کافی برای دکمه سمت چپ */
     height: 40px;
     font-size: 0.85rem;
 }
-
 .search-btn {
     position: absolute;
-    left: 0; /* Position button on the left */
-    top: 0;
-    height: 100%;
-    width: 45px;
-    background: transparent;
+    left: 0.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 32px;
+    width: 32px;
+    background: #667eea;
     border: none;
-    cursor: pointer;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
+    pointer-events: auto;
     padding: 0;
     margin: 0;
-    font-size: 1rem;
-    color: #6c757d;
 }
-/* --- END OF SEARCH BAR FIX --- */
+
+/* --- کلیک‌پذیری کامل دکمه‌ها بدون تغییر دیزاین --- */
+button::before, button::after,
+.button::before, .button::after,
+.search-btn::before, .search-btn::after,
+.user-btn::before, .user-btn::after,
+a.btn::before, a.btn::after {
+    display: none !important;
+    content: none !important;
+    pointer-events: none !important;
+}
+
+/* اطمینان از اینکه هیچ لایه‌ای روی دکمه‌ها نیست */
+.product-card::before,
+.category-card::before,
+.action-card::before {
+    pointer-events: none !important;
+}
 
 /* Better mobile menu */
 .mobile-menu-toggle {

@@ -159,6 +159,45 @@ document.addEventListener('DOMContentLoaded', function() {
         // Trigger change event to update preview
         imageInput.dispatchEvent(new Event('change'));
     };
+
+    // نمایش پیشرفت آپلود
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitText = document.getElementById('submit-text');
+    const submitLoading = document.getElementById('submit-loading');
+    const uploadProgress = document.getElementById('upload-progress');
+    const progressBar = uploadProgress.querySelector('.progress-bar');
+    
+    form.addEventListener('submit', function() {
+        // نمایش loading state
+        submitText.style.display = 'none';
+        submitLoading.style.display = 'inline';
+        submitBtn.disabled = true;
+        
+        // نمایش progress bar
+        uploadProgress.style.display = 'block';
+        
+        // شبیه‌سازی پیشرفت واقعی‌تر
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 8 + 2; // 2-10% در هر مرحله
+            if (progress > 85) progress = 85;
+            
+            progressBar.style.width = progress + '%';
+            progressBar.setAttribute('aria-valuenow', progress);
+            progressBar.textContent = Math.round(progress) + '%';
+        }, 300);
+        
+        // توقف شبیه‌سازی بعد از 8 ثانیه
+        setTimeout(() => {
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            progressBar.textContent = '100%';
+            progressBar.classList.remove('bg-info');
+            progressBar.classList.add('bg-success');
+        }, 8000);
+    });
 });
 </script>
 {% endblock %}
@@ -266,7 +305,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             {% endif %}
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">{% trans "ثبت محصول" %}</button>
+                        <button type="submit" class="btn btn-primary w-100" id="submit-btn">
+                            <span id="submit-text">{% trans "ثبت محصول" %}</span>
+                            <span id="submit-loading" style="display: none;">
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                در حال پردازش...
+                            </span>
+                        </button>
+                        
+                        <!-- Progress Bar -->
+                        <div id="upload-progress" class="mt-3" style="display: none;">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                                     role="progressbar" style="width: 0%" 
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    0%
+                                </div>
+                            </div>
+                            <small class="text-info mt-2 d-block">
+                                <i class="bi bi-info-circle me-1"></i>
+                                در حال آپلود و پردازش عکس‌ها... لطفاً صفحه را ترک نکنید
+                            </small>
+                        </div>
                     </form>
                 </div>
             </div>

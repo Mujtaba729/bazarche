@@ -583,45 +583,39 @@ from django.contrib import messages
 from .forms import ProductForm
 from .models import Product, ProductImage
 
-def compress_image(image_file, max_size=(1280, 1280), quality=82):
+def compress_image(image_file, max_size=(800, 800), quality=60):
     """
-    فشرده‌سازی سریع و پایدار:
-    - تصحیح Orientation با EXIF
-    - کاهش ابعاد به حداکثر max_size با الگوریتم سریع‌تر
-    - ذخیره به JPEG با progressive و subsampling برای سرعت/حجم مناسب
-    - پرهیز از فشرده‌سازی فایل‌های خیلی کوچک
+    فشرده‌سازی فوق‌العاده سریع برای سرور کونتابو:
+    - کاهش کیفیت به 60 برای سرعت بیشتر
+    - کاهش اندازه عکس به 800x800 برای سرعت بیشتر
+    - پرهیز از پردازش فایل‌های کوچک
+    - استفاده از الگوریتم‌های سریع
     """
     try:
-        # اگر فایل خیلی کوچک است، همان را برگردان (صرفه‌جویی در CPU)
+        # اگر فایل خیلی کوچک است، همان را برگردان
         original_size_bytes = getattr(image_file, 'size', None)
-        if original_size_bytes is not None and original_size_bytes <= 500 * 1024:
+        if original_size_bytes is not None and original_size_bytes <= 200 * 1024:  # 200KB
             return image_file
 
         # باز کردن تصویر
         img = Image.open(image_file)
 
-        # تصحیح Orientation مبتنی بر EXIF
-        try:
-            img = ImageOps.exif_transpose(img)
-        except Exception:
-            pass
-
-        # تبدیل به RGB اگر RGBA/LA/P باشد
+        # تبدیل به RGB اگر RGBA/LA/P باشد (سریع‌تر)
         if img.mode in ('RGBA', 'LA', 'P'):
             img = img.convert('RGB')
 
-        # کاهش ابعاد اگر بزرگ است (الگوریتم سریع‌تر برای سرعت بهتر)
+        # کاهش ابعاد اگر بزرگ است (الگوریتم سریع‌ترین)
         if img.width > max_size[0] or img.height > max_size[1]:
-            img.thumbnail(max_size, Image.Resampling.BILINEAR)
+            img.thumbnail(max_size, Image.Resampling.NEAREST)
 
-        # ذخیره با پارامترهای سریع‌تر (بدون optimize که CPU‌بر است)
+        # ذخیره با پارامترهای سریع‌ترین
         output = io.BytesIO()
         img.save(
             output,
             format='JPEG',
             quality=quality,
             optimize=False,
-            progressive=True,
+            progressive=False,
             subsampling=2
         )
         output.seek(0)
@@ -720,11 +714,16 @@ def register_product(request):
                     product.delete()
                     return render(request, 'register_product.html', get_product_form_context(form))
                 
-                # ذخیره عکس‌ها با فشرده‌سازی خودکار
+                # ذخیره عکس‌ها با فشرده‌سازی فوق‌العاده سریع
                 try:
+                    # نمایش پیام شروع پردازش
+                    messages.info(request, f"در حال پردازش {len(images)} عکس... لطفاً صبر کنید.")
+                    
+                    # پردازش سریع عکس‌ها
                     for img in images:
                         compressed_img = compress_image(img)
                         ProductImage.objects.create(product=product, image=compressed_img)
+                    
                     messages.success(request, "محصول شما با موفقیت ثبت شد و در سایت نمایش داده خواهد شد.")
                     return redirect('app:home')
                 except Exception as e:

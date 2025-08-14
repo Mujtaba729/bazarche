@@ -218,3 +218,17 @@ ACCOUNT_LOGIN_METHODS = {'username', 'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_LOGOUT_ON_GET = True
+
+# ---------- File Upload Settings (تنظیمات بهینه آپلود فایل) ----------
+# افزایش محدودیت اندازه فایل برای آپلود
+FILE_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 15MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15 * 1024 * 1024  # 15MB
+
+# تنظیمات بهینه برای آپلود فایل
+FILE_UPLOAD_TEMP_DIR = None
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+
+# تنظیمات بهینه برای پردازش عکس
+IMAGE_COMPRESSION_QUALITY = 60  # کیفیت پایین برای سرعت بیشتر
+IMAGE_MAX_SIZE = (800, 800)  # اندازه کوچک برای سرعت بیشتر

@@ -377,8 +377,8 @@ button:hover, .button:hover {
 }
 .search-input {
     flex-grow: 1;
-    padding-left: 0.8rem !important;
-    padding-right: 2.2rem !important; /* فضای کافی برای دکمه سمت چپ */
+    padding-left: 2.2rem !important; /* فضای کافی برای دکمه سمت چپ */
+    padding-right: 0.8rem !important;
     height: 40px;
     font-size: 0.85rem;
 }

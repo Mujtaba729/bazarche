@@ -227,8 +227,8 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Prevent double-tap zoom
             element.addEventListener('touchend', function(e) {
-                // Don't prevent default for links and buttons
-                if (!this.href && !this.onclick) {
+                // برای دکمه‌ها و لینک‌ها هیچ پیش‌فرضی را لغو نکن
+                if (this.tagName !== 'A' && this.tagName !== 'BUTTON' && !this.closest('button') && !this.closest('a')) {
                     e.preventDefault();
                 }
             }, { passive: false });

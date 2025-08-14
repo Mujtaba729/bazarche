@@ -218,6 +218,57 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         margin-bottom: 0.5rem;
       }
+      .ios-prompt-tip small {
+        color: #666;
+        line-height: 1.4;
+      }
+      
+      .ios-prompt-image {
+        margin-top: 20px;
+        text-align: center;
+      }
+      
+      .share-button-demo {
+        display: inline-block;
+        background: #276ef1;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 25px;
+        box-shadow: 0 4px 12px rgba(39, 110, 241, 0.3);
+        animation: pulse 2s infinite;
+      }
+      
+      .share-icon {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+      
+      .share-text {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          box-shadow: 0 4px 12px rgba(39, 110, 241, 0.3);
+        }
+        50% {
+          transform: scale(1.05);
+          box-shadow: 0 6px 20px rgba(39, 110, 241, 0.4);
+        }
+        100% {
+          transform: scale(1);
+          box-shadow: 0 4px 12px rgba(39, 110, 241, 0.3);
+        }
+      }
+      .ios-prompt-tip {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border-left: 3px solid #276ef1;
+      }
     </style>
 </head>
 <body class="{% if request.resolver_match.url_name == 'landing' %}landing-page{% endif %}">
@@ -288,25 +339,34 @@
                     <div class="ios-prompt-content">
                         <div class="ios-prompt-icon">📱</div>
                         <div class="ios-prompt-text">
-                            <h5>نصب اپلیکیشن</h5>
+                            <h5>نصب اپلیکیشن در صفحه اصلی</h5>
                             <p>برای نصب اپلیکیشن:</p>
                             <ol>
-                                <li>روی دکمه <strong>Share</strong> کلیک کنید</li>
+                                <li><strong>روی دکمه Share</strong> (مربع با فلش) در پایین مرورگر کلیک کنید</li>
                                 <li>گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</li>
                                 <li>روی <strong>Add</strong> کلیک کنید</li>
                             </ol>
+                            <div class="ios-prompt-tip">
+                                <small>💡 <strong>نکته:</strong> دکمه Share معمولاً در پایین وسط مرورگر قرار دارد</small>
+                            </div>
+                            <div class="ios-prompt-image">
+                                <div class="share-button-demo">
+                                    <div class="share-icon">⬆️</div>
+                                    <div class="share-text">دکمه Share</div>
+                                </div>
+                            </div>
                         </div>
                         <button class="ios-prompt-close" onclick="this.parentElement.parentElement.remove()">×</button>
                     </div>
                 `;
                 document.body.appendChild(prompt);
                 
-                // حذف خودکار بعد از 10 ثانیه
+                // حذف خودکار بعد از 20 ثانیه
                 setTimeout(() => {
                     if (prompt.parentElement) {
                         prompt.remove();
                     }
-                }, 10000);
+                }, 20000);
             }
         }
         

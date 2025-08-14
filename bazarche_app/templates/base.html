@@ -275,16 +275,19 @@
         display: inline-block;
         background: #007AFF;
         color: white;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
+        padding: 6px 8px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: normal;
         margin: 0 4px;
-        box-shadow: 0 2px 6px rgba(0, 122, 255, 0.3);
+        box-shadow: 0 1px 3px rgba(0, 122, 255, 0.3);
         animation: pulse 2s infinite;
-        min-width: 50px;
+        min-width: 32px;
+        height: 32px;
         text-align: center;
-        border: 1px solid #0056CC;
+        line-height: 20px;
+        border: none;
+        vertical-align: middle;
       }
       
       .share-icon {
@@ -389,10 +392,10 @@
                         <div class="ios-prompt-icon">📱</div>
                         <div class="ios-prompt-text">
                             <h6>برای نصب اپلیکیشن</h6>
-                            <p>روی دکمه <span class="share-button-real">⬆️</span> کلیک کنید</p>
+                            <p>روی دکمه <span class="share-button-real">⬆️</span> در پایین مرورگر کلیک کنید</p>
                             <ol>
-                                <li>روی دکمه <strong>Add to Home Screen</strong> کلیک کنید</li>
-                                <li>دکمه <strong>Add</strong> را انتخاب کنید</li>
+                                <li>گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</li>
+                                <li>روی دکمه <strong>Add</strong> کلیک کنید</li>
                             </ol>
                         </div>
                         <button class="ios-prompt-close" onclick="this.parentElement.parentElement.remove()">×</button>

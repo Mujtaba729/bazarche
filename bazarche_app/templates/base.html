@@ -10,8 +10,19 @@
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#276ef1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SoodAva">
+    <meta name="msapplication-TileColor" content="#276ef1">
+    <meta name="msapplication-config" content="/static/browserconfig.xml">
+    
+    <!-- iOS Specific Meta Tags -->
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SoodAva">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="SoodAva">
+    <meta name="msapplication-TileImage" content="{% static 'web-app-manifest-192x192.png' %}">
     <meta name="msapplication-TileColor" content="#276ef1">
     <meta name="msapplication-config" content="/static/browserconfig.xml">
     
@@ -25,6 +36,18 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'apple-touch-icon.png' %}">
     <link rel="apple-touch-icon" sizes="192x192" href="{% static 'web-app-manifest-192x192.png' %}">
     <link rel="apple-touch-icon" sizes="512x512" href="{% static 'web-app-manifest-512x512.png' %}">
+    
+    <!-- iOS Splash Screen -->
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1290x2796.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1179x2556.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1284x2778.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1170x2532.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1125x2436.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'apple-splash-828x1792.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="{% static 'apple-splash-1125x2436.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'apple-splash-828x1792.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'apple-splash-750x1334.png' %}">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="{% static 'apple-splash-640x1136.png' %}">
     <!-- حذف تگ‌های قدیمی لوگو -->
     <!-- PWA Icons -->
     <!-- <link rel="icon" type="image/png" href="{% static 'logo-1.png' %}"> -->
@@ -97,6 +120,98 @@
         padding: 0.5rem 1rem;
       }
       
+      /* iOS Install Prompt */
+      .ios-install-prompt {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        border: 1px solid #e0e0e0;
+        animation: slideUp 0.3s ease-out;
+      }
+      
+      .ios-prompt-content {
+        padding: 20px;
+        position: relative;
+      }
+      
+      .ios-prompt-icon {
+        font-size: 32px;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      
+      .ios-prompt-text h5 {
+        color: #276ef1;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      
+      .ios-prompt-text p {
+        margin-bottom: 15px;
+        color: #666;
+        text-align: center;
+      }
+      
+      .ios-prompt-text ol {
+        margin: 0;
+        padding-right: 20px;
+        color: #333;
+      }
+      
+      .ios-prompt-text li {
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+      
+      .ios-prompt-close {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .ios-prompt-close:hover {
+        color: #666;
+      }
+      
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .ios-install-prompt {
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+        }
+        
+        .ios-prompt-content {
+          padding: 15px;
+        }
+      }
+      
       .alert {
         border-radius: 12px;
         border: none;
@@ -143,116 +258,62 @@
     
     <!-- PWA Service Worker -->
     <script>
-        // ثبت Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('{% static "service-worker.js" %}')
+                navigator.serviceWorker.register('/static/service-worker.js')
                     .then(function(registration) {
-                        console.log('Service Worker با موفقیت ثبت شد:', registration.scope);
+                        console.log('SW registered: ', registration);
                     })
-                    .catch(function(error) {
-                        console.log('خطا در ثبت Service Worker:', error);
+                    .catch(function(registrationError) {
+                        console.log('SW registration failed: ', registrationError);
                     });
             });
         }
         
-        // نمایش نصب PWA برای همه مرورگرها
-        let deferredPrompt;
+        // iOS PWA Detection
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent);
+        }
         
-        // برای Chrome/Edge
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallButton();
-        });
+        function isStandalone() {
+            return window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        }
         
-        // برای Safari/iOS
-        if (navigator.standalone === undefined) {
-            // iOS Safari
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            if (isIOS) {
-                showIOSInstallButton();
+        // Show iOS Install Prompt
+        function showIOSInstallPrompt() {
+            if (isIOS() && !isStandalone()) {
+                const prompt = document.createElement('div');
+                prompt.className = 'ios-install-prompt';
+                prompt.innerHTML = `
+                    <div class="ios-prompt-content">
+                        <div class="ios-prompt-icon">📱</div>
+                        <div class="ios-prompt-text">
+                            <h5>نصب اپلیکیشن</h5>
+                            <p>برای نصب اپلیکیشن:</p>
+                            <ol>
+                                <li>روی دکمه <strong>Share</strong> کلیک کنید</li>
+                                <li>گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</li>
+                                <li>روی <strong>Add</strong> کلیک کنید</li>
+                            </ol>
+                        </div>
+                        <button class="ios-prompt-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+                `;
+                document.body.appendChild(prompt);
+                
+                // حذف خودکار بعد از 10 ثانیه
+                setTimeout(() => {
+                    if (prompt.parentElement) {
+                        prompt.remove();
+                    }
+                }, 10000);
             }
         }
         
-        // برای Firefox
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(registration => {
-                if (registration.active) {
-                    showFirefoxInstallButton();
-                }
-            });
-        }
-        
-        function showInstallButton() {
-            const installButton = document.createElement('button');
-            installButton.textContent = 'نصب اپلیکیشن';
-            installButton.className = 'btn btn-primary position-fixed';
-            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            installButton.onclick = () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('کاربر PWA را نصب کرد');
-                        }
-                        deferredPrompt = null;
-                        installButton.remove();
-                    });
-                }
-            };
-            document.body.appendChild(installButton);
-            
-            // حذف دکمه بعد از ۱۵ ثانیه
-            setTimeout(() => {
-                if (installButton.parentNode) {
-                    installButton.remove();
-                }
-            }, 15000);
-        }
-        
-        function showIOSInstallButton() {
-            const installButton = document.createElement('button');
-            installButton.textContent = 'نصب در صفحه اصلی';
-            installButton.className = 'btn btn-success position-fixed';
-            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            installButton.onclick = () => {
-                alert('برای نصب: ۱. دکمه Share رو بزن ۲. Add to Home Screen رو انتخاب کن');
-            };
-            document.body.appendChild(installButton);
-            
-            setTimeout(() => {
-                if (installButton.parentNode) {
-                    installButton.remove();
-                }
-            }, 15000);
-        }
-        
-        function showFirefoxInstallButton() {
-            const installButton = document.createElement('button');
-            installButton.textContent = 'نصب اپلیکیشن';
-            installButton.className = 'btn btn-warning position-fixed';
-            installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 25px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
-            installButton.onclick = () => {
-                alert('برای نصب: ۱. آدرس بار رو بزن ۲. دکمه نصب رو بزن');
-            };
-            document.body.appendChild(installButton);
-            
-            setTimeout(() => {
-                if (installButton.parentNode) {
-                    installButton.remove();
-                }
-            }, 15000);
-        }
-        
-        // Auto-hide messages after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
+        // Show prompt after page load
+        window.addEventListener('load', function() {
+            setTimeout(showIOSInstallPrompt, 2000);
+        });
     </script>
 </body>
 </html>

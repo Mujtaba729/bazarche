@@ -10,6 +10,8 @@
   "scope": "/",
   "lang": "fa",
   "dir": "rtl",
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "/static/web-app-manifest-192x192.png",
@@ -26,6 +28,12 @@
     {
       "src": "/static/logo-1.png",
       "sizes": "483x483",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/apple-touch-icon.png",
+      "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     }

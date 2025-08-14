@@ -137,16 +137,11 @@ DATABASES = {
         'NAME': 'bazarche_db',
         'USER': 'bazarche_user',
         'PASSWORD': 'Mujtaba$729',
-        'HOST': 'localhost',
+        'HOST': '144.91.73.42',
         'PORT': '5432',
         'OPTIONS': {
             'MAX_CONNS': 200,  # افزایش اتصالات همزمان
             'CONN_MAX_AGE': 600,  # نگه داشتن اتصال تا 10 دقیقه
-            'CONN_HEALTH_CHECKS': True,
-        },
-        'CONN_MAX_AGE': 600,
-        'OPTIONS': {
-            'MAX_CONNS': 200,
             'CONN_HEALTH_CHECKS': True,
         },
     }

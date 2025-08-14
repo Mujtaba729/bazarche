@@ -90,6 +90,7 @@ http {
     site_config = """
 server {
     listen 80;
+    listen [::]:80;  # IPv6 support
     server_name soodava.com www.soodava.com 144.91.73.42;
     
     # Security Headers
@@ -129,7 +130,7 @@ server {
     
     # Django Application
     location / {
-        proxy_pass http://unix:/var/www/bazarche_app/gunicorn.sock;
+        proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -181,7 +182,19 @@ server {
         if os.path.exists('/etc/nginx/sites-enabled/default'):
             subprocess.run(['rm', '/etc/nginx/sites-enabled/default'], check=True)
         
-        subprocess.run(['ln', '-s', '/etc/nginx/sites-available/bazarche', '/etc/nginx/sites-enabled/'], check=True)
+        # Remove existing symlink if it points to a different file or is broken
+        if os.path.islink('/etc/nginx/sites-enabled/bazarche') and os.readlink('/etc/nginx/sites-enabled/bazarche') != '/etc/nginx/sites-available/bazarche':
+            subprocess.run(['rm', '/etc/nginx/sites-enabled/bazarche'], check=True)
+        elif os.path.exists('/etc/nginx/sites-enabled/bazarche') and not os.path.islink('/etc/nginx/sites-enabled/bazarche'):
+            # If it's a file, not a symlink, remove it
+            subprocess.run(['rm', '/etc/nginx/sites-enabled/bazarche'], check=True)
+
+        # Create symlink if it doesn't exist
+        if not os.path.exists('/etc/nginx/sites-enabled/bazarche'):
+            subprocess.run(['ln', '-s', '/etc/nginx/sites-available/bazarche', '/etc/nginx/sites-enabled/'], check=True)
+            print("✅ Site enabled")
+        else:
+            print("✅ Site already enabled (symlink exists and is correct)")
         print("✅ Site enabled")
         
     except Exception as e:

@@ -13,7 +13,7 @@ def get_db_connection():
     try:
         # اطلاعات واقعی دیتابیس شما
         conn = psycopg2.connect(
-            host="localhost",
+            host="144.91.73.42",
             database="bazarche_db",
             user="bazarche_user",
             password="Mujtaba$729"

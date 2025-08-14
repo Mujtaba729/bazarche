@@ -130,7 +130,7 @@ server {
     
     # Django Application
     location / {
-        proxy_pass http://unix:/var/www/bazarche_app/gunicorn.sock;
+        proxy_pass http://unix:/var/www/bazarche_app/bazarche_app.sock;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

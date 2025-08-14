@@ -227,11 +227,12 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Prevent double-tap zoom
             element.addEventListener('touchend', function(e) {
-                // برای دکمه‌ها و لینک‌ها هیچ پیش‌فرضی را لغو نکن
-                if (this.tagName !== 'A' && this.tagName !== 'BUTTON' && !this.closest('button') && !this.closest('a')) {
-                    e.preventDefault();
+                // هیچ رفتاری را برای دکمه‌ها و لینک‌ها لغو نکن تا کلیک طبیعی کار کند
+                if (this.tagName === 'A' || this.tagName === 'BUTTON' || this.closest('button') || this.closest('a')) {
+                    return;
                 }
-            }, { passive: false });
+                // برای سایر عناصر غیرکلیک‌پذیر می‌توان جلوگیری کرد
+            }, { passive: true });
         });
         
         // Special handling for product cards to distinguish between scroll and tap

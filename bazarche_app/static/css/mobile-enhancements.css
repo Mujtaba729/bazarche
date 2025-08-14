@@ -369,20 +369,19 @@ button:hover, .button:hover {
     -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* --- SEARCH BAR FIX: دکمه سرچ سمت چپ و داخل نوار --- */
-.search-form {
+/* --- SEARCH BAR (scoped to navbar only) --- */
+.mobile-navbar .search-form {
     position: relative;
     display: flex;
     align-items: center;
 }
-.search-input {
-    flex-grow: 1;
-    padding-left: 2.2rem !important; /* فضای کافی برای دکمه سمت چپ */
-    padding-right: 0.8rem !important;
+.mobile-navbar .search-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem 0.6rem 2.4rem !important; /* فضای کافی برای دکمه سمت چپ */
     height: 40px;
     font-size: 0.85rem;
 }
-.search-btn {
+.mobile-navbar .search-btn {
     position: absolute;
     left: 0.4rem;
     top: 50%;

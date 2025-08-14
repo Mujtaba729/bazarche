@@ -94,12 +94,13 @@
         position: absolute;
         bottom: 5px;
         left: 5px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 2px 6px;
-        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 3px 8px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     .image-status .spinner-border {
@@ -109,6 +110,12 @@
     
     .image-status small {
         font-size: 10px;
+        font-weight: bold;
+    }
+    
+    .image-status .checkmark {
+        color: #28a745;
+        font-size: 14px;
         font-weight: bold;
     }
     
@@ -165,13 +172,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="${e.target.result}" alt="Preview">
                     <button type="button" class="remove-btn" onclick="removeImage(${index})">×</button>
                     <div class="image-status">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status">
-                            <span class="visually-hidden">در حال پردازش...</span>
+                        <div class="spinner-border spinner-border-sm text-success" role="status">
+                            <span class="visually-hidden">آماده</span>
                         </div>
-                        <small class="text-primary">آماده</small>
+                        <small class="text-success">آماده</small>
                     </div>
                 `;
                 imagePreview.appendChild(previewItem);
+                
+                // بعد از 1 ثانیه spinner را متوقف کن
+                setTimeout(() => {
+                    const spinner = previewItem.querySelector('.spinner-border');
+                    if (spinner) {
+                        spinner.classList.remove('spinner-border');
+                        spinner.classList.add('checkmark');
+                        spinner.innerHTML = '✓';
+                        spinner.style.fontSize = '14px';
+                        spinner.style.fontWeight = 'bold';
+                        spinner.style.color = '#28a745';
+                    }
+                }, 1000);
             };
             reader.readAsDataURL(file);
         });
@@ -213,49 +233,77 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressText = document.getElementById('progress-text');
     const statusText = document.getElementById('status-text');
     
-    form.addEventListener('submit', function(e) {
-        // نمایش loading state
-        submitText.style.display = 'none';
-        submitLoading.style.display = 'inline';
-        submitBtn.disabled = true;
-        
-        // نمایش progress bar
-        uploadProgress.style.display = 'block';
-        
-        // مراحل مختلف پیشرفت
-        const stages = [
-            { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
-            { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
-            { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
-            { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
-            { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
-            { progress: 95, text: 'تقریباً تمام شد...' }
-        ];
-        
-        let currentStage = 0;
-        
-        // نمایش مراحل پیشرفت
-        const progressInterval = setInterval(() => {
-            if (currentStage < stages.length) {
-                const stage = stages[currentStage];
-                progressBar.style.width = stage.progress + '%';
-                progressBar.setAttribute('aria-valuenow', stage.progress);
-                progressText.textContent = stage.progress + '%';
-                statusText.textContent = stage.text;
-                currentStage++;
-            } else {
-                // مرحله نهایی
-                progressBar.style.width = '100%';
-                progressBar.setAttribute('aria-valuenow', 100);
-                progressText.textContent = '100%';
-                statusText.textContent = 'تمام شد! در حال انتقال...';
-                progressBar.classList.remove('bg-primary');
-                progressBar.classList.add('bg-success');
-                
-                clearInterval(progressInterval);
+    // اضافه کردن event listener به فرم
+    if (form) {
+        console.log('فرم پیدا شد!'); // برای debug
+        form.addEventListener('submit', function(e) {
+            console.log('فرم ارسال شد!'); // برای debug
+            
+            // نمایش loading state
+            if (submitText) {
+                submitText.style.display = 'none';
+                console.log('متن دکمه مخفی شد!'); // برای debug
             }
-        }, 600); // هر 600 میلی‌ثانیه یک مرحله
-    });
+            if (submitLoading) {
+                submitLoading.style.display = 'inline';
+                console.log('Loading نمایش داده شد!'); // برای debug
+            }
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                console.log('دکمه غیرفعال شد!'); // برای debug
+            }
+            
+            // نمایش progress bar
+            if (uploadProgress) {
+                uploadProgress.style.display = 'block';
+                console.log('Progress Bar نمایش داده شد!'); // برای debug
+            } else {
+                console.error('Progress Bar پیدا نشد!'); // برای debug
+            }
+            
+            // مراحل مختلف پیشرفت
+            const stages = [
+                { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
+                { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
+                { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
+                { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
+                { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
+                { progress: 95, text: 'تقریباً تمام شد...' }
+            ];
+            
+            let currentStage = 0;
+            
+            // نمایش مراحل پیشرفت
+            const progressInterval = setInterval(() => {
+                if (currentStage < stages.length) {
+                    const stage = stages[currentStage];
+                    if (progressBar) {
+                        progressBar.style.width = stage.progress + '%';
+                        progressBar.setAttribute('aria-valuenow', stage.progress);
+                    }
+                    if (progressText) progressText.textContent = stage.progress + '%';
+                    if (statusText) statusText.textContent = stage.text;
+                    currentStage++;
+                    console.log('مرحله:', stage.text, stage.progress + '%'); // برای debug
+                } else {
+                    // مرحله نهایی
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.setAttribute('aria-valuenow', 100);
+                        progressBar.classList.remove('bg-primary');
+                        progressBar.classList.add('bg-success');
+                    }
+                    if (progressText) progressText.textContent = '100%';
+                    if (statusText) statusText.textContent = 'تمام شد! در حال انتقال...';
+                    
+                    clearInterval(progressInterval);
+                    console.log('پیشرفت تمام شد!'); // برای debug
+                }
+            }, 600); // هر 600 میلی‌ثانیه یک مرحله
+        });
+    } else {
+        console.error('فرم پیدا نشد!'); // برای debug
+    }
 });
 </script>
 {% endblock %}

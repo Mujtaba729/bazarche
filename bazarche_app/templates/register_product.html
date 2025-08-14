@@ -77,17 +77,54 @@
         position: absolute;
         top: 5px;
         right: 5px;
-        background: rgba(255, 0, 0, 0.8);
+        background: #dc3545;
         color: white;
         border: none;
         border-radius: 50%;
         width: 20px;
         height: 20px;
-        font-size: 12px;
+        font-size: 14px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .image-preview-item .remove-btn:hover {
-        background: rgba(255, 0, 0, 1);
+    
+    .image-status {
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .image-status .spinner-border {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .image-status small {
+        font-size: 10px;
+        font-weight: bold;
+    }
+    
+    #upload-progress {
+        border-radius: 8px;
+        border: 1px solid #d1ecf1;
+    }
+    
+    #upload-progress .progress {
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    #upload-progress .progress-bar {
+        font-size: 12px;
+        font-weight: bold;
     }
     .validation-error {
         color: #dc3545;
@@ -127,6 +164,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 previewItem.innerHTML = `
                     <img src="${e.target.result}" alt="Preview">
                     <button type="button" class="remove-btn" onclick="removeImage(${index})">×</button>
+                    <div class="image-status">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">در حال پردازش...</span>
+                        </div>
+                        <small class="text-primary">آماده</small>
+                    </div>
                 `;
                 imagePreview.appendChild(previewItem);
             };
@@ -170,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressText = document.getElementById('progress-text');
     const statusText = document.getElementById('status-text');
     
-    form.addEventListener('submit', function() {
+    form.addEventListener('submit', function(e) {
         // نمایش loading state
         submitText.style.display = 'none';
         submitLoading.style.display = 'inline';
@@ -181,11 +224,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // مراحل مختلف پیشرفت
         const stages = [
-            { progress: 10, text: 'در حال آماده‌سازی فرم...' },
-            { progress: 25, text: 'در حال بررسی اطلاعات...' },
-            { progress: 40, text: 'در حال آپلود عکس‌ها...' },
-            { progress: 60, text: 'در حال فشرده‌سازی عکس‌ها...' },
-            { progress: 80, text: 'در حال ذخیره‌سازی...' },
+            { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
+            { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
+            { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
+            { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
+            { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
             { progress: 95, text: 'تقریباً تمام شد...' }
         ];
         
@@ -211,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 clearInterval(progressInterval);
             }
-        }, 800); // هر 800 میلی‌ثانیه یک مرحله
+        }, 600); // هر 600 میلی‌ثانیه یک مرحله
     });
 });
 </script>
@@ -233,6 +276,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     {% endif %}
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        
+                        <!-- Progress Bar در بالای فرم -->
+                        <div id="upload-progress" class="mb-4" style="display: none;">
+                            <div class="alert alert-info">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                    <strong>در حال ثبت محصول...</strong>
+                                </div>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                                         role="progressbar" style="width: 0%" 
+                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                        <span id="progress-text">0%</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    <span id="status-text">در حال آماده‌سازی...</span>
+                                </small>
+                            </div>
+                        </div>
                         
                         <div class="mb-3">
                             <label for="id_name" class="form-label">{{ form.name.label }}</label>
@@ -327,23 +390,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 در حال پردازش...
                             </span>
                         </button>
-                        
-                        <!-- Progress Bar -->
-                        <div id="upload-progress" class="mt-3" style="display: none;">
-                            <div class="progress" style="height: 25px;">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
-                                     role="progressbar" style="width: 0%" 
-                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    <span id="progress-text">0%</span>
-                                </div>
-                            </div>
-                            <div class="mt-2">
-                                <small class="text-primary">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    <span id="status-text">در حال آماده‌سازی...</span>
-                                </small>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>

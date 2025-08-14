@@ -28,8 +28,8 @@ AFGHANISTAN_PROVINCES = [
 print("Creating Afghan cities...")
 
 for i, name in enumerate(AFGHANISTAN_PROVINCES):
-    if not City.objects.filter(name_fa=name).exists():
-        City.objects.create(name_fa=name, name_en=name, order=i)
+    if not City.objects.filter(name=name).exists():
+        City.objects.create(name=name, order=i)
         print(f"✅ City '{name}' created.")
     else:
         print(f"ℹ️ City '{name}' already exists.")

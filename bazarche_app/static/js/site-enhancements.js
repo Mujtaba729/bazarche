@@ -225,13 +225,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.style.transition = '';
             });
             
-            // Prevent double-tap zoom
+            // Prevent double-tap zoom: دیگر برای عناصر کلیکی هیچ preventDefault ای اعمال نمی‌کنیم
             element.addEventListener('touchend', function(e) {
-                // هیچ رفتاری را برای دکمه‌ها و لینک‌ها لغو نکن تا کلیک طبیعی کار کند
+                // اگر عنصر کلیک‌پذیر است، اجازه بده رفتار طبیعی اجرا شود
                 if (this.tagName === 'A' || this.tagName === 'BUTTON' || this.closest('button') || this.closest('a')) {
                     return;
                 }
-                // برای سایر عناصر غیرکلیک‌پذیر می‌توان جلوگیری کرد
+                // برای عناصر غیرکلیک‌پذیر نیازی به کاری نیست
             }, { passive: true });
         });
         

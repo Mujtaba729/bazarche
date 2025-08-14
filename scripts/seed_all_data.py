@@ -1,13 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Comprehensive script to seed all initial data for Railway deployment
+Comprehensive script to seed all initial data for Contabo server
 """
 import os
+import sys
 import django
 
+# Add project directory to Python path
+project_path = '/var/www/bazarche_app'
+sys.path.insert(0, project_path)
+
 # Set Django settings
-settings_module = os.environ.get('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+
+# Setup Django
 django.setup()
 
 from bazarche_app.models import City, Tag, Category
@@ -34,19 +40,16 @@ MAIN_CATEGORIES = [
 # Product tags
 PRODUCT_TAGS = ['نو', 'دست دوم']
 
-# Product status options
-PRODUCT_STATUS = ['فعال', 'غیرفعال', 'فروخته شده', 'رزرو شده']
-
 print("=== Starting data seeding ===")
 
 # Create cities
 print("\n--- Creating cities ---")
 for i, name in enumerate(AFGHANISTAN_PROVINCES):
-    if not City.objects.filter(name=name).exists():
-        City.objects.create(name=name, order=i)
-        print(f"City '{name}' created.")
+    if not City.objects.filter(name_fa=name).exists():
+        City.objects.create(name_fa=name, name_en=name, order=i)
+        print(f"✅ City '{name}' created.")
     else:
-        print(f"City '{name}' already exists.")
+        print(f"ℹ️ City '{name}' already exists.")
 
 # Create categories
 print("\n--- Creating categories ---")
@@ -55,20 +58,19 @@ for i, name in enumerate(MAIN_CATEGORIES):
         Category.objects.create(
             name_fa=name,
             name_en=name,
-            order=i,
-            is_active=True
+            order=i
         )
-        print(f"Category '{name}' created.")
+        print(f"✅ Category '{name}' created.")
     else:
-        print(f"Category '{name}' already exists.")
+        print(f"ℹ️ Category '{name}' already exists.")
 
 # Create tags
 print("\n--- Creating tags ---")
 for name in PRODUCT_TAGS:
     if not Tag.objects.filter(name_fa=name).exists():
-        Tag.objects.create(name_fa=name)
-        print(f"Tag '{name}' created.")
+        Tag.objects.create(name_fa=name, name_en=name)
+        print(f"✅ Tag '{name}' created.")
     else:
-        print(f"Tag '{name}' already exists.")
+        print(f"ℹ️ Tag '{name}' already exists.")
 
 print("\n=== Data seeding completed successfully! ===") 

@@ -1,13 +1,19 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-Script to seed category data for Railway deployment
+Script to seed category data for Contabo server
 """
 import os
+import sys
 import django
 
+# Add project directory to Python path
+project_path = '/var/www/bazarche_app'
+sys.path.insert(0, project_path)
+
 # Set Django settings
-settings_module = os.environ.get('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bazarche_project.settings')
+
+# Setup Django
 django.setup()
 
 from bazarche_app.models import Category
@@ -30,8 +36,7 @@ for i, name in enumerate(MAIN_CATEGORIES):
         Category.objects.create(
             name_fa=name,
             name_en=name,  # You can add English names later
-            order=i,
-            is_active=True
+            order=i
         )
         print(f"Category '{name}' created.")
     else:

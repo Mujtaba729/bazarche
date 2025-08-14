@@ -167,6 +167,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitLoading = document.getElementById('submit-loading');
     const uploadProgress = document.getElementById('upload-progress');
     const progressBar = uploadProgress.querySelector('.progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const statusText = document.getElementById('status-text');
     
     form.addEventListener('submit', function() {
         // نمایش loading state
@@ -177,26 +179,39 @@ document.addEventListener('DOMContentLoaded', function() {
         // نمایش progress bar
         uploadProgress.style.display = 'block';
         
-        // شبیه‌سازی پیشرفت واقعی‌تر
-        let progress = 0;
-        const progressInterval = setInterval(() => {
-            progress += Math.random() * 8 + 2; // 2-10% در هر مرحله
-            if (progress > 85) progress = 85;
-            
-            progressBar.style.width = progress + '%';
-            progressBar.setAttribute('aria-valuenow', progress);
-            progressBar.textContent = Math.round(progress) + '%';
-        }, 300);
+        // مراحل مختلف پیشرفت
+        const stages = [
+            { progress: 10, text: 'در حال آماده‌سازی فرم...' },
+            { progress: 25, text: 'در حال بررسی اطلاعات...' },
+            { progress: 40, text: 'در حال آپلود عکس‌ها...' },
+            { progress: 60, text: 'در حال فشرده‌سازی عکس‌ها...' },
+            { progress: 80, text: 'در حال ذخیره‌سازی...' },
+            { progress: 95, text: 'تقریباً تمام شد...' }
+        ];
         
-        // توقف شبیه‌سازی بعد از 8 ثانیه
-        setTimeout(() => {
-            clearInterval(progressInterval);
-            progressBar.style.width = '100%';
-            progressBar.setAttribute('aria-valuenow', 100);
-            progressBar.textContent = '100%';
-            progressBar.classList.remove('bg-info');
-            progressBar.classList.add('bg-success');
-        }, 8000);
+        let currentStage = 0;
+        
+        // نمایش مراحل پیشرفت
+        const progressInterval = setInterval(() => {
+            if (currentStage < stages.length) {
+                const stage = stages[currentStage];
+                progressBar.style.width = stage.progress + '%';
+                progressBar.setAttribute('aria-valuenow', stage.progress);
+                progressText.textContent = stage.progress + '%';
+                statusText.textContent = stage.text;
+                currentStage++;
+            } else {
+                // مرحله نهایی
+                progressBar.style.width = '100%';
+                progressBar.setAttribute('aria-valuenow', 100);
+                progressText.textContent = '100%';
+                statusText.textContent = 'تمام شد! در حال انتقال...';
+                progressBar.classList.remove('bg-primary');
+                progressBar.classList.add('bg-success');
+                
+                clearInterval(progressInterval);
+            }
+        }, 800); // هر 800 میلی‌ثانیه یک مرحله
     });
 });
 </script>
@@ -315,17 +330,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         <!-- Progress Bar -->
                         <div id="upload-progress" class="mt-3" style="display: none;">
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
                                      role="progressbar" style="width: 0%" 
                                      aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    0%
+                                    <span id="progress-text">0%</span>
                                 </div>
                             </div>
-                            <small class="text-info mt-2 d-block">
-                                <i class="bi bi-info-circle me-1"></i>
-                                در حال آپلود و پردازش عکس‌ها... لطفاً صفحه را ترک نکنید
-                            </small>
+                            <div class="mt-2">
+                                <small class="text-primary">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    <span id="status-text">در حال آماده‌سازی...</span>
+                                </small>
+                            </div>
                         </div>
                     </form>
                 </div>

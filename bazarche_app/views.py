@@ -583,18 +583,18 @@ from django.contrib import messages
 from .forms import ProductForm
 from .models import Product, ProductImage
 
-def compress_image(image_file, max_size=(800, 800), quality=60):
+def compress_image(image_file, max_size=(600, 600), quality=50):
     """
-    فشرده‌سازی فوق‌العاده سریع برای سرور کونتابو:
-    - کاهش کیفیت به 60 برای سرعت بیشتر
-    - کاهش اندازه عکس به 800x800 برای سرعت بیشتر
+    فشرده‌سازی فوق‌العاده سریع برای سرعت حداکثر:
+    - کاهش کیفیت به 50 برای سرعت بیشتر
+    - کاهش اندازه عکس به 600x600 برای سرعت بیشتر
     - پرهیز از پردازش فایل‌های کوچک
-    - استفاده از الگوریتم‌های سریع
+    - استفاده از الگوریتم‌های سریع‌ترین
     """
     try:
         # اگر فایل خیلی کوچک است، همان را برگردان
         original_size_bytes = getattr(image_file, 'size', None)
-        if original_size_bytes is not None and original_size_bytes <= 200 * 1024:  # 200KB
+        if original_size_bytes is not None and original_size_bytes <= 150 * 1024:  # 150KB
             return image_file
 
         # باز کردن تصویر
@@ -716,10 +716,7 @@ def register_product(request):
                 
                 # ذخیره عکس‌ها با فشرده‌سازی فوق‌العاده سریع
                 try:
-                    # نمایش پیام شروع پردازش
-                    messages.info(request, f"در حال پردازش {len(images)} عکس... لطفاً صبر کنید.")
-                    
-                    # پردازش سریع عکس‌ها
+                    # پردازش سریع عکس‌ها بدون نمایش پیام
                     for img in images:
                         compressed_img = compress_image(img)
                         ProductImage.objects.create(product=product, image=compressed_img)

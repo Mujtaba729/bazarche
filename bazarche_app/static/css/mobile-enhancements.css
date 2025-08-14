@@ -382,7 +382,7 @@ button:hover, .button:hover {
 
 .search-input {
     width: 100%;
-    padding: 0.6rem 0.8rem; /* پدینگ پیش‌فرض */
+    padding: 0.6rem 0.8rem 0.6rem 2.5rem; /* پدینگ چپ بیشتر برای دکمه گرد */
     border: 2px solid #e9ecef;
     border-radius: 10px;
     font-size: 0.85rem;
@@ -404,21 +404,26 @@ button:hover, .button:hover {
     transform: translateY(-50%);
     background: #667eea;
     border: none;
-    border-radius: 6px;
-    padding: 0.4rem;
+    border-radius: 50%; /* دکمه گرد */
+    padding: 0.35rem; /* کوچک‌تر */
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* فونت کوچک‌تر */
     transition: all 0.3s ease;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2; /* مطمئن می‌شویم بالاتر از input است */
+    width: 28px; /* عرض ثابت */
+    height: 28px; /* ارتفاع ثابت */
+    min-width: 28px; /* حداقل عرض */
+    min-height: 28px; /* حداقل ارتفاع */
 }
 
 .search-btn:hover {
     background: #5a6fd8;
-    transform: translateY(-50%) scale(1.05);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* --- کلیک‌پذیری کامل دکمه‌ها بدون تغییر دیزاین --- */

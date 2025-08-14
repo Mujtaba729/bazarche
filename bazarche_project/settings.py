@@ -124,12 +124,183 @@ WSGI_APPLICATION = 'bazarche_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Database configuration
+# Database Optimization
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bazarche_db',
+        'USER': 'bazarche_user',
+        'PASSWORD': 'your_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'MAX_CONNS': 200,  # افزایش اتصالات همزمان
+            'CONN_MAX_AGE': 600,  # نگه داشتن اتصال تا 10 دقیقه
+            'CONN_HEALTH_CHECKS': True,
+        },
+        'CONN_MAX_AGE': 600,
+        'OPTIONS': {
+            'MAX_CONNS': 200,
+            'CONN_HEALTH_CHECKS': True,
+        },
     }
+}
+
+# Cache Configuration (Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {
+                'max_connections': 50,
+                'retry_on_timeout': True,
+            },
+        },
+        'KEY_PREFIX': 'bazarche',
+        'TIMEOUT': 300,  # 5 minutes default
+    },
+    'sessions': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/2',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'session',
+        'TIMEOUT': 86400,  # 24 hours
+    },
+    'products': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/3',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'product',
+        'TIMEOUT': 1800,  # 30 minutes
+    }
+}
+
+# Session Configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'sessions'
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_SAVE_EVERY_REQUEST = False
+
+# Database Connection Pooling
+DATABASE_CONNECTION_POOLING = True
+DATABASE_CONNECTION_POOL_SIZE = 20
+DATABASE_CONNECTION_POOL_TIMEOUT = 30
+
+# Query Optimization
+DB_OPTIMIZATION = {
+    'SELECT_FOR_UPDATE_SKIP_LOCKED': True,
+    'BULK_CREATE_BATCH_SIZE': 1000,
+    'BULK_UPDATE_BATCH_SIZE': 1000,
+    'MAX_QUERY_PARAMS': 10000,
+}
+
+# Image Processing Optimization
+IMAGE_PROCESSING = {
+    'MAX_SIZE': (800, 800),  # افزایش کیفیت
+    'QUALITY': 75,  # تعادل بین کیفیت و سرعت
+    'FORMATS': ['JPEG', 'PNG', 'WEBP'],
+    'WEBP_QUALITY': 80,
+    'THUMBNAIL_SIZE': (300, 300),
+    'PROCESSING_THREADS': 4,  # استفاده از 4 هسته
+}
+
+# File Upload Optimization
+FILE_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 25MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 25MB
+FILE_UPLOAD_TEMP_DIR = '/tmp/django_uploads'
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
+
+# Security & Performance
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# Compression & Static Files
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# Logging Optimization
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/django/bazarche.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'bazarche_app': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+# Performance Monitoring
+PERFORMANCE_MONITORING = {
+    'ENABLE_QUERY_LOGGING': True,
+    'SLOW_QUERY_THRESHOLD': 1000,  # 1 second
+    'ENABLE_CACHE_STATS': True,
+    'ENABLE_MEMORY_MONITORING': True,
+}
+
+# Gunicorn Optimization
+GUNICORN_CONFIG = {
+    'workers': 8,  # 2x CPU cores + 2
+    'worker_class': 'sync',
+    'worker_connections': 1000,
+    'max_requests': 1000,
+    'max_requests_jitter': 100,
+    'timeout': 30,
+    'keepalive': 2,
+    'preload_app': True,
+}
+
+# Nginx Optimization
+NGINX_CONFIG = {
+    'worker_processes': 6,  # برابر با CPU cores
+    'worker_connections': 1024,
+    'keepalive_timeout': 65,
+    'client_max_body_size': '25M',
+    'gzip': True,
+    'gzip_types': 'text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript',
 }
 
 
@@ -186,53 +357,3 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# ---------- Cache Settings (تنظیمات کش) ----------
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-        'TIMEOUT': 300,  # 5 دقیقه
-    },
-    'session': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'session-cache',
-        'TIMEOUT': 1800,  # 30 دقیقه
-    },
-    'products': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'products-cache',
-        'TIMEOUT': 600,  # 10 دقیقه
-    },
-}
-
-# Session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database instead of cache
-SESSION_COOKIE_AGE = 1209600  # 2 weeks
-SESSION_COOKIE_SECURE = False  # False for development
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'
-
-# django-allauth settings
-ACCOUNT_LOGIN_METHODS = {'username', 'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
-ACCOUNT_EMAIL_VERIFICATION = 'optional'
-ACCOUNT_LOGOUT_ON_GET = True
-
-# ---------- File Upload Settings (تنظیمات بهینه آپلود فایل) ----------
-# افزایش محدودیت اندازه فایل برای آپلود
-FILE_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 * 1024  # 20MB
-
-# تنظیمات بهینه برای آپلود فایل
-FILE_UPLOAD_TEMP_DIR = None
-FILE_UPLOAD_PERMISSIONS = 0o644
-FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
-
-# تنظیمات بهینه برای پردازش عکس
-IMAGE_COMPRESSION_QUALITY = 50  # کیفیت پایین برای سرعت حداکثر
-IMAGE_MAX_SIZE = (600, 600)  # اندازه کوچک برای سرعت حداکثر
-
-# تنظیمات بهینه برای سرعت بیشتر
-CONN_MAX_AGE = 60  # اتصال دیتابیس
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000  # افزایش تعداد فیلدها

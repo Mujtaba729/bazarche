@@ -446,3 +446,22 @@ a.btn::before, a.btn::after {
         grid-template-columns: 1fr !important;
     }
 }
+
+/* جبران نوار ثابت تا محتوا زیرش پنهان نشود و کلیک پایین‌تر لازم نباشد */
+body:not(.landing-page) .main-wrapper {
+    margin-top: 80px !important; /* برابر با ارتفاع navbar ثابت */
+}
+
+/* اطمینان از عدم هم‌پوشانی عناصر روی دکمه‌ها */
+.product-card::before,
+.category-card::before,
+.action-card::before,
+.mobile-navbar::before,
+.mobile-navbar::after {
+    pointer-events: none !important;
+}
+
+/* برای دکمه‌های فرم، هیچ transform هنگام touch اعمال نشود تا ناحیه کلیک جابجا نشود */
+button:active, a.btn:active, .search-btn:active {
+    transform: none !important;
+}

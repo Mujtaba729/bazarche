@@ -128,65 +128,64 @@
         right: 20px;
         z-index: 1000;
         background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         border: 1px solid #e0e0e0;
         animation: slideUp 0.3s ease-out;
+        max-width: 400px;
+        margin: 0 auto;
       }
       
       .ios-prompt-content {
-        padding: 20px;
+        padding: 15px;
         position: relative;
       }
       
-      .ios-prompt-icon {
-        font-size: 32px;
-        text-align: center;
-        margin-bottom: 15px;
-      }
-      
-      .ios-prompt-text h5 {
+      .ios-prompt-text h6 {
         color: #276ef1;
         margin-bottom: 10px;
         text-align: center;
-      }
-      
-      .ios-prompt-text p {
-        margin-bottom: 15px;
-        color: #666;
-        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
       }
       
       .ios-prompt-text ol {
         margin: 0;
         padding-right: 20px;
         color: #333;
+        font-size: 14px;
       }
       
       .ios-prompt-text li {
         margin-bottom: 8px;
         line-height: 1.4;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
       
       .ios-prompt-close {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 8px;
+        left: 8px;
         background: none;
         border: none;
-        font-size: 24px;
+        font-size: 20px;
         color: #999;
         cursor: pointer;
         padding: 0;
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s;
       }
       
       .ios-prompt-close:hover {
         color: #666;
+        background-color: #f0f0f0;
       }
       
       @keyframes slideUp {
@@ -205,10 +204,19 @@
           left: 10px;
           right: 10px;
           bottom: 10px;
+          max-width: none;
         }
         
         .ios-prompt-content {
-          padding: 15px;
+          padding: 12px;
+        }
+        
+        .ios-prompt-text h6 {
+          font-size: 15px;
+        }
+        
+        .ios-prompt-text ol {
+          font-size: 13px;
         }
       }
       
@@ -232,19 +240,22 @@
         display: inline-block;
         background: #276ef1;
         color: white;
-        padding: 15px 20px;
-        border-radius: 25px;
-        box-shadow: 0 4px 12px rgba(39, 110, 241, 0.3);
+        padding: 8px 12px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(39, 110, 241, 0.3);
         animation: pulse 2s infinite;
+        font-size: 16px;
+        min-width: 40px;
+        text-align: center;
       }
       
       .share-icon {
-        font-size: 24px;
-        margin-bottom: 5px;
+        font-size: 16px;
+        margin-bottom: 0;
       }
       
       .share-text {
-        font-size: 14px;
+        font-size: 12px;
         font-weight: bold;
       }
       
@@ -337,36 +348,25 @@
                 prompt.className = 'ios-install-prompt';
                 prompt.innerHTML = `
                     <div class="ios-prompt-content">
-                        <div class="ios-prompt-icon">📱</div>
                         <div class="ios-prompt-text">
-                            <h5>نصب اپلیکیشن در صفحه اصلی</h5>
-                            <p>برای نصب اپلیکیشن:</p>
+                            <h6>برای نصب اپلیکیشن</h6>
                             <ol>
-                                <li><strong>روی دکمه Share</strong> (مربع با فلش) در پایین مرورگر کلیک کنید</li>
+                                <li>روی دکمه <div class="share-button-demo">⬆️</div> کلیک کنید</li>
                                 <li>گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</li>
                                 <li>روی <strong>Add</strong> کلیک کنید</li>
                             </ol>
-                            <div class="ios-prompt-tip">
-                                <small>💡 <strong>نکته:</strong> دکمه Share معمولاً در پایین وسط مرورگر قرار دارد</small>
-                            </div>
-                            <div class="ios-prompt-image">
-                                <div class="share-button-demo">
-                                    <div class="share-icon">⬆️</div>
-                                    <div class="share-text">دکمه Share</div>
-                                </div>
-                            </div>
                         </div>
                         <button class="ios-prompt-close" onclick="this.parentElement.parentElement.remove()">×</button>
                     </div>
                 `;
                 document.body.appendChild(prompt);
                 
-                // حذف خودکار بعد از 20 ثانیه
+                // حذف خودکار بعد از 15 ثانیه
                 setTimeout(() => {
                     if (prompt.parentElement) {
                         prompt.remove();
                     }
-                }, 20000);
+                }, 15000);
             }
         }
         

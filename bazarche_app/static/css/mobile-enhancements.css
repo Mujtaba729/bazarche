@@ -382,7 +382,7 @@ button:hover, .button:hover {
 
 .search-input {
     width: 100%;
-    padding: 0.6rem 0.8rem 0.6rem 2.5rem; /* پدینگ چپ بیشتر برای دکمه گرد */
+    padding: 0.6rem 0.8rem 0.6rem 2rem; /* پدینگ چپ کمتر برای دکمه کوچک‌تر */
     border: 2px solid #e9ecef;
     border-radius: 10px;
     font-size: 0.85rem;
@@ -399,7 +399,7 @@ button:hover, .button:hover {
 
 .search-btn {
     position: absolute;
-    left: 0.4rem;
+    left: 0.25rem; /* نزدیک‌تر به لبه چپ */
     top: 50%;
     transform: translateY(-50%);
     background: #667eea;
@@ -414,10 +414,10 @@ button:hover, .button:hover {
     align-items: center;
     justify-content: center;
     z-index: 2; /* مطمئن می‌شویم بالاتر از input است */
-    width: 28px; /* عرض ثابت */
-    height: 28px; /* ارتفاع ثابت */
-    min-width: 28px; /* حداقل عرض */
-    min-height: 28px; /* حداقل ارتفاع */
+    width: 24px; /* کوچک‌تر */
+    height: 24px; /* کوچک‌تر */
+    min-width: 24px; /* حداقل عرض */
+    min-height: 24px; /* حداقل ارتفاع */
 }
 
 .search-btn:hover {

@@ -376,18 +376,21 @@ button:hover, .button:hover {
 }
 
 .search-form {
-    position: relative;
+    position: relative !important;
     width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .search-input {
     width: 100%;
-    padding: 0.6rem 0.8rem 0.6rem 2rem; /* پدینگ چپ کمتر برای دکمه کوچک‌تر */
+    padding: 0.6rem 0.8rem 0.6rem 2.2rem !important; /* پدینگ چپ برای دکمه گرد */
     border: 2px solid #e9ecef;
     border-radius: 10px;
     font-size: 0.85rem;
     background: #f8f9fa;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .search-input:focus {
@@ -398,10 +401,10 @@ button:hover, .button:hover {
 }
 
 .search-btn {
-    position: absolute;
-    left: 0.25rem; /* نزدیک‌تر به لبه چپ */
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute !important;
+    left: 0.3rem !important; /* داخل نوار جستجو */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     background: #667eea;
     border: none;
     border-radius: 50%; /* دکمه گرد */
@@ -413,7 +416,7 @@ button:hover, .button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2; /* مطمئن می‌شویم بالاتر از input است */
+    z-index: 10 !important; /* بالاتر از همه */
     width: 24px; /* کوچک‌تر */
     height: 24px; /* کوچک‌تر */
     min-width: 24px; /* حداقل عرض */

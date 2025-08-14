@@ -140,10 +140,8 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
         'OPTIONS': {
-            'MAX_CONNS': 200,  # افزایش اتصالات همزمان
             'CONN_MAX_AGE': 600,  # نگه داشتن اتصال تا 10 دقیقه
             'CONN_HEALTH_CHECKS': True,
-            'CONN_MAX_AGE': 600,
         },
     }
 }

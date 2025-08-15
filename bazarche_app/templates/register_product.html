@@ -224,90 +224,95 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // نمایش پیشرفت آپلود
-    const form = document.querySelector('form');
-    const submitBtn = document.getElementById('submit-btn');
-    const submitText = document.getElementById('submit-text');
-    const submitLoading = document.getElementById('submit-loading');
-    const uploadProgress = document.getElementById('upload-progress');
-    const progressBar = uploadProgress.querySelector('.progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const statusText = document.getElementById('status-text');
-    
-    // اضافه کردن event listener به فرم
-    if (form) {
-        console.log('فرم پیدا شد!'); // برای debug
-        form.addEventListener('submit', function(e) {
-            console.log('فرم ارسال شد!'); // برای debug
-            
-            // نمایش loading state
-            if (submitText) {
-                submitText.style.display = 'none';
-                console.log('متن دکمه مخفی شد!'); // برای debug
-            }
-            if (submitLoading) {
-                submitLoading.style.display = 'inline';
-                console.log('Loading نمایش داده شد!'); // برای debug
-            }
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                console.log('دکمه غیرفعال شد!'); // برای debug
-            }
-            
-            // نمایش progress bar
-            if (uploadProgress) {
-                uploadProgress.style.display = 'block';
-                console.log('Progress Bar نمایش داده شد!'); // برای debug
-            } else {
-                console.error('Progress Bar پیدا نشد!'); // برای debug
-            }
-            
-            // مراحل مختلف پیشرفت
-            const stages = [
-                { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
-                { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
-                { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
-                { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
-                { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
-                { progress: 95, text: 'تقریباً تمام شد...' }
-            ];
-            
-            let currentStage = 0;
-            
-            // نمایش مراحل پیشرفت
-            const progressInterval = setInterval(() => {
-                if (currentStage < stages.length) {
-                    const stage = stages[currentStage];
-                    if (progressBar) {
-                        progressBar.style.width = stage.progress + '%';
-                        progressBar.setAttribute('aria-valuenow', stage.progress);
-                    }
-                    if (progressText) progressText.textContent = stage.progress + '%';
-                    if (statusText) statusText.textContent = stage.text;
-                    currentStage++;
-                    console.log('مرحله:', stage.text, stage.progress + '%'); // برای debug
-                } else {
-                    // مرحله نهایی
-                    if (progressBar) {
-                        progressBar.style.width = '100%';
-                        progressBar.setAttribute('aria-valuenow', 100);
-                        progressBar.classList.remove('bg-primary');
-                        progressBar.classList.add('bg-success');
-                    }
-                    if (progressText) progressText.textContent = '100%';
-                    if (statusText) statusText.textContent = 'تمام شد! در حال انتقال...';
-                    
-                    clearInterval(progressInterval);
-                    console.log('پیشرفت تمام شد!'); // برای debug
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const submitLoading = document.getElementById('submit-loading');
+        const uploadProgress = document.getElementById('upload-progress');
+        const progressBar = uploadProgress.querySelector('.progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const statusText = document.getElementById('status-text');
+        
+        console.log('DOM Loaded!'); // برای debug
+        console.log('Form:', form); // برای debug
+        console.log('Progress Bar:', uploadProgress); // برای debug
+        
+        // اضافه کردن event listener به فرم
+        if (form) {
+            console.log('فرم پیدا شد!'); // برای debug
+            form.addEventListener('submit', function(e) {
+                console.log('فرم ارسال شد!'); // برای debug
+                
+                // نمایش loading state
+                if (submitText) {
+                    submitText.style.display = 'none';
+                    console.log('متن دکمه مخفی شد!'); // برای debug
                 }
-            }, 800); // هر 800 میلی‌ثانیه یک مرحله
-            
-            // اجازه ارسال فرم
-            return true;
-        });
-    } else {
-        console.error('فرم پیدا نشد!'); // برای debug
-    }
-});
+                if (submitLoading) {
+                    submitLoading.style.display = 'inline';
+                    console.log('Loading نمایش داده شد!'); // برای debug
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    console.log('دکمه غیرفعال شد!'); // برای debug
+                }
+                
+                // نمایش progress bar
+                if (uploadProgress) {
+                    uploadProgress.style.display = 'block';
+                    console.log('Progress Bar نمایش داده شد!'); // برای debug
+                } else {
+                    console.error('Progress Bar پیدا نشد!'); // برای debug
+                }
+                
+                // مراحل مختلف پیشرفت
+                const stages = [
+                    { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
+                    { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
+                    { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
+                    { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
+                    { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
+                    { progress: 95, text: 'تقریباً تمام شد...' }
+                ];
+                
+                let currentStage = 0;
+                
+                // نمایش مراحل پیشرفت
+                const progressInterval = setInterval(() => {
+                    if (currentStage < stages.length) {
+                        const stage = stages[currentStage];
+                        if (progressBar) {
+                            progressBar.style.width = stage.progress + '%';
+                            progressBar.setAttribute('aria-valuenow', stage.progress);
+                        }
+                        if (progressText) progressText.textContent = stage.progress + '%';
+                        if (statusText) statusText.textContent = stage.text;
+                        currentStage++;
+                        console.log('مرحله:', stage.text, stage.progress + '%'); // برای debug
+                    } else {
+                        // مرحله نهایی
+                        if (progressBar) {
+                            progressBar.style.width = '100%';
+                            progressBar.setAttribute('aria-valuenow', 100);
+                            progressBar.classList.remove('bg-primary');
+                            progressBar.classList.add('bg-success');
+                        }
+                        if (progressText) progressText.textContent = '100%';
+                        if (statusText) statusText.textContent = 'تمام شد! در حال انتقال...';
+                        
+                        clearInterval(progressInterval);
+                        console.log('پیشرفت تمام شد!'); // برای debug
+                    }
+                }, 800); // هر 800 میلی‌ثانیه یک مرحله
+                
+                // اجازه ارسال فرم
+                return true;
+            });
+        } else {
+            console.error('فرم پیدا نشد!'); // برای debug
+        }
+    });
 </script>
 {% endblock %}
 
@@ -447,4 +452,98 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
+
+<script>
+    // نمایش پیشرفت آپلود
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const submitLoading = document.getElementById('submit-loading');
+        const uploadProgress = document.getElementById('upload-progress');
+        const progressBar = uploadProgress.querySelector('.progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const statusText = document.getElementById('status-text');
+        
+        console.log('DOM Loaded!'); // برای debug
+        console.log('Form:', form); // برای debug
+        console.log('Progress Bar:', uploadProgress); // برای debug
+        
+        // اضافه کردن event listener به فرم
+        if (form) {
+            console.log('فرم پیدا شد!'); // برای debug
+            form.addEventListener('submit', function(e) {
+                console.log('فرم ارسال شد!'); // برای debug
+                
+                // نمایش loading state
+                if (submitText) {
+                    submitText.style.display = 'none';
+                    console.log('متن دکمه مخفی شد!'); // برای debug
+                }
+                if (submitLoading) {
+                    submitLoading.style.display = 'inline';
+                    console.log('Loading نمایش داده شد!'); // برای debug
+                }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    console.log('دکمه غیرفعال شد!'); // برای debug
+                }
+                
+                // نمایش progress bar
+                if (uploadProgress) {
+                    uploadProgress.style.display = 'block';
+                    console.log('Progress Bar نمایش داده شد!'); // برای debug
+                } else {
+                    console.error('Progress Bar پیدا نشد!'); // برای debug
+                }
+                
+                // مراحل مختلف پیشرفت
+                const stages = [
+                    { progress: 15, text: 'در حال بررسی اطلاعات محصول...' },
+                    { progress: 30, text: 'در حال آماده‌سازی عکس‌ها...' },
+                    { progress: 45, text: 'در حال فشرده‌سازی عکس‌ها...' },
+                    { progress: 60, text: 'در حال ذخیره‌سازی در دیتابیس...' },
+                    { progress: 80, text: 'در حال ایجاد تصاویر محصول...' },
+                    { progress: 95, text: 'تقریباً تمام شد...' }
+                ];
+                
+                let currentStage = 0;
+                
+                // نمایش مراحل پیشرفت
+                const progressInterval = setInterval(() => {
+                    if (currentStage < stages.length) {
+                        const stage = stages[currentStage];
+                        if (progressBar) {
+                            progressBar.style.width = stage.progress + '%';
+                            progressBar.setAttribute('aria-valuenow', stage.progress);
+                        }
+                        if (progressText) progressText.textContent = stage.progress + '%';
+                        if (statusText) statusText.textContent = stage.text;
+                        currentStage++;
+                        console.log('مرحله:', stage.text, stage.progress + '%'); // برای debug
+                    } else {
+                        // مرحله نهایی
+                        if (progressBar) {
+                            progressBar.style.width = '100%';
+                            progressBar.setAttribute('aria-valuenow', 100);
+                            progressBar.classList.remove('bg-primary');
+                            progressBar.classList.add('bg-success');
+                        }
+                        if (progressText) progressText.textContent = '100%';
+                        if (statusText) statusText.textContent = 'تمام شد! در حال انتقال...';
+                        
+                        clearInterval(progressInterval);
+                        console.log('پیشرفت تمام شد!'); // برای debug
+                    }
+                }, 800); // هر 800 میلی‌ثانیه یک مرحله
+                
+                // اجازه ارسال فرم
+                return true;
+            });
+        } else {
+            console.error('فرم پیدا نشد!'); // برای debug
+        }
+    });
+</script>
+
 {% endblock %}

@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (form) {
             console.log('فرم پیدا شد!'); // برای debug
             form.addEventListener('submit', function(e) {
+                e.preventDefault(); // جلوگیری از Submit معمولی
                 console.log('فرم ارسال شد!'); // برای debug
                 
                 // نمایش loading state
@@ -303,11 +304,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         clearInterval(progressInterval);
                         console.log('پیشرفت تمام شد!'); // برای debug
+                        
+                        // حالا فرم رو Submit کن
+                        setTimeout(() => {
+                            form.submit();
+                        }, 1000);
                     }
                 }, 800); // هر 800 میلی‌ثانیه یک مرحله
-                
-                // اجازه ارسال فرم
-                return true;
             });
         } else {
             console.error('فرم پیدا نشد!'); // برای debug
@@ -473,6 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (form) {
             console.log('فرم پیدا شد!'); // برای debug
             form.addEventListener('submit', function(e) {
+                e.preventDefault(); // جلوگیری از Submit معمولی
                 console.log('فرم ارسال شد!'); // برای debug
                 
                 // نمایش loading state
@@ -534,11 +538,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         clearInterval(progressInterval);
                         console.log('پیشرفت تمام شد!'); // برای debug
+                        
+                        // حالا فرم رو Submit کن
+                        setTimeout(() => {
+                            form.submit();
+                        }, 1000);
                     }
                 }, 800); // هر 800 میلی‌ثانیه یک مرحله
-                
-                // اجازه ارسال فرم
-                return true;
             });
         } else {
             console.error('فرم پیدا نشد!'); // برای debug

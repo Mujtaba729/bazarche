@@ -299,7 +299,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     clearInterval(progressInterval);
                     console.log('پیشرفت تمام شد!'); // برای debug
                 }
-            }, 600); // هر 600 میلی‌ثانیه یک مرحله
+            }, 800); // هر 800 میلی‌ثانیه یک مرحله
+            
+            // اجازه ارسال فرم
+            return true;
         });
     } else {
         console.error('فرم پیدا نشد!'); // برای debug

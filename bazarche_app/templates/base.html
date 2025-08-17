@@ -440,17 +440,19 @@
         });
     </script>
 
-        <!-- iOS Install Prompt -->
-        <div id="ios-install-prompt" class="ios-prompt" style="display: none;">
-            <div class="ios-prompt-content">
-                <div class="ios-install-button" onclick="toggleInstallInstructions()">
+        <!-- PWA Install Prompt -->
+        <div id="pwa-install-prompt" class="pwa-prompt" style="display: none;">
+            <div class="pwa-prompt-content">
+                <div class="pwa-install-button" onclick="handleInstallClick()">
                     <span class="install-icon">📱</span>
                     <span class="install-text">نصب برنامه</span>
                 </div>
-                <div class="ios-install-instructions" id="install-instructions" style="display: none;">
+                
+                <!-- iOS Instructions (only shown on iOS) -->
+                <div class="ios-install-instructions" id="ios-instructions" style="display: none;">
                     <div class="instructions-header">
                         <h6>📱 برای نصب اپلیکیشن</h6>
-                        <button class="instructions-close" onclick="toggleInstallInstructions()">×</button>
+                        <button class="instructions-close" onclick="toggleIOSInstructions()">×</button>
                     </div>
                     <div class="instructions-steps">
                         <div class="step">
@@ -471,7 +473,7 @@
         </div>
 
         <style>
-        .ios-prompt {
+        .pwa-prompt {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -479,11 +481,11 @@
             font-family: 'Vazir', sans-serif;
         }
 
-        .ios-prompt-content {
+        .pwa-prompt-content {
             position: relative;
         }
 
-        .ios-install-button {
+        .pwa-install-button {
             width: 80px;
             height: 80px;
             border-radius: 50%;
@@ -501,12 +503,12 @@
             line-height: 1.2;
         }
 
-        .ios-install-button:hover {
+        .pwa-install-button:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
 
-        .ios-install-button.expanded {
+        .pwa-install-button.expanded {
             width: 300px;
             height: auto;
             border-radius: 20px;
@@ -606,7 +608,7 @@
         }
 
         @media (max-width: 768px) {
-            .ios-install-button {
+            .pwa-install-button {
                 width: 70px;
                 height: 70px;
                 font-size: 11px;
@@ -620,17 +622,58 @@
         </style>
 
         <script>
-        // iOS Install Prompt Logic
-        function showIOSInstallPrompt() {
-            const prompt = document.getElementById('ios-install-prompt');
+        // PWA Install Logic
+        let deferredPrompt;
+        
+        // Listen for the beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            // Show the install button
+            showInstallPrompt();
+        });
+        
+        // Show install prompt
+        function showInstallPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
             if (prompt) {
                 prompt.style.display = 'block';
             }
         }
-
-        function toggleInstallInstructions() {
-            const button = document.querySelector('.ios-install-button');
-            const instructions = document.getElementById('install-instructions');
+        
+        // Handle install button click
+        function handleInstallClick() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone;
+            
+            if (isIOS && !isStandalone) {
+                // iOS: Show instructions
+                toggleIOSInstructions();
+            } else if (deferredPrompt) {
+                // Android/Desktop: Trigger install prompt
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                    // Hide the install button after use
+                    hideInstallPrompt();
+                });
+            } else {
+                // Fallback: Show message
+                alert('برای نصب برنامه، لطفاً از منوی مرورگر استفاده کنید.');
+            }
+        }
+        
+        // Toggle iOS instructions
+        function toggleIOSInstructions() {
+            const button = document.querySelector('.pwa-install-button');
+            const instructions = document.getElementById('ios-instructions');
             
             if (instructions.style.display === 'none') {
                 button.classList.add('expanded');
@@ -640,18 +683,32 @@
                 instructions.style.display = 'none';
             }
         }
-
+        
+        // Hide install prompt
+        function hideInstallPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
+            if (prompt) {
+                prompt.style.display = 'none';
+            }
+        }
+        
+        // Check if app is already installed
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('App was installed');
+            hideInstallPrompt();
+        });
+        
         // Check if user is on iOS and show prompt
         function checkIOSAndShowPrompt() {
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isStandalone = window.navigator.standalone;
             
             if (isIOS && !isStandalone) {
-                // Show prompt after 3 seconds
-                setTimeout(showIOSInstallPrompt, 3000);
+                // Show prompt after 3 seconds on iOS
+                setTimeout(showInstallPrompt, 3000);
             }
         }
-
+        
         // Run on page load
         document.addEventListener('DOMContentLoaded', checkIOSAndShowPrompt);
         </script>

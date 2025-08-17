@@ -439,5 +439,221 @@
             setTimeout(showIOSInstallPrompt, 2000);
         });
     </script>
+
+        <!-- iOS Install Prompt -->
+        <div id="ios-install-prompt" class="ios-prompt" style="display: none;">
+            <div class="ios-prompt-content">
+                <div class="ios-install-button" onclick="toggleInstallInstructions()">
+                    <span class="install-icon">📱</span>
+                    <span class="install-text">نصب برنامه</span>
+                </div>
+                <div class="ios-install-instructions" id="install-instructions" style="display: none;">
+                    <div class="instructions-header">
+                        <h6>📱 برای نصب اپلیکیشن</h6>
+                        <button class="instructions-close" onclick="toggleInstallInstructions()">×</button>
+                    </div>
+                    <div class="instructions-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-text">روی دکمه <span class="share-button">⬆️</span> در پایین مرورگر کلیک کنید</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-text">گزینه <strong>Add to Home Screen</strong> را انتخاب کنید</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-text">روی دکمه <strong>Add</strong> کلیک کنید</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+        .ios-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            font-family: 'Vazir', sans-serif;
+        }
+
+        .ios-prompt-content {
+            position: relative;
+        }
+
+        .ios-install-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .ios-install-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .ios-install-button.expanded {
+            width: 300px;
+            height: auto;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .install-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .install-text {
+            font-weight: bold;
+        }
+
+        .ios-install-instructions {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 280px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .instructions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .instructions-header h6 {
+            margin: 0;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .instructions-close {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .instructions-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: #555;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        .share-button {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .ios-install-button {
+                width: 70px;
+                height: 70px;
+                font-size: 11px;
+            }
+            
+            .ios-install-instructions {
+                width: 250px;
+                right: -10px;
+            }
+        }
+        </style>
+
+        <script>
+        // iOS Install Prompt Logic
+        function showIOSInstallPrompt() {
+            const prompt = document.getElementById('ios-install-prompt');
+            if (prompt) {
+                prompt.style.display = 'block';
+            }
+        }
+
+        function toggleInstallInstructions() {
+            const button = document.querySelector('.ios-install-button');
+            const instructions = document.getElementById('install-instructions');
+            
+            if (instructions.style.display === 'none') {
+                button.classList.add('expanded');
+                instructions.style.display = 'block';
+            } else {
+                button.classList.remove('expanded');
+                instructions.style.display = 'none';
+            }
+        }
+
+        // Check if user is on iOS and show prompt
+        function checkIOSAndShowPrompt() {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isStandalone = window.navigator.standalone;
+            
+            if (isIOS && !isStandalone) {
+                // Show prompt after 3 seconds
+                setTimeout(showIOSInstallPrompt, 3000);
+            }
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', checkIOSAndShowPrompt);
+        </script>
 </body>
 </html>

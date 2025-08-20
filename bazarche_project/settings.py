@@ -184,8 +184,9 @@ CACHES = {
 # Session Configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'sessions'
-SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_AGE = 86400 * 30  # 30 days instead of 24 hours
+SESSION_SAVE_EVERY_REQUEST = True  # Changed to True to keep session alive
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session even after browser close
 
 # Database Connection Pooling
 DATABASE_CONNECTION_POOLING = True

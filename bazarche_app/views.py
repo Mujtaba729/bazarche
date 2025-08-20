@@ -187,9 +187,9 @@ def home(request):
     # Get featured, suggested, and discounted products for priority
     featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
     suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
-    discounted_products = sorted([p for p in products_data if p.discount_price and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+    discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
     remaining_products = sorted([
-        p for p in products_data if not (p.is_featured or p.is_suggested or p.discount_price)
+        p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
     ], key=lambda p: p.created_at, reverse=True)
 
     # Combine all products: featured -> suggested -> discounted -> remaining (همه به ترتیب جدیدترین)

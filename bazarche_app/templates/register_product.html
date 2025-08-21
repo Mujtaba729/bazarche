@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Loaded!');
     
     // Find form elements
-    const form = document.querySelector('form[method="post"]');
+    const form = document.querySelector('form[enctype="multipart/form-data"]');
     const submitBtn = document.getElementById('submit-btn');
     const submitText = document.getElementById('submit-text');
     const submitLoading = document.getElementById('submit-loading');

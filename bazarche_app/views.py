@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum, Count
 from django.contrib.auth.models import User
 from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, City, AbuseReport, Advertisement, JobAd, Request
@@ -1115,6 +1116,138 @@ def faq(request):
 def health(request):
     """ساده‌ترین هلت‌چک برای Railway"""
     return HttpResponse("ok")
+
+@user_passes_test(lambda u: u.is_superuser)
+def status(request):
+    """صفحه status کامل - فقط برای ادمین"""
+    from django.contrib.sessions.models import Session
+    from django.utils import timezone
+    from datetime import timedelta
+    import psutil
+    import os
+    from django.db import connection
+    
+    # آمار کاربران
+    total_users = User.objects.count()
+    active_users_today = User.objects.filter(last_login__gte=timezone.now() - timedelta(days=1)).count()
+    active_users_week = User.objects.filter(last_login__gte=timezone.now() - timedelta(days=7)).count()
+    active_users_month = User.objects.filter(last_login__gte=timezone.now() - timedelta(days=30)).count()
+    new_users_today = User.objects.filter(date_joined__gte=timezone.now() - timedelta(days=1)).count()
+    
+    # آمار محصولات
+    total_products = Product.objects.count()
+    approved_products = Product.objects.filter(is_approved=True).count()
+    pending_products = Product.objects.filter(is_approved=False).count()
+    featured_products = Product.objects.filter(is_featured=True).count()
+    discounted_products = Product.objects.filter(is_discounted=True).count()
+    products_today = Product.objects.filter(created_at__gte=timezone.now() - timedelta(days=1)).count()
+    
+    # آمار دسته‌بندی‌ها
+    total_categories = Category.objects.count()
+    total_cities = City.objects.count()
+    
+    # آمار جاب‌ها و درخواست‌ها
+    total_jobs = JobAd.objects.count() if 'JobAd' in globals() else 0
+    total_requests = Request.objects.count() if 'Request' in globals() else 0
+    
+    # آمار سیستم
+    try:
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        cpu_percent = psutil.cpu_percent(interval=1)
+        
+        system_stats = {
+            'memory_total': round(memory.total / (1024**3), 2),  # GB
+            'memory_used': round(memory.used / (1024**3), 2),   # GB
+            'memory_percent': memory.percent,
+            'disk_total': round(disk.total / (1024**3), 2),     # GB
+            'disk_used': round(disk.used / (1024**3), 2),       # GB
+            'disk_percent': round((disk.used / disk.total) * 100, 1),
+            'cpu_percent': cpu_percent,
+        }
+    except:
+        system_stats = {
+            'memory_total': 'N/A',
+            'memory_used': 'N/A', 
+            'memory_percent': 'N/A',
+            'disk_total': 'N/A',
+            'disk_used': 'N/A',
+            'disk_percent': 'N/A',
+            'cpu_percent': 'N/A',
+        }
+    
+    # آمار دیتابیس
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT pg_size_pretty(pg_database_size(current_database()))")
+            db_size = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT count(*) FROM pg_stat_activity WHERE state = 'active'")
+            active_connections = cursor.fetchone()[0]
+            
+            cursor.execute("SELECT count(*) FROM pg_stat_activity")
+            total_connections = cursor.fetchone()[0]
+    except:
+        db_size = 'N/A'
+        active_connections = 'N/A'
+        total_connections = 'N/A'
+    
+    # آمار media files
+    try:
+        media_path = os.path.join(settings.BASE_DIR, 'media')
+        media_size = 0
+        media_files = 0
+        for dirpath, dirnames, filenames in os.walk(media_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                if os.path.exists(fp):
+                    media_size += os.path.getsize(fp)
+                    media_files += 1
+        media_size_mb = round(media_size / (1024**2), 2)  # MB
+    except:
+        media_size_mb = 'N/A'
+        media_files = 'N/A'
+    
+    # آمار session های فعال
+    active_sessions = Session.objects.filter(expire_date__gte=timezone.now()).count()
+    
+    context = {
+        'title': 'گزارش وضعیت سیستم',
+        # آمار کاربران
+        'total_users': total_users,
+        'active_users_today': active_users_today,
+        'active_users_week': active_users_week,
+        'active_users_month': active_users_month,
+        'new_users_today': new_users_today,
+        'active_sessions': active_sessions,
+        
+        # آمار محصولات
+        'total_products': total_products,
+        'approved_products': approved_products,
+        'pending_products': pending_products,
+        'featured_products': featured_products,
+        'discounted_products': discounted_products,
+        'products_today': products_today,
+        
+        # آمار عمومی
+        'total_categories': total_categories,
+        'total_cities': total_cities,
+        'total_jobs': total_jobs,
+        'total_requests': total_requests,
+        
+        # آمار سیستم
+        'system_stats': system_stats,
+        'db_size': db_size,
+        'active_connections': active_connections,
+        'total_connections': total_connections,
+        'media_size_mb': media_size_mb,
+        'media_files': media_files,
+        
+        # زمان
+        'current_time': timezone.now(),
+    }
+    
+    return render(request, 'admin/system_status.html', context)
 
 def sitemap(request):
     """تولید فایل sitemap.xml"""

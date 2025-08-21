@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jnbmyh*#%ux79z!^%n1$dhw^f3^k$-rzt&3=q*w@lq34)q62g+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'soodava.com',
@@ -46,7 +46,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # Additional CSRF settings
-CSRF_COOKIE_SECURE = True  # True for production
+CSRF_COOKIE_SECURE = False  # False for local testing
 CSRF_COOKIE_HTTPONLY = True
 CSRF_USE_SESSIONS = False  # Changed to False to avoid session issues
 CSRF_COOKIE_SAMESITE = 'Lax'
@@ -225,13 +225,13 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
 
 # Additional Security Settings for Production
-SECURE_SSL_REDIRECT = True  # Force HTTPS
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = True  # Only send session cookies over HTTPS
+# SECURE_SSL_REDIRECT = True  # Force HTTPS - COMMENTED OUT FOR LOCAL
+# SECURE_HSTS_SECONDS = 31536000  # 1 year - COMMENTED OUT FOR LOCAL
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True - COMMENTED OUT FOR LOCAL
+# SECURE_HSTS_PRELOAD = True - COMMENTED OUT FOR LOCAL
+# SESSION_COOKIE_SECURE = True  # Only send session cookies over HTTPS - COMMENTED OUT FOR LOCAL
 SESSION_COOKIE_HTTPONLY = True  # Prevent XSS attacks
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') - COMMENTED OUT FOR LOCAL
 
 # Compression & Static Files
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

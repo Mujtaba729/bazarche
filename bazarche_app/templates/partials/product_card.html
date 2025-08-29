@@ -447,6 +447,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+        // Desktop mouse events for better experience
+        card.addEventListener('mousedown', function(event) {
+            if (event.button === 0) { // Left click only
+                this.style.transform = 'scale(0.98)';
+                this.style.transition = 'transform 0.1s ease';
+            }
+        });
+        
+        card.addEventListener('mouseup', function() {
+            this.style.transform = '';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+        
         // Add touch feedback for mobile
         if ('ontouchstart' in window) {
             let startY = 0;

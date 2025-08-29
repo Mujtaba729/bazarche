@@ -174,6 +174,10 @@ def home(request):
     # نمایش محصولات با امکان فیلتر بر اساس عبارت جستجو
     products_qs = Product.objects.filter(is_approved=True)
 
+    # فیلتر بر اساس شهر
+    if city_id:
+        products_qs = products_qs.filter(city_id=city_id)
+
     # فیلتر جستجو در صفحه خانه اگر q وجود داشته باشد
     if search_query:
         products_qs = products_qs.filter(
@@ -1014,61 +1018,169 @@ def user_products(request):
 def category_detail(request, category_id):
     """نمایش محصولات یک دسته‌بندی"""
     category = get_object_or_404(Category, id=category_id)
-    products = Product.objects.filter(
+    
+    # دریافت محصولات دسته‌بندی با اولویت‌بندی
+    products_qs = Product.objects.filter(
         category=category,
         is_approved=True
-    ).order_by('-created_at')
+    )
+    
+    # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
+    products_data = list(products_qs)
+    
+    featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
+    suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
+    discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+    remaining_products = sorted([
+        p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
+    ], key=lambda p: p.created_at, reverse=True)
+    
+    # ترکیب محصولات با اولویت
+    all_products = featured_products + suggested_products + discounted_products + remaining_products
+    
+    # Pagination
+    paginator = Paginator(all_products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     context = {
         'category': category,
-        'products': products,
+        'products': page_obj,
+        'total_products': len(products_data),
+        'featured_count': len(featured_products),
+        'suggested_count': len(suggested_products),
+        'discounted_count': len(discounted_products),
     }
+    context.update(get_cities_context(request))
+    context.update(get_categories_context())
     return render(request, 'category_detail.html', context)
 
 def city_detail(request, city_id):
     """نمایش محصولات یک شهر"""
     city = get_object_or_404(City, id=city_id)
-    products = Product.objects.filter(
+    
+    # دریافت محصولات شهر با اولویت‌بندی
+    products_qs = Product.objects.filter(
         city=city,
         is_approved=True
-    ).order_by('-created_at')
+    )
+    
+    # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
+    products_data = list(products_qs)
+    
+    featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
+    suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
+    discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+    remaining_products = sorted([
+        p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
+    ], key=lambda p: p.created_at, reverse=True)
+    
+    # ترکیب محصولات با اولویت
+    all_products = featured_products + suggested_products + discounted_products + remaining_products
+    
+    # Pagination
+    paginator = Paginator(all_products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     context = {
         'city': city,
-        'products': products,
+        'products': page_obj,
+        'total_products': len(products_data),
+        'featured_count': len(featured_products),
+        'suggested_count': len(suggested_products),
+        'discounted_count': len(discounted_products),
     }
+    context.update(get_cities_context(request))
+    context.update(get_categories_context())
     return render(request, 'city_detail.html', context)
 
 def tag_detail(request, tag_id):
     """نمایش محصولات یک برچسب"""
     tag = get_object_or_404(Tag, id=tag_id)
-    products = Product.objects.filter(
+    
+    # دریافت محصولات برچسب با اولویت‌بندی
+    products_qs = Product.objects.filter(
         tags=tag,
         is_approved=True
-    ).order_by('-created_at')
+    )
+    
+    # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
+    products_data = list(products_qs)
+    
+    featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
+    suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
+    discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+    remaining_products = sorted([
+        p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
+    ], key=lambda p: p.created_at, reverse=True)
+    
+    # ترکیب محصولات با اولویت
+    all_products = featured_products + suggested_products + discounted_products + remaining_products
+    
+    # Pagination
+    paginator = Paginator(all_products, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
     context = {
         'tag': tag,
-        'products': products,
+        'products': page_obj,
+        'total_products': len(products_data),
+        'featured_count': len(featured_products),
+        'suggested_count': len(suggested_products),
+        'discounted_count': len(discounted_products),
     }
+    context.update(get_cities_context(request))
+    context.update(get_categories_context())
     return render(request, 'tag_detail.html', context)
 
 def search(request):
     """جستجوی محصولات"""
     query = request.GET.get('q', '')
+    city_id = request.GET.get('city_id')
+    
     if query:
-        products = Product.objects.filter(
+        products_qs = Product.objects.filter(
             Q(name_fa__icontains=query) |
             Q(description_fa__icontains=query) |
             Q(tags__name_fa__icontains=query)
-        ).filter(is_approved=True).distinct().order_by('-created_at')
+        ).filter(is_approved=True).distinct()
+        
+        # فیلتر بر اساس شهر
+        if city_id:
+            products_qs = products_qs.filter(city_id=city_id)
+        
+        # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
+        products_data = list(products_qs)
+        
+        featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
+        suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
+        discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+        remaining_products = sorted([
+            p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
+        ], key=lambda p: p.created_at, reverse=True)
+        
+        # ترکیب محصولات با اولویت
+        all_products = featured_products + suggested_products + discounted_products + remaining_products
+        
+        # Pagination
+        paginator = Paginator(all_products, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        products = page_obj
     else:
         products = Product.objects.none()
+        page_obj = None
     
     context = {
         'products': products,
         'query': query,
+        'city_id': city_id,
     }
+    context.update(get_cities_context(request))
+    context.update(get_categories_context())
     return render(request, 'search_results.html', context)
 
 def contact(request):

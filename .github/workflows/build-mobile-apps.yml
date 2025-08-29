@@ -1,0 +1,182 @@
+name: Build Mobile Apps with Capacitor
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 1'  # Every Monday at 2 AM
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    name: Build Android APK
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install Capacitor
+        run: |
+          npm install @capacitor/core @capacitor/cli
+          npm install @capacitor/android
+          
+      - name: Create package.json
+        run: |
+          echo '{
+            "name": "bazarche",
+            "version": "1.0.0",
+            "description": "SoodAva - بازار آنلاین افغانستان",
+            "main": "index.js"
+          }' > package.json
+          
+      - name: Initialize Capacitor
+        run: |
+          npx cap init SoodAva www.soodava.com --web-dir staticfiles
+          
+      - name: Add Android Platform
+        run: npx cap add android
+        
+      - name: Create index.html for Capacitor
+        run: |
+          echo '<!DOCTYPE html>
+          <html lang="fa" dir="rtl">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>SoodAva - بازار آنلاین افغانستان</title>
+              <meta name="theme-color" content="#276ef1">
+              <link rel="manifest" href="manifest.json">
+              <style>
+                  body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: white; }
+                  .container { text-align: center; }
+                  .logo { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }
+                  .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem; }
+                  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="logo">SoodAva</div>
+                  <div class="spinner"></div>
+                  <p>در حال بارگذاری...</p>
+              </div>
+              <script>setTimeout(() => { window.location.href = "https://soodava.com"; }, 2000);</script>
+          </body>
+          </html>' > staticfiles/index.html
+          
+      - name: Sync Android
+        run: npx cap sync android
+        
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+          
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: soodava-android-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          
+      - name: Upload Android Project
+        uses: actions/upload-artifact@v4
+        with:
+          name: soodava-android-project
+          path: android/
+
+  build-ios:
+    runs-on: macos-latest
+    name: Build iOS App
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install Capacitor
+        run: |
+          npm install @capacitor/core @capacitor/cli
+          npm install @capacitor/ios
+          
+      - name: Create package.json
+        run: |
+          echo '{
+            "name": "bazarche",
+            "version": "1.0.0",
+            "description": "SoodAva - بازار آنلاین افغانستان",
+            "main": "index.js"
+          }' > package.json
+          
+      - name: Initialize Capacitor
+        run: |
+          npx cap init SoodAva www.soodava.com --web-dir staticfiles
+          
+      - name: Add iOS Platform
+        run: npx cap add ios
+        
+      - name: Create index.html for Capacitor
+        run: |
+          echo '<!DOCTYPE html>
+          <html lang="fa" dir="rtl">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>SoodAva - بازار آنلاین افغانستان</title>
+              <meta name="theme-color" content="#276ef1">
+              <link rel="manifest" href="manifest.json">
+              <style>
+                  body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; color: white; }
+                  .container { text-align: center; }
+                  .logo { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }
+                  .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem; }
+                  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="logo">SoodAva</div>
+                  <div class="spinner"></div>
+                  <p>در حال بارگذاری...</p>
+              </div>
+              <script>setTimeout(() => { window.location.href = "https://soodava.com"; }, 2000);</script>
+          </body>
+          </html>' > staticfiles/index.html
+          
+      - name: Sync iOS
+        run: npx cap sync ios
+        
+      - name: Build iOS Project
+        run: |
+          cd ios/App
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug -destination "generic/platform=iOS" -derivedDataPath build
+          
+      - name: Upload iOS Project
+        uses: actions/upload-artifact@v4
+        with:
+          name: soodava-ios-project
+          path: ios/
+
+  notify-success:
+    needs: [build-android, build-ios]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Notify Build Status
+        run: |
+          echo "🎉 Mobile Apps Build Complete!"
+          echo "📱 Android: ${{ needs.build-android.result }}"
+          echo "🍎 iOS: ${{ needs.build-ios.result }}"
+          echo "📥 Download from GitHub Actions Artifacts"

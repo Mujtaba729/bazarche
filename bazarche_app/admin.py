@@ -125,3 +125,71 @@ class AdminAlertAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     search_fields = ('user__username',)
     ordering = ('-created_at',)
+
+# UserProfile Admin
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'profile_id', 'contact', 'created_at', 'user')
+    list_filter = ('created_at',)
+    search_fields = ('full_name', 'contact', 'profile_id', 'user__username')
+    readonly_fields = ('profile_id', 'created_at', 'user')
+    ordering = ('-created_at',)
+    
+    def full_name(self, obj):
+        return obj.full_name if obj.full_name else 'نام ثبت نشده'
+    full_name.short_description = 'نام و نام خانوادگی'
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user')
+
+# Customize User Admin to show all info in Users section
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+
+class UserAdmin(BaseUserAdmin):
+    list_display = ('username', 'full_name', 'profile_id', 'contact', 'email', 'date_joined', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined')
+    search_fields = ('username', 'first_name', 'last_name', 'email', 'userprofile__full_name', 'userprofile__contact')
+    ordering = ('-date_joined',)
+    
+    fieldsets = BaseUserAdmin.fieldsets + (
+        ('اطلاعات پروفایل', {'fields': ('get_profile_info',)}),
+    )
+    
+    readonly_fields = ('date_joined', 'get_profile_info')
+    
+    def full_name(self, obj):
+        try:
+            return obj.userprofile.full_name if obj.userprofile.full_name else f"{obj.first_name} {obj.last_name}".strip() or 'نام ثبت نشده'
+        except:
+            return f"{obj.first_name} {obj.last_name}".strip() or 'نام ثبت نشده'
+    full_name.short_description = 'نام و نام خانوادگی'
+    
+    def profile_id(self, obj):
+        try:
+            return obj.userprofile.profile_id if obj.userprofile.profile_id else 'شناسه ندارد'
+        except:
+            return 'شناسه ندارد'
+    profile_id.short_description = 'شناسه کاربری'
+    
+    def contact(self, obj):
+        try:
+            return obj.userprofile.contact if obj.userprofile.contact else 'شماره ندارد'
+        except:
+            return 'شماره ندارد'
+    contact.short_description = 'شماره تماس'
+    
+    def get_profile_info(self, obj):
+        try:
+            profile = obj.userprofile
+            return f"شناسه: {profile.profile_id}, شماره: {profile.contact}, تاریخ ایجاد: {profile.created_at}"
+        except:
+            return 'پروفایل موجود نیست'
+    get_profile_info.short_description = 'اطلاعات پروفایل'
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('userprofile')
+
+# Unregister and re-register User
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, SubCategory, AbuseReport, Advertisement, Request, AdminAlert
+from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, SubCategory, AbuseReport, Advertisement, Request, AdminAlert, UserProfile
 
 @admin.register(MainCategory)
 class MainCategoryAdmin(admin.ModelAdmin):

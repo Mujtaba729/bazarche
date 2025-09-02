@@ -289,23 +289,15 @@ def load_more_products(request):
                 Q(tags__name_fa__icontains=search_query)
             ).distinct()
         
-        products_qs = products_qs.order_by('-created_at')
-        products_data = list(products_qs)
+        # Order products by priority and date
+        products_qs = products_qs.order_by(
+            '-is_featured',  # Featured first
+            '-is_suggested',  # Then suggested
+            '-is_discounted',  # Then discounted
+            '-created_at'  # Then by date
+        )
         
-        logger.info(f"Total products found: {len(products_data)}")
-        
-        # Get featured, suggested, and discounted products for priority
-        featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
-        suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
-        discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
-        remaining_products = sorted([
-            p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
-        ], key=lambda p: p.created_at, reverse=True)
-        
-        # Combine all products
-        all_products = featured_products + suggested_products + discounted_products + remaining_products
-        
-        logger.info(f"Combined products: {len(all_products)}")
+        logger.info(f"Total products found: {products_qs.count()}")
         
         # Get advertisements for product placement
         from django.utils import timezone
@@ -317,20 +309,8 @@ def load_more_products(request):
             end_date__gte=now
         ).order_by('display_order', '-created_at')
         
-        # Insert advertisements into products list
-        products_with_ads = []
-        ad_index = 0
-        
-        for i, product in enumerate(all_products):
-            products_with_ads.append(product)
-            
-            # Add advertisement every 10 products
-            if (i + 1) % 10 == 0 and ad_index < len(product_advertisements):
-                products_with_ads.append(product_advertisements[ad_index])
-                ad_index += 1
-        
-        # Pagination
-        paginator = Paginator(products_with_ads, 20)
+        # Simple pagination without loading all products
+        paginator = Paginator(products_qs, 20)
         page_obj = paginator.get_page(page)
         
         logger.info(f"Page {page} has {len(page_obj)} items, has_next: {page_obj.has_next()}")
@@ -338,29 +318,20 @@ def load_more_products(request):
         # Convert products to JSON
         products_data = []
         for product in page_obj:
-            if hasattr(product, 'name_fa'):  # It's a product
-                products_data.append({
-                    'id': product.id,
-                    'name': product.name_fa or product.name_en or product.name_ps,
-                    'price': product.price,
-                    'discount_price': product.discount_price,
-                    'city': product.city.name if product.city else None,
-                    'image': product.images.first().image.url if product.images.first() else None,
-                    'is_featured': product.is_featured,
-                    'is_discounted': product.is_discounted,
-                    'is_suggested': product.is_suggested,
-                    'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
-                    'url': f'/product/{product.id}/',
-                    'type': 'product'
-                })
-            else:  # It's an advertisement
-                products_data.append({
-                    'id': f'ad_{product.id}',
-                    'title': product.title,
-                    'image': product.image.url if product.image else None,
-                    'link': product.link,
-                    'type': 'advertisement'
-                })
+            products_data.append({
+                'id': product.id,
+                'name': product.name_fa or product.name_en or product.name_ps or 'نامشخص',
+                'price': product.price or 0,
+                'discount_price': product.discount_price,
+                'city': product.city.name if product.city else 'نامشخص',
+                'image': product.images.first().image.url if product.images.first() else None,
+                'is_featured': product.is_featured,
+                'is_discounted': product.is_discounted,
+                'is_suggested': product.is_suggested,
+                'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
+                'url': f'/product/{product.id}/',
+                'type': 'product'
+            })
         
         response_data = {
             'products': products_data,

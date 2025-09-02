@@ -1022,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const search_query = urlParams.get('q');
         
         // Build API URL
-        let apiUrl = `/api/load-more-products/?page=${currentPage}`;
+        let apiUrl = `/app/api/load-more-products/?page=${currentPage}`;
         if (category) apiUrl += `&category=${category}`;
         if (city_id) apiUrl += `&city_id=${city_id}`;
         if (search_query) apiUrl += `&q=${encodeURIComponent(search_query)}`;

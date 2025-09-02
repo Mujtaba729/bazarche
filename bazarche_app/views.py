@@ -424,7 +424,7 @@ def manage_products(request):
 
 @staff_member_required
 def approve_product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+            product = get_object_or_404(Product, pk=product_id)
     product.is_approved = True
     product.save()
     messages.success(request, f"محصول {product.name_fa} تایید شد.")
@@ -433,7 +433,7 @@ def approve_product(request, pk):
 @csrf_protect
 @login_required
 def delete_product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+            product = get_object_or_404(Product, pk=product_id)
     product.delete()
     messages.success(request, f"محصول {product.name_fa} حذف شد.")
     return redirect('manage_products')
@@ -441,7 +441,7 @@ def delete_product(request, pk):
 @csrf_protect
 @login_required
 def edit_product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
+            product = get_object_or_404(Product, pk=product_id)
     categories = Category.objects.all()
     tags = Tag.objects.all()
     
@@ -630,10 +630,10 @@ def product_list(request):
     context.update(get_tags_context())
     return render(request, 'product_list.html', context)
 
-def product_detail(request, pk):
+def product_detail(request, product_id):
     """نمایش جزئیات محصول با کش"""
     # بررسی کش برای جزئیات محصول
-    cached_product = CacheManager.get_cached_product_detail(pk)
+    cached_product = CacheManager.get_cached_product_detail(product_id)
     
     if cached_product:
         # استفاده از کش

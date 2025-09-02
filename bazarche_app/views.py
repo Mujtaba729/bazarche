@@ -351,7 +351,7 @@ def load_more_products(request):
                     'is_discounted': product.is_discounted,
                     'is_suggested': product.is_suggested,
                     'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
-                    'url': f'/product/{product.id}/',
+                    'url': f'/app/product/{product.id}/',
                     'type': 'product'
                 })
             else:  # It's an advertisement

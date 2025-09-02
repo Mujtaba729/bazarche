@@ -1126,9 +1126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click event
         card.addEventListener('click', function() {
-            // Fix URL to include /app/ prefix
-            const fixedUrl = product.url.startsWith('/app/') ? product.url : `/app${product.url}`;
-            window.location.href = fixedUrl;
+            window.location.href = product.url;
         });
         
         return card;

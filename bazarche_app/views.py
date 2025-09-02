@@ -644,7 +644,7 @@ def product_detail(request, product_id):
         product = get_object_or_404(
             Product.objects.select_related('category')
             .prefetch_related('tags', 'images'),
-            pk=pk,
+            pk=product_id,
             is_approved=True
         )
         
@@ -669,12 +669,12 @@ def product_detail(request, product_id):
         related_products = Product.objects.filter(
             category=product.category, 
             is_approved=True
-        ).exclude(pk=pk).order_by('?')[:4]
+        ).exclude(pk=product_id).order_by('?')[:4]
         
         seller_products = Product.objects.filter(
             seller_contact=product.seller_contact,
             is_approved=True
-        ).exclude(pk=pk).order_by('-created_at')[:4]
+        ).exclude(pk=product_id).order_by('-created_at')[:4]
     else:
         # اگر از کش استفاده می‌کنیم، محصولات مرتبط را از دیتابیس می‌گیریم
         category_name = product_data.get('category_name')
@@ -684,7 +684,7 @@ def product_detail(request, product_id):
                 related_products = Product.objects.filter(
                     category=category,
                     is_approved=True
-                ).exclude(pk=pk).order_by('?')[:4]
+                ).exclude(pk=product_id).order_by('?')[:4]
             else:
                 related_products = []
         else:
@@ -694,7 +694,7 @@ def product_detail(request, product_id):
     
     if not product:
         # اگر از کش فقط آیدی یا دیکشنری داشتیم، محصول را از دیتابیس بگیر
-        product = Product.objects.get(pk=pk)
+        product = Product.objects.get(pk=product_id)
     context = {
         'product': product,
         'related_products': related_products,

@@ -53,7 +53,7 @@ class VisitLogAdmin(admin.ModelAdmin):
 
 @admin.register(UserFeedback)
 class UserFeedbackAdmin(admin.ModelAdmin):
-    list_display = ('email', 'subject', 'short_message', 'timestamp', 'user')
+    list_display = ('email', 'subject', 'short_message', 'timestamp', 'user', 'get_user_contact')
     list_filter = ('timestamp',)
     search_fields = ('email', 'subject', 'message')
     readonly_fields = ('timestamp', 'user')
@@ -62,14 +62,40 @@ class UserFeedbackAdmin(admin.ModelAdmin):
     def short_message(self, obj):
         return obj.message[:100] + '...' if len(obj.message) > 100 else obj.message
     short_message.short_description = 'پیام'
+    
+    def get_user_contact(self, obj):
+        try:
+            if obj.user and obj.user.userprofile:
+                return f"{obj.user.userprofile.full_name} - {obj.user.userprofile.contact}"
+            elif obj.user:
+                return f"{obj.user.username} - {obj.user.email}"
+            else:
+                return obj.email or 'نامشخص'
+        except:
+            return obj.email or 'نامشخص'
+    get_user_contact.short_description = 'نام و شماره تماس'
 
 @admin.register(AbuseReport)
 class AbuseReportAdmin(admin.ModelAdmin):
-    list_display = ('product', 'report_type', 'created_at', 'is_reviewed')
+    list_display = ('product', 'report_type', 'get_reporter_contact', 'created_at', 'is_reviewed')
     list_filter = ('report_type', 'is_reviewed', 'created_at')
     search_fields = ('product__name_fa', 'description')
     readonly_fields = ('created_at',)
     ordering = ('-created_at',)
+    
+    def get_reporter_contact(self, obj):
+        try:
+            # اگر گزارش‌دهنده کاربر ثبت‌نام‌شده باشد
+            if hasattr(obj, 'user') and obj.user:
+                if obj.user.userprofile:
+                    return f"{obj.user.userprofile.full_name} - {obj.user.userprofile.contact}"
+                else:
+                    return f"{obj.user.username} - {obj.user.email}"
+            else:
+                return 'کاربر مهمان'
+        except:
+            return 'نامشخص'
+    get_reporter_contact.short_description = 'نام و شماره تماس گزارش‌دهنده'
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):

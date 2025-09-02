@@ -995,12 +995,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Back to top functionality
-    backToTopBtn.addEventListener('click', function() {
+    backToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     });
+    
+    // Also add click listener to the button inside
+    const backToTopButton = backToTopBtn.querySelector('button');
+    if (backToTopButton) {
+        backToTopButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
     
     // Infinite scroll functionality
     function loadMoreProducts() {
@@ -1111,7 +1126,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click event
         card.addEventListener('click', function() {
-            window.location.href = product.url;
+            // Fix URL to include /app/ prefix
+            const fixedUrl = product.url.startsWith('/app/') ? product.url : `/app${product.url}`;
+            window.location.href = fixedUrl;
         });
         
         return card;

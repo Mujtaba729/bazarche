@@ -258,124 +258,69 @@ def home(request):
     return render(request, 'home.html', context)
 
 def load_more_products(request):
-    """API endpoint برای لود محصولات بیشتر - دقیقاً مثل home function"""
+    """API endpoint برای لود محصولات بیشتر - ساده و سریع"""
     from django.http import JsonResponse
     from django.core.paginator import Paginator
-    import logging
-    
-    logger = logging.getLogger(__name__)
     
     try:
-        # دریافت پارامترهای فیلتر - دقیقاً مثل home
-        category_id = request.GET.get('category')
+        # دریافت پارامترهای فیلتر
         city_id = request.GET.get('city_id')
         search_query = request.GET.get('q')
         page = int(request.GET.get('page', 1))
         
-        logger.info(f"Loading page {page} with filters - category: {category_id}, city: {city_id}, search: {search_query}")
-        
-        # نمایش محصولات با امکان فیلتر - دقیقاً مثل home
+        # نمایش محصولات با امکان فیلتر
         products_qs = Product.objects.filter(is_approved=True)
         
-        # فیلتر بر اساس شهر - دقیقاً مثل home
+        # فیلتر بر اساس شهر
         if city_id:
             products_qs = products_qs.filter(city_id=city_id)
         
-        # فیلتر جستجو - دقیقاً مثل home
+        # فیلتر جستجو
         if search_query:
             products_qs = products_qs.filter(
                 Q(name_fa__icontains=search_query) |
-                Q(description_fa__icontains=search_query) |
-                Q(tags__name_fa__icontains=search_query)
+                Q(description_fa__icontains=search_query)
             ).distinct()
         
-        # Order products - دقیقاً مثل home
-        products_qs = products_qs.order_by('-created_at')
-        products_data = list(products_qs)
+        # Order products by priority and date
+        products_qs = products_qs.order_by(
+            '-is_featured',
+            '-is_suggested', 
+            '-is_discounted',
+            '-created_at'
+        )
         
-        logger.info(f"Total products found: {len(products_data)}")
-        
-        # Get featured, suggested, and discounted products for priority - دقیقاً مثل home
-        featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
-        suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
-        discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
-        remaining_products = sorted([
-            p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
-        ], key=lambda p: p.created_at, reverse=True)
-        
-        # Combine all products - دقیقاً مثل home
-        all_products = featured_products + suggested_products + discounted_products + remaining_products
-        
-        logger.info(f"Combined products: {len(all_products)}")
-        
-        # Get advertisements for product placement - دقیقاً مثل home
-        from django.utils import timezone
-        now = timezone.now()
-        product_advertisements = Advertisement.objects.filter(
-            is_active=True,
-            location='products',
-            start_date__lte=now,
-            end_date__gte=now
-        ).order_by('display_order', '-created_at')
-        
-        # Insert advertisements into products list - دقیقاً مثل home
-        products_with_ads = []
-        ad_index = 0
-        
-        for i, product in enumerate(all_products):
-            products_with_ads.append(product)
-            
-            # Add advertisement every 10 products - دقیقاً مثل home
-            if (i + 1) % 10 == 0 and ad_index < len(product_advertisements):
-                products_with_ads.append(product_advertisements[ad_index])
-                ad_index += 1
-        
-        # Pagination - دقیقاً مثل home
-        paginator = Paginator(products_with_ads, 20)
+        # Simple pagination
+        paginator = Paginator(products_qs, 20)
         page_obj = paginator.get_page(page)
-        
-        logger.info(f"Page {page} has {len(page_obj)} items, has_next: {page_obj.has_next()}")
         
         # Convert products to JSON
         products_data = []
         for product in page_obj:
-            if hasattr(product, 'name_fa'):  # It's a product
-                products_data.append({
-                    'id': product.id,
-                    'name': product.name_fa or product.name_en or product.name_ps or 'نامشخص',
-                    'price': product.price or 0,
-                    'discount_price': product.discount_price,
-                    'city': product.city.name if product.city else 'نامشخص',
-                    'image': product.images.first().image.url if product.images.first() else None,
-                    'is_featured': product.is_featured,
-                    'is_discounted': product.is_discounted,
-                    'is_suggested': product.is_suggested,
-                    'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
-                    'url': f'/app/product/{product.id}/',
-                    'type': 'product'
-                })
-            else:  # It's an advertisement
-                products_data.append({
-                    'id': f'ad_{product.id}',
-                    'title': product.title,
-                    'image': product.image.url if product.image else None,
-                    'link': product.link,
-                    'type': 'advertisement'
-                })
+            products_data.append({
+                'id': product.id,
+                'name': product.name_fa or product.name_en or product.name_ps or 'نامشخص',
+                'price': product.price or 0,
+                'discount_price': product.discount_price,
+                'city': product.city.name if product.city else 'نامشخص',
+                'image': product.images.first().image.url if product.images.first() else None,
+                'is_featured': product.is_featured,
+                'is_discounted': product.is_discounted,
+                'is_suggested': product.is_suggested,
+                'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
+                'url': f'/app/product/{product.id}/',
+                'type': 'product'
+            })
         
-        response_data = {
+        return JsonResponse({
             'products': products_data,
             'has_next': page_obj.has_next(),
             'current_page': page,
             'total_pages': paginator.num_pages,
             'total_products': paginator.count
-        }
-        
-        logger.info(f"Returning {len(products_data)} products")
-        return JsonResponse(response_data)
+        })
         
     except Exception as e:
-        logger.error(f"Error in load_more_products: {str(e)}")
         return JsonResponse({
             'products': [],
             'has_next': False,
@@ -424,7 +369,7 @@ def manage_products(request):
 
 @staff_member_required
 def approve_product(request, pk):
-            product = get_object_or_404(Product, pk=product_id)
+    product = get_object_or_404(Product, pk=pk)
     product.is_approved = True
     product.save()
     messages.success(request, f"محصول {product.name_fa} تایید شد.")
@@ -433,7 +378,7 @@ def approve_product(request, pk):
 @csrf_protect
 @login_required
 def delete_product(request, pk):
-            product = get_object_or_404(Product, pk=product_id)
+    product = get_object_or_404(Product, pk=pk)
     product.delete()
     messages.success(request, f"محصول {product.name_fa} حذف شد.")
     return redirect('manage_products')
@@ -441,7 +386,7 @@ def delete_product(request, pk):
 @csrf_protect
 @login_required
 def edit_product(request, pk):
-            product = get_object_or_404(Product, pk=product_id)
+    product = get_object_or_404(Product, pk=pk)
     categories = Category.objects.all()
     tags = Tag.objects.all()
     

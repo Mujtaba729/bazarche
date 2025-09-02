@@ -1004,8 +1004,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Infinite scroll functionality
     function loadMoreProducts() {
-        if (isLoading || !hasMoreProducts) return;
+        if (isLoading || !hasMoreProducts) {
+            console.log('Skipping load - isLoading:', isLoading, 'hasMoreProducts:', hasMoreProducts);
+            return;
+        }
         
+        console.log('Starting to load page:', currentPage + 1);
         isLoading = true;
         loadingIndicator.style.display = 'block';
         
@@ -1023,10 +1027,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (city_id) apiUrl += `&city_id=${city_id}`;
         if (search_query) apiUrl += `&q=${encodeURIComponent(search_query)}`;
         
+        console.log('Fetching URL:', apiUrl);
+        
         fetch(apiUrl)
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
             .then(data => {
+                console.log('Received data:', data);
                 if (data.products && data.products.length > 0) {
+                    console.log('Adding', data.products.length, 'new products');
                     // Add new products to the grid
                     data.products.forEach(product => {
                         if (product.type === 'product') {
@@ -1039,7 +1050,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                     
                     hasMoreProducts = data.has_next;
+                    console.log('Has more products:', hasMoreProducts);
                 } else {
+                    console.log('No more products available');
                     hasMoreProducts = false;
                 }
                 
@@ -1130,6 +1143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && hasMoreProducts && !isLoading) {
+                console.log('Loading more products...');
                 loadMoreProducts();
             }
         });
@@ -1140,8 +1154,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Observe the loading indicator
     observer.observe(loadingIndicator);
     
-    // Scroll event for back to top button
-    window.addEventListener('scroll', checkScrollPosition);
+    // Also observe the last product card for better detection
+    const lastProduct = document.querySelector('.product-card:last-child');
+    if (lastProduct) {
+        observer.observe(lastProduct);
+    }
+    
+    // Scroll event for back to top button and infinite scroll fallback
+    window.addEventListener('scroll', function() {
+        checkScrollPosition();
+        
+        // Fallback infinite scroll detection
+        if (hasMoreProducts && !isLoading) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Load more when user is 200px from bottom
+            if (scrollTop + windowHeight >= documentHeight - 200) {
+                console.log('Scroll fallback triggered');
+                loadMoreProducts();
+            }
+        }
+    });
     
     // Initial check
     checkScrollPosition();

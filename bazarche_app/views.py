@@ -257,6 +257,106 @@ def home(request):
     
     return render(request, 'home.html', context)
 
+def load_more_products(request):
+    """API endpoint برای لود محصولات بیشتر"""
+    from django.http import JsonResponse
+    from django.core.paginator import Paginator
+    
+    # دریافت پارامترهای فیلتر
+    category_id = request.GET.get('category')
+    city_id = request.GET.get('city_id')
+    search_query = request.GET.get('q')
+    page = int(request.GET.get('page', 1))
+    
+    # نمایش محصولات با امکان فیلتر
+    products_qs = Product.objects.filter(is_approved=True)
+    
+    # فیلتر بر اساس شهر
+    if city_id:
+        products_qs = products_qs.filter(city_id=city_id)
+    
+    # فیلتر جستجو
+    if search_query:
+        products_qs = products_qs.filter(
+            Q(name_fa__icontains=search_query) |
+            Q(description_fa__icontains=search_query) |
+            Q(tags__name_fa__icontains=search_query)
+        ).distinct()
+    
+    products_qs = products_qs.order_by('-created_at')
+    products_data = list(products_qs)
+    
+    # Get featured, suggested, and discounted products for priority
+    featured_products = sorted([p for p in products_data if p.is_featured], key=lambda p: p.created_at, reverse=True)
+    suggested_products = sorted([p for p in products_data if p.is_suggested and not p.is_featured], key=lambda p: p.created_at, reverse=True)
+    discounted_products = sorted([p for p in products_data if p.is_discounted and not p.is_featured and not p.is_suggested], key=lambda p: p.created_at, reverse=True)
+    remaining_products = sorted([
+        p for p in products_data if not (p.is_featured or p.is_suggested or p.is_discounted)
+    ], key=lambda p: p.created_at, reverse=True)
+    
+    # Combine all products
+    all_products = featured_products + suggested_products + discounted_products + remaining_products
+    
+    # Get advertisements for product placement
+    from django.utils import timezone
+    now = timezone.now()
+    product_advertisements = Advertisement.objects.filter(
+        is_active=True,
+        location='products',
+        start_date__lte=now,
+        end_date__gte=now
+    ).order_by('display_order', '-created_at')
+    
+    # Insert advertisements into products list
+    products_with_ads = []
+    ad_index = 0
+    
+    for i, product in enumerate(all_products):
+        products_with_ads.append(product)
+        
+        # Add advertisement every 10 products
+        if (i + 1) % 10 == 0 and ad_index < len(product_advertisements):
+            products_with_ads.append(product_advertisements[ad_index])
+            ad_index += 1
+    
+    # Pagination
+    paginator = Paginator(products_with_ads, 20)
+    page_obj = paginator.get_page(page)
+    
+    # Convert products to JSON
+    products_data = []
+    for product in page_obj:
+        if hasattr(product, 'name_fa'):  # It's a product
+            products_data.append({
+                'id': product.id,
+                'name': product.name_fa or product.name_en or product.name_ps,
+                'price': product.price,
+                'discount_price': product.discount_price,
+                'city': product.city.name if product.city else None,
+                'image': product.images.first().image.url if product.images.first() else None,
+                'is_featured': product.is_featured,
+                'is_discounted': product.is_discounted,
+                'is_suggested': product.is_suggested,
+                'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
+                'url': f'/product/{product.id}/',
+                'type': 'product'
+            })
+        else:  # It's an advertisement
+            products_data.append({
+                'id': f'ad_{product.id}',
+                'title': product.title,
+                'image': product.image.url if product.image else None,
+                'link': product.link,
+                'type': 'advertisement'
+            })
+    
+    return JsonResponse({
+        'products': products_data,
+        'has_next': page_obj.has_next(),
+        'current_page': page,
+        'total_pages': paginator.num_pages
+    })
+
 def about(request):
     """صفحه درباره ما"""
     context = {}

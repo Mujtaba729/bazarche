@@ -1139,43 +1139,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return card;
     }
     
-    // Intersection Observer for infinite scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && hasMoreProducts && !isLoading) {
-                console.log('Loading more products...');
-                loadMoreProducts();
-            }
-        });
-    }, {
-        rootMargin: '100px'
-    });
-    
-    // Observe the loading indicator
-    observer.observe(loadingIndicator);
-    
-    // Also observe the last product card for better detection
-    const lastProduct = document.querySelector('.product-card:last-child');
-    if (lastProduct) {
-        observer.observe(lastProduct);
-    }
-    
-    // Scroll event for back to top button and infinite scroll fallback
-    window.addEventListener('scroll', function() {
-        checkScrollPosition();
+    // Simple scroll-based infinite scroll (more reliable)
+    function checkForInfiniteScroll() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
         
-        // Fallback infinite scroll detection
-        if (hasMoreProducts && !isLoading) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            
-            // Load more when user is 200px from bottom
-            if (scrollTop + windowHeight >= documentHeight - 200) {
-                console.log('Scroll fallback triggered');
+        // Load more when user is 300px from bottom
+        if (scrollTop + windowHeight >= documentHeight - 300) {
+            if (hasMoreProducts && !isLoading) {
                 loadMoreProducts();
             }
         }
+    }
+    
+    // Scroll event for back to top button and infinite scroll
+    window.addEventListener('scroll', function() {
+        checkScrollPosition();
+        checkForInfiniteScroll();
     });
     
     // Initial check

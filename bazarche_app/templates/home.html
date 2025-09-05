@@ -472,15 +472,15 @@
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.3rem;
-    max-width: 320px;
-    margin: 0 auto;
+    gap: 0.5rem;
+    max-width: 100%;
+    margin: 0;
 }
 
 .category-card {
     background: transparent;
     border-radius: 8px;
-    padding: 0.3rem;
+    padding: 0.5rem;
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -488,12 +488,11 @@
     border: none;
     position: relative;
     overflow: hidden;
-    width: 70px;
-    height: 70px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 80px;
 }
 
 .category-card:hover {
@@ -504,14 +503,14 @@
 }
 
 .category-icon {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     background: #667eea;
-    border-radius: 6px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 0.3rem;
+    margin: 0 auto 0.5rem;
     transition: all 0.3s ease;
 }
 
@@ -521,7 +520,7 @@
 }
 
 .category-icon i {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: #fff;
 }
 
@@ -530,20 +529,13 @@
 }
 
 .category-name {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    line-height: 1.1;
+    line-height: 1.2;
     margin: 0;
     text-align: center;
 }
 
-/* برای ردیف دوم - 3 دسته‌بندی باقی‌مانده در وسط */
-.category-card:nth-child(5),
-.category-card:nth-child(6),
-.category-card:nth-child(7) {
-    grid-column: span 1;
-    justify-self: center;
-}
 
 
 /* Products Section */

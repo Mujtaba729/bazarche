@@ -21,19 +21,6 @@
     </section>
     {% endif %}
 
-    <!-- Welcome Section -->
-    <section class="welcome-section">
-        <div class="welcome-content">
-            <div class="welcome-icon">
-                <i class="bi bi-shop"></i>
-            </div>
-            <div class="welcome-title soodava-brand" style="flex-direction:column;align-items:center;">
-              <span class="soodava-main" style="font-size:2.2rem;line-height:1.1;">SoodAva</span>
-              <span class="soodava-sub" style="font-size:1.1rem;color:#fff;margin-top:0.1rem;">سود آوا</span>
-            </div>
-            <p class="welcome-subtitle">{% trans "بزرگترین بازار آنلاین افغانستان" %}</p>
-        </div>
-    </section>
 
     <!-- Categories Section -->
     <section class="categories-section">
@@ -51,9 +38,6 @@
                     <i class="bi {{ category.icon }}"></i>
                 </div>
                 <div class="category-name">{{ category.name_fa }}</div>
-                <div class="category-arrow">
-                    <i class="bi bi-arrow-left"></i>
-                </div>
             </a>
             {% endfor %}
         </div>
@@ -487,14 +471,14 @@
 
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
 }
 
 .category-card {
     background: #f8f9fa;
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    padding: 0.8rem 0.5rem;
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -513,14 +497,14 @@
 }
 
 .category-icon {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
     background: #667eea;
-    border-radius: 12px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 0.75rem;
+    margin: 0 auto 0.5rem;
     transition: all 0.3s ease;
 }
 
@@ -530,7 +514,7 @@
 }
 
 .category-icon i {
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: #fff;
 }
 
@@ -539,10 +523,10 @@
 }
 
 .category-name {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    margin-bottom: 0.3rem;
 }
 
 .category-arrow {

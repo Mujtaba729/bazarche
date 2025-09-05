@@ -472,15 +472,15 @@
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    max-width: 400px;
+    gap: 0.3rem;
+    max-width: 320px;
     margin: 0 auto;
 }
 
 .category-card {
     background: transparent;
     border-radius: 8px;
-    padding: 0.5rem;
+    padding: 0.3rem;
     text-align: center;
     text-decoration: none;
     color: inherit;
@@ -488,6 +488,12 @@
     border: none;
     position: relative;
     overflow: hidden;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .category-card:hover {
@@ -498,14 +504,14 @@
 }
 
 .category-icon {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     background: #667eea;
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 0.5rem;
+    margin: 0 auto 0.3rem;
     transition: all 0.3s ease;
 }
 
@@ -515,7 +521,7 @@
 }
 
 .category-icon i {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #fff;
 }
 
@@ -524,18 +530,19 @@
 }
 
 .category-name {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    line-height: 1.2;
-    margin-bottom: 0.3rem;
+    line-height: 1.1;
+    margin: 0;
+    text-align: center;
 }
 
-/* برای ردیف دوم - 2 دسته‌بندی در وسط */
+/* برای ردیف دوم - 3 دسته‌بندی باقی‌مانده در وسط */
 .category-card:nth-child(5),
-.category-card:nth-child(6) {
-    grid-column: span 2;
+.category-card:nth-child(6),
+.category-card:nth-child(7) {
+    grid-column: span 1;
     justify-self: center;
-    max-width: 150px;
 }
 
 

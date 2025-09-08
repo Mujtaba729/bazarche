@@ -161,6 +161,14 @@
                 {% endfor %}
             </div>
         </div>
+        
+        <!-- Test Button -->
+        <div class="bottom-nav-item" onclick="testDropdown()">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-bug"></i>
+            </div>
+            <span class="bottom-nav-label">تست</span>
+        </div>
     </div>
 </div>
 
@@ -690,15 +698,6 @@
     margin-bottom: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-}
-
-.dropdown-menu.show {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
 }
 
 
@@ -1333,32 +1332,77 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dropdown functionality
 function toggleLanguageDropdown() {
+    console.log('toggleLanguageDropdown called');
     const dropdown = document.getElementById('language-menu');
     const cityDropdown = document.getElementById('city-menu');
+    
+    console.log('Language dropdown element:', dropdown);
+    console.log('City dropdown element:', cityDropdown);
     
     // Close city dropdown
     if (cityDropdown) {
         cityDropdown.style.display = 'none';
+        console.log('City dropdown closed');
     }
     
     // Toggle language dropdown
     if (dropdown) {
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        const currentDisplay = dropdown.style.display;
+        console.log('Current display:', currentDisplay);
+        dropdown.style.display = currentDisplay === 'none' ? 'block' : 'none';
+        console.log('New display:', dropdown.style.display);
     }
 }
 
 function toggleCityDropdown() {
+    console.log('toggleCityDropdown called');
     const dropdown = document.getElementById('city-menu');
     const languageDropdown = document.getElementById('language-menu');
+    
+    console.log('City dropdown element:', dropdown);
+    console.log('Language dropdown element:', languageDropdown);
     
     // Close language dropdown
     if (languageDropdown) {
         languageDropdown.style.display = 'none';
+        console.log('Language dropdown closed');
     }
     
     // Toggle city dropdown
     if (dropdown) {
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        const currentDisplay = dropdown.style.display;
+        console.log('Current display:', currentDisplay);
+        dropdown.style.display = currentDisplay === 'none' ? 'block' : 'none';
+        console.log('New display:', dropdown.style.display);
+    }
+}
+
+// Test function
+function testDropdown() {
+    console.log('Test button clicked!');
+    console.log('Language dropdown element:', document.getElementById('language-menu'));
+    console.log('City dropdown element:', document.getElementById('city-menu'));
+    console.log('Language dropdown parent:', document.getElementById('language-dropdown'));
+    console.log('City dropdown parent:', document.getElementById('city-dropdown'));
+    
+    // Test if elements exist
+    const langMenu = document.getElementById('language-menu');
+    const cityMenu = document.getElementById('city-menu');
+    
+    if (langMenu) {
+        console.log('Language menu found, current display:', langMenu.style.display);
+        langMenu.style.display = 'block';
+        console.log('Language menu set to block');
+    } else {
+        console.log('Language menu NOT found!');
+    }
+    
+    if (cityMenu) {
+        console.log('City menu found, current display:', cityMenu.style.display);
+        cityMenu.style.display = 'block';
+        console.log('City menu set to block');
+    } else {
+        console.log('City menu NOT found!');
     }
 }
 

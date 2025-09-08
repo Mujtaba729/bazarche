@@ -133,7 +133,7 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="dropdown-trigger" onclick="toggleLanguageDropdown(); console.log('Language button clicked!');">
+            <div class="dropdown-trigger" id="language-trigger">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-translate"></i>
                 </div>
@@ -148,7 +148,7 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="dropdown-trigger" onclick="toggleCityDropdown(); console.log('City button clicked!');">
+            <div class="dropdown-trigger" id="city-trigger">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-geo-alt"></i>
                 </div>
@@ -1439,6 +1439,36 @@ function testDropdown() {
     
     console.log('=== END TEST ===');
 }
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const languageTrigger = document.getElementById('language-trigger');
+    const cityTrigger = document.getElementById('city-trigger');
+    
+    if (languageTrigger) {
+        languageTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Language button clicked via addEventListener!');
+            toggleLanguageDropdown();
+        });
+        console.log('Language trigger event listener added');
+    } else {
+        console.log('Language trigger NOT FOUND!');
+    }
+    
+    if (cityTrigger) {
+        cityTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('City button clicked via addEventListener!');
+            toggleCityDropdown();
+        });
+        console.log('City trigger event listener added');
+    } else {
+        console.log('City trigger NOT FOUND!');
+    }
+});
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(e) {

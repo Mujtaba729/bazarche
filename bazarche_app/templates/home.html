@@ -133,10 +133,12 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-translate"></i>
-            </div>
-            <span class="bottom-nav-label">زبان</span>
+            <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-trigger">
+                <div class="bottom-nav-icon">
+                    <i class="bi bi-translate"></i>
+                </div>
+                <span class="bottom-nav-label">زبان</span>
+            </a>
             <div class="dropdown-menu" id="language-menu">
                 <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
                 <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
@@ -146,10 +148,12 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-geo-alt"></i>
-            </div>
-            <span class="bottom-nav-label">شهر</span>
+            <a href="{% url 'app:home' %}" class="dropdown-trigger">
+                <div class="bottom-nav-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <span class="bottom-nav-label">شهر</span>
+            </a>
             <div class="dropdown-menu" id="city-menu">
                 <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
                 {% for city in cities %}
@@ -658,6 +662,16 @@
 .dropdown {
     position: relative;
     cursor: pointer;
+}
+
+.dropdown-trigger {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    height: 100%;
 }
 
 .dropdown-menu {
@@ -1326,34 +1340,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Language dropdown
     if (languageDropdown && languageMenu) {
         languageDropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Language dropdown clicked');
-            
-            // Close city menu
-            if (cityMenu) {
-                cityMenu.classList.remove('show');
+            // Only prevent default if clicking on the trigger (not dropdown items)
+            if (e.target.closest('.dropdown-trigger')) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Language dropdown clicked');
+                
+                // Close city menu
+                if (cityMenu) {
+                    cityMenu.classList.remove('show');
+                }
+                
+                // Toggle language menu
+                languageMenu.classList.toggle('show');
             }
-            
-            // Toggle language menu
-            languageMenu.classList.toggle('show');
         });
     }
     
     // City dropdown
     if (cityDropdown && cityMenu) {
         cityDropdown.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('City dropdown clicked');
-            
-            // Close language menu
-            if (languageMenu) {
-                languageMenu.classList.remove('show');
+            // Only prevent default if clicking on the trigger (not dropdown items)
+            if (e.target.closest('.dropdown-trigger')) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('City dropdown clicked');
+                
+                // Close language menu
+                if (languageMenu) {
+                    languageMenu.classList.remove('show');
+                }
+                
+                // Toggle city menu
+                cityMenu.classList.toggle('show');
             }
-            
-            // Toggle city menu
-            cityMenu.classList.toggle('show');
         });
     }
     

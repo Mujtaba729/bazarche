@@ -321,6 +321,10 @@ function closeSheet() {
     }
 }
 
+// Make functions global
+window.openSheet = openSheet;
+window.closeSheet = closeSheet;
+
 // Back to top functionality
 window.addEventListener('scroll', function() {
     const backToTop = document.getElementById('back-to-top');
@@ -343,6 +347,8 @@ const placeholderImageUrl = "{% static 'logo-1.png' %}";
 let currentPage = 1; // Start from 1 since page 1 is already loaded
 let isLoading = false;
 let hasMoreProducts = true;
+
+console.log('Infinite scroll initialized - currentPage:', currentPage);
 
 // Get city_id from URL if present
 const urlParams = new URLSearchParams(window.location.search);
@@ -395,12 +401,14 @@ function loadMoreProducts() {
                 }
                 
                 // Check if there are more products
-                if (!data.has_next || data.products.length < 20) {
+                if (!data.has_next) {
                     hasMoreProducts = false;
                     console.log('No more products to load - has_next:', data.has_next, 'products_count:', data.products.length);
                     if (endMessage) {
                         endMessage.style.display = 'block';
                     }
+                } else {
+                    console.log('More products available - has_next:', data.has_next, 'products_count:', data.products.length);
                 }
             } else {
                 hasMoreProducts = false;
@@ -501,17 +509,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         scrollTimeout = setTimeout(function() {
-        if (hasMoreProducts && !isLoading) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            
+            if (hasMoreProducts && !isLoading) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                
+                console.log('Scroll check:', {
+                    scrollTop: scrollTop,
+                    windowHeight: windowHeight,
+                    documentHeight: documentHeight,
+                    triggerPoint: documentHeight - 200,
+                    shouldLoad: scrollTop + windowHeight >= documentHeight - 200
+                });
+                
                 // Load more when user is 200px from bottom
-            if (scrollTop + windowHeight >= documentHeight - 200) {
-                console.log('Scroll trigger: Loading more products...');
-                loadMoreProducts();
+                if (scrollTop + windowHeight >= documentHeight - 200) {
+                    console.log('Scroll trigger: Loading more products...');
+                    loadMoreProducts();
+                }
             }
-        }
         }, 100);
     });
 });

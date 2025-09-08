@@ -902,6 +902,7 @@ function toggleNotificationDropdown(event) {
     // Prevent event bubbling
     if (event) {
         event.stopPropagation();
+        event.preventDefault();
     }
     
     // Desktop dropdown
@@ -922,13 +923,15 @@ function toggleNotificationDropdown(event) {
             // Mobile
             if (mobileDropdown) {
                 mobileDropdown.style.display = 'block';
-                setTimeout(() => loadMobileNotifications(), 100);
+                // Load notifications immediately
+                loadMobileNotifications();
             }
         } else {
             // Desktop
             if (desktopDropdown) {
                 desktopDropdown.style.display = 'block';
-                setTimeout(() => loadNotifications(), 100);
+                // Load notifications immediately
+                loadNotifications();
             }
         }
     }
@@ -1122,21 +1125,36 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateNotificationCount, 30000);
 });
 
-// Close notification dropdown when clicking outside
+// Close notification dropdown when clicking outside or scrolling
 document.addEventListener('click', function(event) {
     const desktopDropdown = document.getElementById('notificationDropdown');
     const mobileDropdown = document.getElementById('mobileNotificationDropdown');
-    const notificationMenu = document.querySelector('.notification-menu');
-    const mobileNotificationBtn = document.querySelector('.mobile-notification-btn');
     
-    // Check if click is on notification button (don't close if clicking the button itself)
-    const isNotificationButton = event.target.closest('.notification-btn') || 
-                                event.target.closest('.mobile-notification-btn') ||
-                                event.target.closest('.notification-menu');
+    // Check if click is on notification elements
+    const isNotificationElement = event.target.closest('.notification-btn') || 
+                                 event.target.closest('.mobile-notification-btn') ||
+                                 event.target.closest('.notification-menu') ||
+                                 event.target.closest('.notification-dropdown');
     
-    if (isNotificationButton) {
+    if (isNotificationElement) {
         return; // Don't close if clicking on notification elements
     }
+    
+    // Close desktop dropdown
+    if (desktopDropdown && desktopDropdown.style.display === 'block') {
+        desktopDropdown.style.display = 'none';
+    }
+    
+    // Close mobile dropdown
+    if (mobileDropdown && mobileDropdown.style.display === 'block') {
+        mobileDropdown.style.display = 'none';
+    }
+});
+
+// Close notification dropdown when scrolling
+document.addEventListener('scroll', function() {
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
     
     // Close desktop dropdown
     if (desktopDropdown && desktopDropdown.style.display === 'block') {

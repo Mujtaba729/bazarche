@@ -29,7 +29,7 @@
         </div>
         
         <!-- Loading indicator -->
-        <div id="loading-indicator" style="display: none; text-align: center; padding: 2rem;">
+        <div id="loading-indicator" style="display: block; text-align: center; padding: 2rem;">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">در حال بارگذاری...</span>
             </div>
@@ -538,6 +538,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, setting up infinite scroll...');
     const loadingIndicator = document.getElementById('loading-indicator');
     if (loadingIndicator) {
+        // Hide loading indicator initially
+        loadingIndicator.style.display = 'none';
         observer.observe(loadingIndicator);
         console.log('Observer attached to loading indicator');
     } else {

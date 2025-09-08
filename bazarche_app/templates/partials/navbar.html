@@ -494,6 +494,151 @@
     }
 }
 
+/* Notification Styles */
+.notification-menu {
+    position: relative;
+}
+
+.notification-btn {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+.notification-dropdown {
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+}
+
+.notification-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.view-all-link {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.view-all-link:hover {
+    text-decoration: underline;
+}
+
+.notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-loading {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.notification-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f4;
+    transition: background 0.3s ease;
+}
+
+.notification-item:hover {
+    background: #f8f9fa;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item.unread {
+    background: #e3f2fd;
+    border-right: 3px solid #2196f3;
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.notification-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.notification-icon.comment {
+    background: #28a745;
+}
+
+.notification-icon.admin {
+    background: #dc3545;
+}
+
+.notification-icon.chat {
+    background: #17a2b8;
+}
+
+.notification-text {
+    flex: 1;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #2c3e50;
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
     .nav-btn:hover,
@@ -548,6 +693,26 @@
             </a>
             
             {% if user.is_authenticated %}
+            <!-- Notification Button -->
+            <div class="notification-menu">
+                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'نوتیفیکیشن‌ها' %}">
+                    <i class="bi bi-bell"></i>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                </button>
+                <div class="dropdown-menu notification-dropdown" id="notificationDropdown" style="display: none;">
+                    <div class="notification-header">
+                        <h6>{% trans "نوتیفیکیشن‌ها" %}</h6>
+                        <a href="{% url 'app:notifications' %}" class="view-all-link">{% trans "مشاهده همه" %}</a>
+                    </div>
+                    <div class="notification-list" id="notificationList">
+                        <div class="notification-loading">
+                            <i class="bi bi-hourglass-split"></i>
+                            {% trans "در حال بارگذاری..." %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="user-menu">
                 <button class="user-btn" onclick="toggleUserDropdown()">
                     <i class="bi bi-person"></i>
@@ -557,6 +722,10 @@
                     <a href="{% url 'app:user_dashboard' %}" class="dropdown-item">
                         <i class="bi bi-person"></i>
                         {% trans "پروفایل" %}
+                    </a>
+                    <a href="{% url 'app:notifications' %}" class="dropdown-item">
+                        <i class="bi bi-bell"></i>
+                        {% trans "نوتیفیکیشن‌ها" %}
                     </a>
                 </div>
             </div>
@@ -654,6 +823,18 @@ function toggleCityDropdown() {
 
 
 
+function toggleNotificationDropdown() {
+    const dropdown = document.getElementById('notificationDropdown');
+    const isVisible = dropdown.style.display === 'block';
+    
+    if (!isVisible) {
+        dropdown.style.display = 'block';
+        loadNotifications();
+    } else {
+        dropdown.style.display = 'none';
+    }
+}
+
 function toggleUserDropdown() {
     const dropdown = document.getElementById('userDropdown');
     dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
@@ -699,6 +880,123 @@ document.addEventListener('click', function(event) {
     const mobileMenu = document.getElementById('mobileMenu');
     if (!event.target.closest('.mobile-menu-content') && !event.target.closest('.mobile-menu-toggle')) {
         mobileMenu.classList.remove('show');
+    }
+});
+
+// Notification Functions
+function loadNotifications() {
+    const notificationList = document.getElementById('notificationList');
+    notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-hourglass-split"></i> در حال بارگذاری...</div>';
+    
+    fetch('/app/api/notifications/recent/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayNotifications(data.notifications);
+            } else {
+                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+        });
+}
+
+function displayNotifications(notifications) {
+    const notificationList = document.getElementById('notificationList');
+    
+    if (notifications.length === 0) {
+        notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-bell-slash"></i> هیچ نوتیفیکیشنی ندارید</div>';
+        return;
+    }
+    
+    let html = '';
+    notifications.forEach(notification => {
+        const iconClass = getNotificationIcon(notification.subject);
+        const timeAgo = getTimeAgo(notification.timestamp);
+        
+        html += `
+            <div class="notification-item ${!notification.is_read ? 'unread' : ''}" data-id="${notification.id}">
+                <div class="notification-content">
+                    <div class="notification-icon ${iconClass}">
+                        <i class="bi ${getNotificationIconClass(notification.subject)}"></i>
+                    </div>
+                    <div class="notification-text">
+                        ${notification.message}
+                        <div class="notification-time">${timeAgo}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    notificationList.innerHTML = html;
+}
+
+function getNotificationIcon(subject) {
+    if (subject.includes('COMMENT')) return 'comment';
+    if (subject.includes('ADMIN')) return 'admin';
+    if (subject.includes('CHAT')) return 'chat';
+    return 'comment';
+}
+
+function getNotificationIconClass(subject) {
+    if (subject.includes('COMMENT')) return 'bi-chat-dots';
+    if (subject.includes('ADMIN')) return 'bi-shield-check';
+    if (subject.includes('CHAT')) return 'bi-chat';
+    return 'bi-bell';
+}
+
+function getTimeAgo(timestamp) {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diff = now - time;
+    
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    
+    if (minutes < 1) return 'همین الان';
+    if (minutes < 60) return `${minutes} دقیقه پیش`;
+    if (hours < 24) return `${hours} ساعت پیش`;
+    if (days < 7) return `${days} روز پیش`;
+    
+    return time.toLocaleDateString('fa-IR');
+}
+
+function updateNotificationCount() {
+    fetch('/app/api/notifications/count/')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('notificationBadge');
+            if (data.count > 0) {
+                badge.textContent = data.count > 99 ? '99+' : data.count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error updating notification count:', error);
+        });
+}
+
+// Load notification count on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateNotificationCount();
+    
+    // Update notification count every 30 seconds
+    setInterval(updateNotificationCount, 30000);
+});
+
+// Close notification dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationMenu = document.querySelector('.notification-menu');
+    
+    if (!event.target.closest('.notification-menu') && !event.target.closest('#notificationDropdown')) {
+        if (notificationDropdown) notificationDropdown.style.display = 'none';
     }
 });
 </script>

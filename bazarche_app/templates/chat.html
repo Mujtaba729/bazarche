@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}چت با {{ other_user.username }}{% endblock %}
+
+{% block extra_css %}
+<style>
+.chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.chat-header p {
+    margin: 5px 0 0 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.chat-messages {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 20px;
+    overflow-y: auto;
+    border-left: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    max-height: 400px;
+}
+
+.message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.message.sent {
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.message.sent .message-avatar {
+    background: #667eea;
+}
+
+.message.received .message-avatar {
+    background: #28a745;
+}
+
+.message-content {
+    max-width: 70%;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.message.sent .message-content {
+    background: #667eea;
+    color: white;
+}
+
+.message.received .message-content {
+    background: white;
+    color: #333;
+}
+
+.message-text {
+    margin: 0;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message-time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.message.sent .message-time {
+    text-align: left;
+}
+
+.chat-input {
+    background: white;
+    padding: 20px;
+    border-radius: 0 0 10px 10px;
+    border: 1px solid #e0e0e0;
+    border-top: none;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.message-input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 12px 16px;
+    font-size: 14px;
+    resize: none;
+    min-height: 44px;
+    max-height: 120px;
+    font-family: inherit;
+}
+
+.message-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.send-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.send-btn:hover {
+    background: #5a6fd8;
+    transform: scale(1.05);
+}
+
+.send-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.empty-chat {
+    text-align: center;
+    color: #6c757d;
+    padding: 40px 20px;
+}
+
+.empty-chat i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #dee2e6;
+}
+
+.back-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+    transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+}
+
+.typing-indicator {
+    display: none;
+    padding: 10px 16px;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.typing-indicator.show {
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <a href="{% url 'app:product_detail' product.id %}" class="back-btn">
+        <i class="bi bi-arrow-right"></i>
+        بازگشت به محصول
+    </a>
+
+    <div class="chat-header">
+        <h3>
+            <i class="bi bi-chat-dots me-2"></i>
+            چت با {{ other_user.username }}
+        </h3>
+        <p>درباره محصول: {{ product.name_fa }}</p>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        {% if chat_messages %}
+            {% for message in chat_messages %}
+                <div class="message {% if message.user == user %}sent{% else %}received{% endif %}">
+                    <div class="message-avatar">
+                        {{ message.user.username|first|upper }}
+                    </div>
+                    <div class="message-content">
+                        <p class="message-text">{{ message.message }}</p>
+                        <div class="message-time">{{ message.timestamp|date:"H:i" }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-chat">
+                <i class="bi bi-chat-dots"></i>
+                <h5>شروع گفتگو</h5>
+                <p>اولین پیام خود را ارسال کنید تا گفتگو شروع شود.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="typing-indicator" id="typingIndicator">
+        {{ other_user.username }} در حال تایپ است...
+    </div>
+
+    <div class="chat-input">
+        <form id="chatForm">
+            {% csrf_token %}
+            <div class="input-group">
+                <textarea 
+                    id="messageInput" 
+                    class="message-input" 
+                    placeholder="پیام خود را بنویسید..."
+                    rows="1"
+                    maxlength="500"></textarea>
+                <button type="submit" class="send-btn" id="sendBtn">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const productId = {{ product.id }};
+const otherUserId = {{ other_user.id }};
+let lastMessageId = {{ chat_messages.last.id|default:0 }};
+
+// Auto-resize textarea
+const messageInput = document.getElementById('messageInput');
+messageInput.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+// Send message
+document.getElementById('chatForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    sendMessage();
+});
+
+// Send message on Enter (but allow Shift+Enter for new line)
+messageInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+
+    fetch(`/app/api/send-chat-message/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `message=${encodeURIComponent(message)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            addMessageToChat(message, true);
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            lastMessageId = data.message_id;
+        } else {
+            alert('خطا در ارسال پیام: ' + (data.error || 'خطای نامشخص'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('خطا در ارسال پیام');
+    })
+    .finally(() => {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="bi bi-send"></i>';
+    });
+}
+
+function addMessageToChat(message, isSent) {
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Remove empty state if exists
+    const emptyChat = chatMessages.querySelector('.empty-chat');
+    if (emptyChat) {
+        emptyChat.remove();
+    }
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar';
+    avatar.textContent = isSent ? '{{ user.username|first|upper }}' : '{{ other_user.username|first|upper }}';
+    
+    const content = document.createElement('div');
+    content.className = 'message-content';
+    content.innerHTML = `
+        <p class="message-text">${message}</p>
+        <div class="message-time">${new Date().toLocaleTimeString('fa-IR', {hour: '2-digit', minute: '2-digit'})}</div>
+    `;
+    
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(content);
+    chatMessages.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Check for new messages every 3 seconds
+setInterval(checkForNewMessages, 3000);
+
+function checkForNewMessages() {
+    fetch(`/app/api/get-chat-messages/${productId}/?last_message_id=${lastMessageId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.messages.length > 0) {
+                data.messages.forEach(message => {
+                    addMessageToChat(message.message, message.is_own);
+                    lastMessageId = message.id;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error checking for new messages:', error);
+        });
+}
+
+// Scroll to bottom on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+});
+</script>
+{% endblock %}

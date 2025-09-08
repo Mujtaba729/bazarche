@@ -21,6 +21,7 @@ urlpatterns = [
     path('robots.txt', views.robots, name='robots'),
     path('products/<int:product_id>/', views.product_detail, name='product_detail'),
     path('products/<int:product_id>/comment/', views.add_product_comment, name='add_product_comment'),
+    path('products/<int:product_id>/chat/', views.start_chat, name='start_chat'),
     path('products/<int:pk>/report/', views.report_abuse, name='report_abuse'),
     path('register/', views.register_product, name='register_product'),
     path('set-language/', views.set_language, name='set_language'),
@@ -61,4 +62,18 @@ urlpatterns = [
     path('dashboard/delete-request/<int:pk>/', views.delete_user_request, name='delete_user_request'),
     path('health/', views.health, name='health'),
     path('status/', views.status, name='status'),  # صفحه status کامل - فقط ادمین
+    
+    # Notification URLs
+    path('notifications/', views.notifications, name='notifications'),
+    path('api/notifications/count/', views.get_unread_notifications_count, name='get_unread_notifications_count'),
+    path('api/notifications/recent/', views.get_recent_notifications, name='get_recent_notifications'),
+    path('api/notifications/<int:notification_id>/read/', views.mark_notification_read, name='mark_notification_read'),
+    
+    # Chat URLs
+    path('api/send-chat-message/<int:product_id>/', views.send_chat_message, name='send_chat_message'),
+    path('api/get-chat-messages/<int:product_id>/', views.get_chat_messages, name='get_chat_messages'),
+    
+    # Admin Notification URLs
+    path('admin/send-notification-all/', views.send_notification_to_all_users, name='send_notification_to_all_users'),
+    path('admin/send-notification-user/', views.send_notification_to_user, name='send_notification_to_user'),
 ]

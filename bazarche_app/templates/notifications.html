@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}نوتیفیکیشن‌ها{% endblock %}
+
+{% block extra_css %}
+<style>
+.notification-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.notification-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.notification-item {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.notification-item.unread {
+    border-left: 4px solid #007bff;
+    background: #f8f9ff;
+}
+
+.notification-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.notification-type {
+    background: #007bff;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.notification-type.comment {
+    background: #28a745;
+}
+
+.notification-type.admin {
+    background: #dc3545;
+}
+
+.notification-type.chat {
+    background: #17a2b8;
+}
+
+.notification-time {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.notification-message {
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.empty-notifications {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-notifications i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #dee2e6;
+}
+
+.mark-all-read-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.mark-all-read-btn:hover {
+    background: #218838;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notification-container">
+    <div class="notification-header">
+        <h1><i class="bi bi-bell-fill me-2"></i>نوتیفیکیشن‌ها</h1>
+        <p>همه پیام‌ها و اطلاع‌رسانی‌های شما</p>
+    </div>
+
+    {% if notifications %}
+        <button class="mark-all-read-btn" onclick="markAllAsRead()">
+            <i class="bi bi-check-all me-1"></i>علامت‌گذاری همه به عنوان خوانده شده
+        </button>
+
+        {% for notification in notifications %}
+            <div class="notification-item {% if not notification.is_read %}unread{% endif %}" 
+                 data-notification-id="{{ notification.id }}">
+                <div class="notification-meta">
+                    <span class="notification-type 
+                        {% if 'COMMENT' in notification.subject %}comment
+                        {% elif 'ADMIN' in notification.subject %}admin
+                        {% elif 'CHAT' in notification.subject %}chat
+                        {% endif %}">
+                        {% if 'COMMENT' in notification.subject %}
+                            <i class="bi bi-chat-dots me-1"></i>کامنت جدید
+                        {% elif 'ADMIN' in notification.subject %}
+                            <i class="bi bi-shield-check me-1"></i>پیام ادمین
+                        {% elif 'CHAT' in notification.subject %}
+                            <i class="bi bi-chat me-1"></i>پیام چت
+                        {% else %}
+                            <i class="bi bi-bell me-1"></i>نوتیفیکیشن
+                        {% endif %}
+                    </span>
+                    <span class="notification-time">
+                        <i class="bi bi-clock me-1"></i>
+                        {{ notification.timestamp|date:"Y/m/d H:i" }}
+                    </span>
+                </div>
+                <p class="notification-message">{{ notification.message }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-notifications">
+            <i class="bi bi-bell-slash"></i>
+            <h3>هیچ نوتیفیکیشنی ندارید</h3>
+            <p>وقتی کسی روی محصولات شما نظر بگذارد یا پیام جدیدی دریافت کنید، اینجا نمایش داده می‌شود.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function markAllAsRead() {
+    fetch('/app/api/notifications/mark-all-read/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // حذف کلاس unread از همه نوتیفیکیشن‌ها
+            document.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.classList.remove('unread');
+            });
+            
+            // آپدیت شمارنده نوتیفیکیشن‌ها در نوار بالای سایت
+            updateNotificationCount();
+        }
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

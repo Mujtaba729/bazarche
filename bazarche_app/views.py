@@ -637,18 +637,254 @@ def add_product_comment(request, product_id):
         
         if form.is_valid():
             # ایجاد UserFeedback به عنوان کامنت
-            UserFeedback.objects.create(
+            comment = UserFeedback.objects.create(
                 email=request.user.email or request.user.username,
                 subject=f"نظر محصول {product.id} - {product.name_fa[:30]}",
                 message=form.cleaned_data['comment_text'],
                 user=request.user
             )
             
+            # ارسال نوتیفیکیشن به صاحب محصول (اگر کاربر لاگین کرده باشد)
+            if product.user and product.user != request.user:
+                UserFeedback.objects.create(
+                    email=product.user.email or product.user.username,
+                    subject=f"NOTIFICATION_COMMENT_{product.id}_{comment.id}",
+                    message=f'کاربر {request.user.username} روی محصول "{product.name_fa}" نظر جدیدی گذاشته است.',
+                    user=product.user
+                )
+            
             messages.success(request, 'نظر شما با موفقیت ثبت شد.')
         else:
             messages.error(request, 'خطا در ثبت نظر. لطفا دوباره تلاش کنید.')
     
     return redirect('app:product_detail', product_id=product_id)
+
+
+@login_required
+def start_chat(request, product_id):
+    """شروع چت با صاحب محصول"""
+    product = get_object_or_404(Product, pk=product_id, is_approved=True)
+    
+    # بررسی اینکه کاربر با خودش چت نکند
+    if product.user == request.user:
+        messages.error(request, 'نمی‌توانید با خودتان چت کنید!')
+        return redirect('app:product_detail', product_id=product_id)
+    
+    # بررسی اینکه صاحب محصول لاگین کرده باشد
+    if not product.user:
+        messages.error(request, 'صاحب این محصول در دسترس نیست!')
+        return redirect('app:product_detail', product_id=product_id)
+    
+    # دریافت پیام‌های قبلی این چت
+    chat_messages = UserFeedback.objects.filter(
+        subject__startswith=f"CHAT_{product_id}_",
+        user__in=[request.user, product.user]
+    ).order_by('timestamp')
+    
+    context = {
+        'product': product,
+        'other_user': product.user,
+        'chat_messages': chat_messages,
+    }
+    return render(request, 'chat.html', context)
+
+
+@login_required
+def send_chat_message(request, product_id):
+    """ارسال پیام در چت"""
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=product_id, is_approved=True)
+        message_text = request.POST.get('message', '').strip()
+        
+        if not message_text:
+            return JsonResponse({'success': False, 'error': 'پیام نمی‌تواند خالی باشد'})
+        
+        if len(message_text) > 500:
+            return JsonResponse({'success': False, 'error': 'پیام نمی‌تواند بیش از ۵۰۰ کاراکتر باشد'})
+        
+        # ایجاد پیام چت
+        chat_message = UserFeedback.objects.create(
+            email=request.user.email or request.user.username,
+            subject=f"CHAT_{product_id}_{request.user.id}_{product.user.id}",
+            message=message_text,
+            user=request.user
+        )
+        
+        # ارسال نوتیفیکیشن به گیرنده
+        if product.user != request.user:
+            UserFeedback.objects.create(
+                email=product.user.email or product.user.username,
+                subject=f"NOTIFICATION_CHAT_{product_id}_{chat_message.id}",
+                message=f'پیام جدید از {request.user.username} درباره محصول "{product.name_fa}"',
+                user=product.user
+            )
+        
+        return JsonResponse({
+            'success': True,
+            'message': message_text,
+            'sender': request.user.username,
+            'message_id': chat_message.id,
+            'timestamp': timezone.now().strftime('%H:%M')
+        })
+    
+    return JsonResponse({'success': False, 'error': 'درخواست نامعتبر'})
+
+
+@login_required
+def get_chat_messages(request, product_id):
+    """دریافت پیام‌های چت (برای AJAX)"""
+    product = get_object_or_404(Product, pk=product_id, is_approved=True)
+    last_message_id = request.GET.get('last_message_id', 0)
+    
+    # دریافت پیام‌های جدید
+    chat_messages = UserFeedback.objects.filter(
+        subject__startswith=f"CHAT_{product_id}_",
+        user__in=[request.user, product.user],
+        id__gt=last_message_id
+    ).order_by('timestamp')
+    
+    messages_data = []
+    for msg in chat_messages:
+        messages_data.append({
+            'id': msg.id,
+            'message': msg.message,
+            'sender': msg.user.username,
+            'is_own': msg.user == request.user,
+            'timestamp': msg.timestamp.strftime('%H:%M')
+        })
+    
+    return JsonResponse({
+        'success': True,
+        'messages': messages_data
+    })
+
+
+@login_required
+def notifications(request):
+    """نمایش نوتیفیکیشن‌های کاربر"""
+    # دریافت نوتیفیکیشن‌های کاربر
+    user_notifications = UserFeedback.objects.filter(
+        user=request.user,
+        subject__startswith="NOTIFICATION_"
+    ).order_by('-timestamp')
+    
+    # علامت‌گذاری همه نوتیفیکیشن‌ها به عنوان خوانده شده
+    user_notifications.update(is_read=True)
+    
+    context = {
+        'notifications': user_notifications,
+    }
+    return render(request, 'notifications.html', context)
+
+
+@login_required
+def get_unread_notifications_count(request):
+    """دریافت تعداد نوتیفیکیشن‌های خوانده نشده"""
+    count = UserFeedback.objects.filter(
+        user=request.user,
+        subject__startswith="NOTIFICATION_",
+        is_read=False
+    ).count()
+    return JsonResponse({'count': count})
+
+
+@login_required
+def get_recent_notifications(request):
+    """دریافت نوتیفیکیشن‌های اخیر برای dropdown"""
+    notifications = UserFeedback.objects.filter(
+        user=request.user,
+        subject__startswith="NOTIFICATION_"
+    ).order_by('-timestamp')[:5]
+    
+    notifications_data = []
+    for notification in notifications:
+        notifications_data.append({
+            'id': notification.id,
+            'message': notification.message,
+            'subject': notification.subject,
+            'is_read': notification.is_read,
+            'timestamp': notification.timestamp.isoformat()
+        })
+    
+    return JsonResponse({
+        'success': True,
+        'notifications': notifications_data
+    })
+
+
+@login_required
+def mark_notification_read(request, notification_id):
+    """علامت‌گذاری نوتیفیکیشن به عنوان خوانده شده"""
+    try:
+        notification = UserFeedback.objects.get(
+            id=notification_id, 
+            user=request.user,
+            subject__startswith="NOTIFICATION_"
+        )
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'success': True})
+    except UserFeedback.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'نوتیفیکیشن یافت نشد'})
+
+
+@staff_member_required
+def send_notification_to_all_users(request):
+    """ارسال نوتیفیکیشن به همه کاربران (فقط ادمین)"""
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        message = request.POST.get('message', '').strip()
+        
+        if not title or not message:
+            messages.error(request, 'عنوان و پیام نمی‌تواند خالی باشد!')
+            return redirect('app:send_notification_to_all_users')
+        
+        # ارسال به همه کاربران
+        users = User.objects.filter(is_active=True)
+        sent_count = 0
+        
+        for user in users:
+            UserFeedback.objects.create(
+                email=user.email or user.username,
+                subject=f"NOTIFICATION_ADMIN_{timezone.now().strftime('%Y%m%d_%H%M%S')}",
+                message=f"{title}\n\n{message}",
+                user=user
+            )
+            sent_count += 1
+        
+        messages.success(request, f'نوتیفیکیشن با موفقیت به {sent_count} کاربر ارسال شد!')
+        return redirect('app:send_notification_to_all_users')
+    
+    return render(request, 'admin/send_notification.html')
+
+
+@staff_member_required
+def send_notification_to_user(request):
+    """ارسال نوتیفیکیشن به کاربر خاص (فقط ادمین)"""
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        title = request.POST.get('title', '').strip()
+        message = request.POST.get('message', '').strip()
+        
+        if not username or not title or not message:
+            messages.error(request, 'همه فیلدها باید پر شوند!')
+            return redirect('app:send_notification_to_user')
+        
+        try:
+            user = User.objects.get(username=username)
+            UserFeedback.objects.create(
+                email=user.email or user.username,
+                subject=f"NOTIFICATION_ADMIN_{timezone.now().strftime('%Y%m%d_%H%M%S')}",
+                message=f"{title}\n\n{message}",
+                user=user
+            )
+            messages.success(request, f'نوتیفیکیشن با موفقیت به کاربر {username} ارسال شد!')
+        except User.DoesNotExist:
+            messages.error(request, f'کاربر با نام کاربری {username} یافت نشد!')
+        
+        return redirect('app:send_notification_to_user')
+    
+    return render(request, 'admin/send_notification_user.html')
 
 
 from .forms import ProductForm, UserRegistrationForm

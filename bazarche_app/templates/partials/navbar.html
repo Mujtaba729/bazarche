@@ -541,30 +541,6 @@
                 <i class="bi bi-house-door"></i>
             </a>
             
-            <!-- Language Switcher -->
-            <div class="language-menu">
-                <button class="nav-btn" onclick="toggleLanguageDropdown()">
-                    <i class="bi bi-translate"></i>
-                </button>
-                <div class="dropdown-menu" id="languageDropdown" style="display: none;">
-                    <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'fa' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        فارسی
-                    </a>
-                    <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'ps' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        پشتو
-                    </a>
-                    <a href="{% url 'app:set_language' %}?lang=en&next={{ request.path }}" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        English
-                    </a>
-                </div>
-            </div>
-            
-            <button class="nav-btn" onclick="toggleCityDropdown()">
-                <i class="bi bi-geo-alt"></i>
-            </button>
             
             <!-- About Us Button -->
             <a href="{% url 'app:about' %}" class="nav-btn {% if request.path == '/app/about/' %}active{% endif %}" title="{% trans 'درباره ما' %}">
@@ -635,60 +611,12 @@
         </div>
         
         <div class="mobile-menu-nav">
-            <!-- Language Selection Section -->
-            <div class="mobile-language-section">
-                <div class="mobile-language-header">
-                    <i class="bi bi-translate"></i>
-                    <span>{% trans "انتخاب زبان" %}</span>
-                </div>
-                <div class="mobile-language-options">
-                    <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'fa' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        فارسی
-                    </a>
-                    <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'ps' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        پشتو
-                    </a>
-                    <a href="{% url 'app:set_language' %}?lang=en&next={{ request.path }}" class="mobile-language-option {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
-                        <i class="bi bi-flag"></i>
-                        English
-                    </a>
-                </div>
-            </div>
             
             <a href="{% url 'app:home' %}" class="mobile-nav-item {% if request.path == '/' %}active{% endif %}">
                 <i class="bi bi-house-door"></i>
                 {% trans "خانه" %}
             </a>
             
-            <!-- City Selection Section -->
-            <div class="mobile-city-section">
-                <div class="mobile-city-header">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>{% trans "انتخاب شهر" %}</span>
-                </div>
-                <div class="mobile-city-current">
-                    <span class="current-city" style="display:flex;flex-direction:column;align-items:center;">
-                      <span style="font-size:1.1rem;line-height:1.1;">
-                        <span style="color:#1976d2;font-weight:900;">Sood</span><span style="color:#43a047;font-weight:900;">Ava</span>
-                      </span>
-                      <span style="font-size:0.95rem;color:#888;margin-top:0.1rem;">سود آوا</span>
-                    </span>
-                </div>
-                <div class="mobile-city-options">
-                    <a href="{% url 'app:home' %}" class="mobile-city-option">
-                        <i class="bi bi-globe"></i>
-                        {% trans "همه شهرها" %}
-                    </a>
-                    {% for city in cities %}
-                    <a href="{% url 'app:home' %}?city_id={{ city.id }}" class="mobile-city-option {% if selected_city_id == city.id|stringformat:'s' %}active{% endif %}">
-                        <i class="bi bi-geo-alt"></i>
-                        {{ city.name }}
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
             
             {% if user.is_authenticated %}
                                 <a href="{% url 'app:user_dashboard' %}" class="mobile-nav-item">

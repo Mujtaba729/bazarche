@@ -55,50 +55,6 @@
         </div>
     </section>
 
-    <!-- Quick Actions -->
-    <section class="quick-actions">
-        <div class="actions-grid">
-            <a href="{% url 'app:requests_list' %}" class="action-card secondary">
-                <div class="action-icon">
-                    <i class="bi bi-chat-dots"></i>
-                </div>
-                <div class="action-text">
-                    <h3>درخواستی‌ها</h3>
-                    <p>درخواست‌های کاربران</p>
-                </div>
-            </a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'app:register_product' %}" class="action-card primary">
-                <div class="action-icon">
-                    <i class="bi bi-plus-circle"></i>
-                </div>
-                <div class="action-text">
-                    <h3>{% trans "ثبت آگهی" %}</h3>
-                    <p>{% trans "محصول خود را بفروشید" %}</p>
-                </div>
-            </a>
-            {% else %}
-            <a href="{% url 'app:login' %}" class="action-card primary">
-                <div class="action-icon">
-                    <i class="bi bi-plus-circle"></i>
-                </div>
-                <div class="action-text">
-                    <h3>{% trans "ثبت آگهی" %}</h3>
-                    <p>{% trans "برای ثبت آگهی وارد شوید" %}</p>
-                </div>
-            </a>
-            {% endif %}
-            <a href="{% url 'app:jobs_list' %}" class="action-card secondary">
-                <div class="action-icon">
-                    <i class="bi bi-person-badge"></i>
-                </div>
-                <div class="action-text">
-                    <h3>استخدام و کاریابی</h3>
-                    <p>آگهی‌های شغلی و فرصت‌های کار</p>
-                </div>
-            </a>
-        </div>
-    </section>
 
     <!-- Products Section -->
     <section class="products-section" id="products">
@@ -151,14 +107,6 @@
 <!-- Fixed Bottom Navigation Bar -->
 <div class="bottom-navbar">
     <div class="bottom-nav-container">
-        <!-- Register Product Button -->
-        <a href="{% url 'app:register_product' %}" class="bottom-nav-item">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-plus-circle"></i>
-            </div>
-            <span class="bottom-nav-label">ثبت اگهی</span>
-        </a>
-        
         <!-- Requests Button -->
         <a href="{% url 'app:requests_list' %}" class="bottom-nav-item">
             <div class="bottom-nav-icon">
@@ -173,6 +121,14 @@
                 <i class="bi bi-briefcase"></i>
             </div>
             <span class="bottom-nav-label">کاریابی</span>
+        </a>
+        
+        <!-- Register Product Button (Center) -->
+        <a href="{% url 'app:register_product' %}" class="bottom-nav-item center-item">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-plus-circle"></i>
+            </div>
+            <span class="bottom-nav-label">ثبت اگهی</span>
         </a>
         
         <!-- Language Dropdown -->
@@ -287,11 +243,6 @@
     line-height: 1.5;
 }
 
-/* Quick Actions */
-.quick-actions {
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
 
 .actions-grid {
     display: flex;
@@ -689,6 +640,20 @@
     line-height: 1.2;
 }
 
+.center-item {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white !important;
+    border-radius: 12px;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.center-item:hover {
+    color: white !important;
+    background: linear-gradient(45deg, #5a6fd8, #6a4190);
+    transform: scale(1.15);
+}
+
 /* Dropdown Styles */
 .dropdown {
     position: relative;
@@ -704,13 +669,18 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 1001;
+    z-index: 9999;
     display: none;
     margin-bottom: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
 }
 
 .dropdown-menu.show {
     display: block;
+    opacity: 1;
+    visibility: visible;
 }
 
 .dropdown-item {
@@ -1346,22 +1316,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const languageMenu = document.getElementById('language-menu');
     const cityMenu = document.getElementById('city-menu');
     
+    console.log('Dropdown elements:', { languageDropdown, cityDropdown, languageMenu, cityMenu });
+    
     // Language dropdown
-    if (languageDropdown) {
+    if (languageDropdown && languageMenu) {
         languageDropdown.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            cityMenu.classList.remove('show');
+            console.log('Language dropdown clicked');
+            if (cityMenu) cityMenu.classList.remove('show');
             languageMenu.classList.toggle('show');
         });
     }
     
     // City dropdown
-    if (cityDropdown) {
+    if (cityDropdown && cityMenu) {
         cityDropdown.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            languageMenu.classList.remove('show');
+            console.log('City dropdown clicked');
+            if (languageMenu) languageMenu.classList.remove('show');
             cityMenu.classList.toggle('show');
         });
     }
@@ -1369,8 +1343,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
-            languageMenu.classList.remove('show');
-            cityMenu.classList.remove('show');
+            if (languageMenu) languageMenu.classList.remove('show');
+            if (cityMenu) cityMenu.classList.remove('show');
         }
     });
 });

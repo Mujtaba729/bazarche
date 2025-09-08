@@ -242,7 +242,6 @@ def load_more_products(request):
         
         # Convert products to JSON
         from django.utils import timezone
-        from django.template.defaultfilters import naturaltime
         
         products_data = []
         for product in page_obj:
@@ -283,7 +282,9 @@ def load_more_products(request):
             'total_products': paginator.count
         }
         
-        print(f"Response data: {response_data}")
+        print(f"Response products count: {len(products_data)}")
+        print(f"Response has_next: {page_obj.has_next()}")
+        print(f"Response total_products: {paginator.count}")
         return JsonResponse(response_data)
         
     except Exception as e:

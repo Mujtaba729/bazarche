@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load custom_filters %}
+{% load static %}
 
 {% block title %}{% trans "خانه" %} - SoodAva{% endblock %}
 
@@ -538,6 +539,7 @@ document.getElementById('back-to-top').addEventListener('click', function() {
 });
 
 // Infinite scroll functionality
+const placeholderImageUrl = "{% static 'logo-1.png' %}";
 let currentPage = 1;
 let isLoading = false;
 let hasMoreProducts = true;
@@ -627,7 +629,7 @@ function createProductCard(product) {
     div.innerHTML = `
         ${badgesHTML}
         <div class="product-image-container">
-            <img src="${product.image || '{% static 'logo-1.png' %}'}" class="product-image" alt="${product.name}">
+            <img src="${product.image || placeholderImageUrl}" class="product-image" alt="${product.name}">
         </div>
         <div class="product-content">
             <h3 class="product-title">${product.name}</h3>

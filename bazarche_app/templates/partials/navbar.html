@@ -582,10 +582,6 @@
                         <i class="bi bi-person"></i>
                         {% trans "پروفایل" %}
                     </a>
-                    <a href="{% url 'app:register_product' %}" class="dropdown-item">
-                        <i class="bi bi-plus-circle"></i>
-                        {% trans "ثبت آگهی" %}
-                    </a>
                     <hr class="dropdown-divider">
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">
                       {% csrf_token %}
@@ -698,10 +694,6 @@
                                 <a href="{% url 'app:user_dashboard' %}" class="mobile-nav-item">
                         <i class="bi bi-person"></i>
                         {% trans "پروفایل من" %}
-                    </a>
-                    <a href="{% url 'app:register_product' %}" class="mobile-nav-item">
-                        <i class="bi bi-plus-circle"></i>
-                        {% trans "ثبت آگهی" %}
                     </a>
                     <hr class="dropdown-divider">
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">

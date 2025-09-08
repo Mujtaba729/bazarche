@@ -184,7 +184,7 @@ def home(request):
 
     context = {
         'products': page_obj,
-        'main_categories': MainCategory.objects.all(),
+        'main_categories': MainCategory.objects.all().order_by('order', 'name_fa'),
         'cities': City.objects.all(),
         'selected_city_id': selected_city_id,
         'selected_city': selected_city,
@@ -1077,13 +1077,18 @@ def user_products(request):
 
 def category_detail(request, category_id):
     """نمایش محصولات یک دسته‌بندی"""
-    category = get_object_or_404(Category, id=category_id)
-    
-    # دریافت محصولات دسته‌بندی با اولویت‌بندی
-    products_qs = Product.objects.filter(
-        category=category,
-        is_approved=True
-    )
+    # First try to find in MainCategory, then in Category
+    try:
+        category = get_object_or_404(MainCategory, id=category_id)
+        # If it's a MainCategory, get all products from its subcategories
+        # Since Category doesn't have main_category field, we'll get all products
+        products_qs = Product.objects.filter(is_approved=True)
+    except:
+        category = get_object_or_404(Category, id=category_id)
+        products_qs = Product.objects.filter(
+            category=category,
+            is_approved=True
+        )
     
     # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
     products_data = list(products_qs)

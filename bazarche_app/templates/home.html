@@ -15,7 +15,7 @@
                 <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 0.25rem; color: #007bff; display: block;">
                     <i class="{{ category.icon }}"></i>
                 </div>
-                <span class="category-name" style="font-size: 0.75rem; text-align: center; font-weight: 500; color: #343a40; margin-top: 0.25rem; display: block; line-height: 1.2;">{{ category.name }}</span>
+                <span class="category-name" style="font-size: 0.75rem; text-align: center; font-weight: 500; color: #343a40; margin-top: 0.25rem; display: block; line-height: 1.2;">{{ category.name_fa|default:category.name }}</span>
             </a>
             {% endfor %}
         </div>
@@ -591,6 +591,15 @@ function loadMoreProducts() {
                     currentPage++;
                     console.log('Added', data.products.length, 'products. Current page:', currentPage);
                 }
+                
+                // Check if there are more products
+                if (!data.has_next) {
+                    hasMoreProducts = false;
+                    console.log('No more products to load');
+                    if (loadingIndicator) {
+                        loadingIndicator.innerHTML = '<p>{% trans "تمام محصولات نمایش داده شد." %}</p>';
+                    }
+                }
             } else {
                 hasMoreProducts = false;
                 console.log('No more products to load');
@@ -676,18 +685,26 @@ function createProductCard(product) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, setting up infinite scroll...');
     
-    // Simple scroll event listener
+    // Simple scroll event listener with throttling
+    let scrollTimeout;
     window.addEventListener('scroll', function() {
-        if (hasMoreProducts && !isLoading) {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            
-            if (scrollTop + windowHeight >= documentHeight - 200) {
-                console.log('Scroll trigger: Loading more products...');
-                loadMoreProducts();
-            }
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
         }
+        
+        scrollTimeout = setTimeout(function() {
+            if (hasMoreProducts && !isLoading) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
+                
+                // Load more when user is 300px from bottom
+                if (scrollTop + windowHeight >= documentHeight - 300) {
+                    console.log('Scroll trigger: Loading more products...');
+                    loadMoreProducts();
+                }
+            }
+        }, 100); // Throttle scroll events
     });
 });
 </script>

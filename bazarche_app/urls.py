@@ -21,6 +21,7 @@ urlpatterns = [
     path('sitemap.xml', views.sitemap, name='sitemap'),
     path('robots.txt', views.robots, name='robots'),
     path('products/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('products/<int:product_id>/comment/', views.add_product_comment, name='add_product_comment'),
     path('products/<int:pk>/report/', views.report_abuse, name='report_abuse'),
     path('register/', views.register_product, name='register_product'),
     path('set-language/', views.set_language, name='set_language'),

@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Sum, Count
 from django.contrib.auth.models import User
 from .models import Product, ProductImage, Category, Tag, VisitLog, UserFeedback, MainCategory, City, AbuseReport, Advertisement, JobAd, Request
-from .forms import ProductForm, UserFeedbackForm, UserRegistrationForm, UserProfileEditForm, UserProfileForm, JobAdForm, RequestForm
+from .forms import ProductForm, UserFeedbackForm, UserRegistrationForm, UserProfileEditForm, UserProfileForm, JobAdForm, RequestForm, ProductCommentForm
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -640,12 +640,49 @@ def product_detail(request, product_id):
     if not product:
         # اگر از کش فقط آیدی یا دیکشنری داشتیم، محصول را از دیتابیس بگیر
         product = Product.objects.get(pk=product_id)
+    
+    # دریافت کامنت‌های محصول از UserFeedback
+    comments = UserFeedback.objects.filter(
+        subject__icontains=f"نظر محصول {product.id}",
+        is_approved=True
+    ).order_by('-created_at')[:10]
+    
+    # فرم کامنت
+    comment_form = ProductCommentForm()
+    
     context = {
         'product': product,
         'related_products': related_products,
         'seller_products': seller_products,
+        'comments': comments,
+        'comment_form': comment_form,
     }
     return render(request, 'product_detail.html', context)
+
+
+@csrf_protect
+@login_required
+def add_product_comment(request, product_id):
+    """افزودن کامنت به محصول با UserFeedback"""
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=product_id, is_approved=True)
+        form = ProductCommentForm(request.POST)
+        
+        if form.is_valid():
+            # ایجاد UserFeedback به عنوان کامنت
+            UserFeedback.objects.create(
+                email=request.user.email or request.user.username,
+                subject=f"نظر محصول {product.id} - {product.name_fa[:30]}",
+                message=form.cleaned_data['comment_text'],
+                is_approved=True  # کامنت‌ها به صورت خودکار تایید می‌شوند
+            )
+            
+            messages.success(request, 'نظر شما با موفقیت ثبت شد.')
+        else:
+            messages.error(request, 'خطا در ثبت نظر. لطفا دوباره تلاش کنید.')
+    
+    return redirect('app:product_detail', product_id=product_id)
+
 
 from .forms import ProductForm, UserRegistrationForm
 from .models import UserProfile

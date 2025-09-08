@@ -218,3 +218,26 @@ class RequestForm(forms.ModelForm):
             'contact': 'شماره تماس/راه ارتباطی',
             'city': 'شهر',
         }
+
+
+class ProductCommentForm(forms.Form):
+    """فرم کامنت محصول با UserFeedback"""
+    comment_text = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'نظر خود را درباره این محصول بنویسید...',
+            'rows': 4,
+            'style': 'resize: vertical;'
+        }),
+        label='نظر شما',
+        max_length=500,
+        min_length=10
+    )
+
+    def clean_comment_text(self):
+        comment_text = self.cleaned_data.get('comment_text')
+        if not comment_text or len(comment_text.strip()) < 10:
+            raise forms.ValidationError('نظر شما باید حداقل ۱۰ کاراکتر باشد.')
+        if len(comment_text) > 500:
+            raise forms.ValidationError('نظر شما نمی‌تواند بیش از ۵۰۰ کاراکتر باشد.')
+        return comment_text.strip()

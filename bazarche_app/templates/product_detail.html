@@ -192,26 +192,29 @@
             <span class="badge bg-primary ms-2">{{ comments.count }}</span>
         </h3>
         
-        <!-- دکمه چت با فروشنده -->
-        {% if user.is_authenticated and product.user and product.user != user %}
-            <div class="chat-section mb-4">
-                <div class="alert alert-info d-flex align-items-center justify-content-between">
-                    <div>
-                        <i class="bi bi-chat-dots me-2"></i>
-                        <strong>چت با فروشنده:</strong>
-                        <span class="text-muted">{{ product.user.username }}</span>
+        <!-- دکمه‌های چت و کامنت -->
+        {% if user.is_authenticated %}
+            <div class="action-buttons mb-4">
+                <div class="row g-2">
+                    {% if product.user and product.user != user %}
+                        <div class="col-6">
+                            <a href="{% url 'app:start_chat' product.id %}" class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-chat-dots me-2"></i>
+                                <span>چت با فروشنده</span>
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="{% if product.user and product.user != user %}col-6{% else %}col-12{% endif %}">
+                        <button type="button" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center" onclick="toggleCommentForm()">
+                            <i class="bi bi-chat-square-text me-2"></i>
+                            <span>نظر دادن</span>
+                        </button>
                     </div>
-                    <a href="{% url 'app:start_chat' product.id %}" class="btn btn-success btn-sm">
-                        <i class="bi bi-chat me-1"></i>
-                        شروع چت
-                    </a>
                 </div>
             </div>
-        {% endif %}
 
-        <!-- فرم کامنت -->
-        {% if user.is_authenticated %}
-            <div class="comment-form-section mb-4">
+            <!-- فرم کامنت (مخفی) -->
+            <div class="comment-form-section mb-4" id="commentForm" style="display: none;">
                 <form method="post" action="{% url 'app:add_product_comment' product.id %}">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -228,10 +231,16 @@
                             </div>
                         {% endif %}
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-send me-1"></i>
-                        {% trans 'ارسال نظر' %}
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i>
+                            {% trans 'ارسال نظر' %}
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleCommentForm()">
+                            <i class="bi bi-x me-1"></i>
+                            لغو
+                        </button>
+                    </div>
                 </form>
             </div>
         {% else %}
@@ -421,6 +430,53 @@
 .alert-link:hover {
     text-decoration: underline;
 }
+
+/* Action Buttons Styles */
+.action-buttons .btn {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.action-buttons .btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.action-buttons .btn-outline-success:hover {
+    background: #28a745;
+    color: white;
+}
+
+.action-buttons .btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.action-buttons .btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+}
 </style>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleCommentForm() {
+    const commentForm = document.getElementById('commentForm');
+    if (commentForm.style.display === 'none') {
+        commentForm.style.display = 'block';
+        commentForm.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        commentForm.style.display = 'none';
+    }
+}
+</script>
 {% endblock %}

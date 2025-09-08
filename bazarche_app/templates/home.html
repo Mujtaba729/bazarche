@@ -177,6 +177,14 @@
             </div>
             <span class="bottom-nav-label">مستقیم</span>
         </div>
+        
+        <!-- Global Test Button -->
+        <div class="bottom-nav-item" onclick="window.toggleCityDropdown();">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-globe"></i>
+            </div>
+            <span class="bottom-nav-label">گلوبال</span>
+        </div>
     </div>
 </div>
 
@@ -1377,39 +1385,45 @@ function toggleLanguageDropdown() {
 
 function toggleCityDropdown() {
     console.log('=== toggleCityDropdown function called! ===');
-    const dropdown = document.getElementById('city-menu');
-    const languageDropdown = document.getElementById('language-menu');
-    console.log('Elements found - dropdown:', dropdown, 'languageDropdown:', languageDropdown);
     
-    console.log('City dropdown element:', dropdown);
-    console.log('Language dropdown element:', languageDropdown);
-    
-    // Close language dropdown
-    if (languageDropdown) {
-        languageDropdown.style.display = 'none';
-        languageDropdown.style.visibility = 'hidden';
-        languageDropdown.style.opacity = '0';
-        console.log('Language dropdown closed');
-    }
-    
-    // Toggle city dropdown
-    if (dropdown) {
-        console.log('Current city dropdown display:', dropdown.style.display);
-        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-            dropdown.style.display = 'block';
-            dropdown.style.visibility = 'visible';
-            dropdown.style.opacity = '1';
-            console.log('City dropdown OPENED');
-        } else {
-            dropdown.style.display = 'none';
-            dropdown.style.visibility = 'hidden';
-            dropdown.style.opacity = '0';
-            console.log('City dropdown CLOSED');
+    try {
+        const dropdown = document.getElementById('city-menu');
+        const languageDropdown = document.getElementById('language-menu');
+        console.log('Elements found - dropdown:', dropdown, 'languageDropdown:', languageDropdown);
+        
+        // Close language dropdown
+        if (languageDropdown) {
+            languageDropdown.style.display = 'none';
+            languageDropdown.style.visibility = 'hidden';
+            languageDropdown.style.opacity = '0';
+            console.log('Language dropdown closed');
         }
-    } else {
-        console.log('City dropdown element NOT FOUND!');
+        
+        // Toggle city dropdown
+        if (dropdown) {
+            console.log('Current city dropdown display:', dropdown.style.display);
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+                dropdown.style.visibility = 'visible';
+                dropdown.style.opacity = '1';
+                console.log('City dropdown OPENED');
+            } else {
+                dropdown.style.display = 'none';
+                dropdown.style.visibility = 'hidden';
+                dropdown.style.opacity = '0';
+                console.log('City dropdown CLOSED');
+            }
+        } else {
+            console.log('City dropdown element NOT FOUND!');
+        }
+    } catch (error) {
+        console.error('Error inside toggleCityDropdown:', error);
     }
 }
+
+// Make functions globally available
+window.toggleCityDropdown = toggleCityDropdown;
+window.toggleLanguageDropdown = toggleLanguageDropdown;
 
 // Test function
 function testDropdown() {
@@ -1461,6 +1475,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             console.log('Language button clicked via addEventListener!');
             try {
+                console.log('About to call toggleLanguageDropdown...');
                 toggleLanguageDropdown();
                 console.log('toggleLanguageDropdown executed successfully');
             } catch (error) {
@@ -1478,6 +1493,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             console.log('City button clicked via addEventListener!');
             try {
+                console.log('About to call toggleCityDropdown...');
                 toggleCityDropdown();
                 console.log('toggleCityDropdown executed successfully');
             } catch (error) {

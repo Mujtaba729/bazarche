@@ -633,14 +633,21 @@ def add_product_comment(request, product_id):
     """افزودن کامنت به محصول با UserFeedback"""
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id, is_approved=True)
-        form = ProductCommentForm(request.POST)
+        comment_text = request.POST.get('comment_text', '').strip()
         
-        if form.is_valid():
+        # Validation
+        if not comment_text:
+            messages.error(request, 'نظر شما نمی‌تواند خالی باشد.')
+        elif len(comment_text) < 10:
+            messages.error(request, 'نظر شما باید حداقل ۱۰ کاراکتر باشد.')
+        elif len(comment_text) > 500:
+            messages.error(request, 'نظر شما نمی‌تواند بیش از ۵۰۰ کاراکتر باشد.')
+        else:
             # ایجاد UserFeedback به عنوان کامنت
             comment = UserFeedback.objects.create(
                 email=request.user.email or request.user.username,
                 subject=f"نظر محصول {product.id} - {product.name_fa[:30]}",
-                message=form.cleaned_data['comment_text'],
+                message=comment_text,
                 user=request.user
             )
             
@@ -654,8 +661,6 @@ def add_product_comment(request, product_id):
                 )
             
             messages.success(request, 'نظر شما با موفقیت ثبت شد.')
-        else:
-            messages.error(request, 'خطا در ثبت نظر. لطفا دوباره تلاش کنید.')
     
     return redirect('app:product_detail', product_id=product_id)
 

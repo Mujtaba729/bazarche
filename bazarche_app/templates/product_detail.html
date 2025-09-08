@@ -192,7 +192,8 @@
             <span class="badge bg-primary ms-2">{{ comments.count }}</span>
         </h3>
         
-        <!-- دکمه چت با فروشنده -->
+        <!-- دکمه چت با فروشنده (مخفی شده) -->
+        {% comment %}
         {% if user.is_authenticated and product.user and product.user != user %}
             <div class="chat-section mb-4">
                 <a href="{% url 'app:start_chat' product.id %}" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
@@ -201,6 +202,7 @@
                 </a>
             </div>
         {% endif %}
+        {% endcomment %}
 
         <!-- نوار نظر دادن -->
         {% if user.is_authenticated %}
@@ -490,6 +492,27 @@
     transform: translateX(0);
 }
 
+/* Comment Error Styles */
+.comment-error {
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    font-size: 0.9rem;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .comment-bar {
@@ -521,6 +544,8 @@
 // Auto-focus on comment input when page loads
 document.addEventListener('DOMContentLoaded', function() {
     const commentInput = document.querySelector('.comment-input');
+    const commentForm = document.querySelector('.comment-form');
+    
     if (commentInput) {
         commentInput.addEventListener('focus', function() {
             this.parentElement.parentElement.style.transform = 'translateY(-2px)';
@@ -532,6 +557,54 @@ document.addEventListener('DOMContentLoaded', function() {
             this.parentElement.parentElement.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
         });
     }
+    
+    // Form validation
+    if (commentForm) {
+        commentForm.addEventListener('submit', function(e) {
+            const commentText = commentInput.value.trim();
+            
+            if (commentText.length < 10) {
+                e.preventDefault();
+                showCommentError('نظر شما باید حداقل ۱۰ کاراکتر باشد.');
+                commentInput.focus();
+                return false;
+            }
+            
+            if (commentText.length > 500) {
+                e.preventDefault();
+                showCommentError('نظر شما نمی‌تواند بیش از ۵۰۰ کاراکتر باشد.');
+                commentInput.focus();
+                return false;
+            }
+        });
+    }
 });
+
+function showCommentError(message) {
+    // Remove existing error message
+    const existingError = document.querySelector('.comment-error');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Create new error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'comment-error alert alert-danger mt-2';
+    errorDiv.innerHTML = `
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        ${message}
+    `;
+    
+    // Add error message after the form
+    const commentForm = document.querySelector('.comment-form');
+    commentForm.appendChild(errorDiv);
+    
+    // Auto remove error after 5 seconds
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.remove();
+        }
+    }, 5000);
+}
 </script>
 {% endblock %}

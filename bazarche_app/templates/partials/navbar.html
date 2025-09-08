@@ -415,19 +415,30 @@
     }
     
     .navbar-brand {
-        font-size: 0.9rem; /* Smaller font */
+        font-size: 0.8rem; /* Smaller font */
+        flex-shrink: 0;
     }
     
     .navbar-brand img {
-        height: 24px; /* Smaller logo */
+        height: 20px; /* Smaller logo */
         width: auto;
         object-fit: contain;
         display: block;
     }
     
+    .soodava-main {
+        font-size: 1.4rem !important;
+    }
+    
+    .soodava-sub {
+        font-size: 0.7rem !important;
+    }
+    
     .search-section {
         max-width: none;
         flex: 1;
+        margin-left: 8px;
+        margin-right: 8px;
     }
     
     .search-form {
@@ -449,6 +460,11 @@
     .mobile-menu-toggle {
         display: block;
     }
+    
+    .mobile-notification-btn {
+        display: flex !important;
+        align-items: center;
+    }
 }
 
 @media (max-width: 480px) {
@@ -457,14 +473,22 @@
     }
     
     .navbar-brand {
-        font-size: 0.8rem; /* Smaller font */
+        font-size: 0.7rem; /* Smaller font */
     }
     
     .navbar-brand img {
-        height: 20px; /* Smaller logo */
+        height: 18px; /* Smaller logo */
         width: auto;
         object-fit: contain;
         display: block;
+    }
+    
+    .soodava-main {
+        font-size: 1.2rem !important;
+    }
+    
+    .soodava-sub {
+        font-size: 0.6rem !important;
     }
     
     .search-input {
@@ -497,6 +521,11 @@
 /* Notification Styles */
 .notification-menu {
     position: relative;
+}
+
+.mobile-notification-btn {
+    position: relative;
+    margin-left: 8px;
 }
 
 .notification-btn {
@@ -678,6 +707,16 @@
                 </button>
             </form>
         </div>
+        
+        <!-- Mobile Notification Button -->
+        {% if user.is_authenticated %}
+        <div class="mobile-notification-btn d-md-none">
+            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'نوتیفیکیشن‌ها' %}">
+                <i class="bi bi-bell"></i>
+                <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
+            </button>
+        </div>
+        {% endif %}
         
         <!-- Desktop Navigation -->
         <div class="nav-menu d-none d-md-flex">
@@ -969,12 +1008,26 @@ function updateNotificationCount() {
     fetch('/app/api/notifications/count/')
         .then(response => response.json())
         .then(data => {
-            const badge = document.getElementById('notificationBadge');
-            if (data.count > 0) {
-                badge.textContent = data.count > 99 ? '99+' : data.count;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
+            // Update desktop notification badge
+            const desktopBadge = document.getElementById('notificationBadge');
+            if (desktopBadge) {
+                if (data.count > 0) {
+                    desktopBadge.textContent = data.count > 99 ? '99+' : data.count;
+                    desktopBadge.style.display = 'flex';
+                } else {
+                    desktopBadge.style.display = 'none';
+                }
+            }
+            
+            // Update mobile notification badge
+            const mobileBadge = document.getElementById('mobileNotificationBadge');
+            if (mobileBadge) {
+                if (data.count > 0) {
+                    mobileBadge.textContent = data.count > 99 ? '99+' : data.count;
+                    mobileBadge.style.display = 'flex';
+                } else {
+                    mobileBadge.style.display = 'none';
+                }
             }
         })
         .catch(error => {

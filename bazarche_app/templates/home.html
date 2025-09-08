@@ -139,7 +139,7 @@
                 </div>
                 <span class="bottom-nav-label">زبان</span>
             </div>
-            <div class="dropdown-menu" id="language-menu" style="display: none;">
+            <div class="dropdown-menu" id="language-menu" style="display: none; visibility: hidden; opacity: 0;">
                 <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
                 <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
                 <a href="{% url 'app:set_language' %}?lang=ps" class="dropdown-item">پښتو</a>
@@ -154,7 +154,7 @@
                 </div>
                 <span class="bottom-nav-label">شهر</span>
             </div>
-            <div class="dropdown-menu" id="city-menu" style="display: none;">
+            <div class="dropdown-menu" id="city-menu" style="display: none; visibility: hidden; opacity: 0;">
                 <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
                 {% for city in cities %}
                 <a href="{% url 'app:city_detail' city.id %}" class="dropdown-item">{{ city.name }}</a>
@@ -162,13 +162,6 @@
             </div>
         </div>
         
-        <!-- Test Button -->
-        <div class="bottom-nav-item" onclick="testDropdown()">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-bug"></i>
-            </div>
-            <span class="bottom-nav-label">تست</span>
-        </div>
     </div>
 </div>
 
@@ -1335,101 +1328,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dropdown functionality
 function toggleLanguageDropdown() {
-    console.log('toggleLanguageDropdown called');
     const dropdown = document.getElementById('language-menu');
     const cityDropdown = document.getElementById('city-menu');
-    
-    console.log('Language dropdown element:', dropdown);
-    console.log('City dropdown element:', cityDropdown);
     
     // Close city dropdown
     if (cityDropdown) {
         cityDropdown.style.display = 'none';
-        console.log('City dropdown closed');
+        cityDropdown.style.visibility = 'hidden';
+        cityDropdown.style.opacity = '0';
     }
     
     // Toggle language dropdown
     if (dropdown) {
-        const currentDisplay = dropdown.style.display;
-        console.log('Current display:', currentDisplay);
-        if (currentDisplay === 'none' || currentDisplay === '') {
+        if (dropdown.style.display === 'none') {
             dropdown.style.display = 'block';
             dropdown.style.visibility = 'visible';
             dropdown.style.opacity = '1';
-            console.log('Language dropdown opened');
         } else {
             dropdown.style.display = 'none';
             dropdown.style.visibility = 'hidden';
             dropdown.style.opacity = '0';
-            console.log('Language dropdown closed');
         }
     }
 }
 
 function toggleCityDropdown() {
-    console.log('toggleCityDropdown called');
     const dropdown = document.getElementById('city-menu');
     const languageDropdown = document.getElementById('language-menu');
-    
-    console.log('City dropdown element:', dropdown);
-    console.log('Language dropdown element:', languageDropdown);
     
     // Close language dropdown
     if (languageDropdown) {
         languageDropdown.style.display = 'none';
-        console.log('Language dropdown closed');
+        languageDropdown.style.visibility = 'hidden';
+        languageDropdown.style.opacity = '0';
     }
     
     // Toggle city dropdown
     if (dropdown) {
-        const currentDisplay = dropdown.style.display;
-        console.log('Current display:', currentDisplay);
-        if (currentDisplay === 'none' || currentDisplay === '') {
+        if (dropdown.style.display === 'none') {
             dropdown.style.display = 'block';
             dropdown.style.visibility = 'visible';
             dropdown.style.opacity = '1';
-            console.log('City dropdown opened');
         } else {
             dropdown.style.display = 'none';
             dropdown.style.visibility = 'hidden';
             dropdown.style.opacity = '0';
-            console.log('City dropdown closed');
         }
     }
 }
 
-// Test function
-function testDropdown() {
-    console.log('Test button clicked!');
-    console.log('Language dropdown element:', document.getElementById('language-menu'));
-    console.log('City dropdown element:', document.getElementById('city-menu'));
-    console.log('Language dropdown parent:', document.getElementById('language-dropdown'));
-    console.log('City dropdown parent:', document.getElementById('city-dropdown'));
-    
-    // Test if elements exist
-    const langMenu = document.getElementById('language-menu');
-    const cityMenu = document.getElementById('city-menu');
-    
-    if (langMenu) {
-        console.log('Language menu found, current display:', langMenu.style.display);
-        langMenu.style.display = 'block';
-        langMenu.style.visibility = 'visible';
-        langMenu.style.opacity = '1';
-        console.log('Language menu set to visible');
-    } else {
-        console.log('Language menu NOT found!');
-    }
-    
-    if (cityMenu) {
-        console.log('City menu found, current display:', cityMenu.style.display);
-        cityMenu.style.display = 'block';
-        cityMenu.style.visibility = 'visible';
-        cityMenu.style.opacity = '1';
-        console.log('City menu set to visible');
-    } else {
-        console.log('City menu NOT found!');
-    }
-}
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(e) {
@@ -1439,12 +1386,16 @@ document.addEventListener('click', function(e) {
     if (!e.target.closest('#language-dropdown')) {
         if (languageDropdown) {
             languageDropdown.style.display = 'none';
+            languageDropdown.style.visibility = 'hidden';
+            languageDropdown.style.opacity = '0';
         }
     }
     
     if (!e.target.closest('#city-dropdown')) {
         if (cityDropdown) {
             cityDropdown.style.display = 'none';
+            cityDropdown.style.visibility = 'hidden';
+            cityDropdown.style.opacity = '0';
         }
     }
 });

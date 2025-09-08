@@ -8,7 +8,7 @@
 {% block content %}
 <div class="container-fluid">
     <!-- Categories Section -->
-    <div class="categories-section" style="background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 0 0 1rem 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div class="categories-section" style="background: white; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; border-radius: 0 0 1rem 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <div class="categories-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
             {% for category in main_categories %}
             <a href="{% url 'app:category_detail' category.id %}" class="category-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; min-height: 80px; justify-content: center;">
@@ -552,7 +552,7 @@ document.getElementById('back-to-top').addEventListener('click', function() {
 
 // Infinite scroll functionality
 const placeholderImageUrl = "{% static 'logo-1.png' %}";
-let currentPage = 1;
+let currentPage = 1; // Start from 1 since we already have page 1 loaded
 let isLoading = false;
 let hasMoreProducts = true;
 // Get city_id from URL if present
@@ -573,6 +573,8 @@ function loadMoreProducts() {
     if (cityId) {
         fetchUrl += `&city_id=${cityId}`;
     }
+    
+    console.log('Fetching URL:', fetchUrl);
 
     fetch(fetchUrl)
         .then(response => {
@@ -590,6 +592,7 @@ function loadMoreProducts() {
                     });
                     currentPage++;
                     console.log('Added', data.products.length, 'products. Current page:', currentPage);
+                    console.log('Next page will be:', currentPage + 1);
                 }
                 
                 // Check if there are more products
@@ -684,6 +687,7 @@ function createProductCard(product) {
 // Simple scroll-based infinite scroll
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, setting up infinite scroll...');
+    console.log('Initial state - hasMoreProducts:', hasMoreProducts, 'isLoading:', isLoading);
     
     // Simple scroll event listener with throttling
     let scrollTimeout;
@@ -697,6 +701,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
+                
+                console.log('Scroll check:', {
+                    scrollTop: scrollTop,
+                    windowHeight: windowHeight,
+                    documentHeight: documentHeight,
+                    triggerPoint: documentHeight - 300
+                });
                 
                 // Load more when user is 300px from bottom
                 if (scrollTop + windowHeight >= documentHeight - 300) {

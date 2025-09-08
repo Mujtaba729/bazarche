@@ -541,14 +541,14 @@
 
 @media (max-width: 480px) {
     .mobile-notification-dropdown {
-        right: -200px;
+        right: -250px;
         width: 250px;
     }
 }
 
 @media (max-width: 360px) {
     .mobile-notification-dropdown {
-        right: -220px;
+        right: -270px;
         width: 220px;
     }
 }
@@ -743,7 +743,6 @@
             <div class="dropdown-menu notification-dropdown mobile-notification-dropdown" id="mobileNotificationDropdown" style="display: none;">
                 <div class="notification-header">
                     <h6>{% trans "اعلان‌ها" %}</h6>
-                    <a href="{% url 'app:notifications' %}" class="view-all-link">{% trans "مشاهده همه" %}</a>
                 </div>
                 <div class="notification-list" id="mobileNotificationList">
                     <div class="notification-loading">
@@ -1021,7 +1020,7 @@ function displayNotifications(notifications, listId) {
     const notificationList = document.getElementById(listId);
     
     if (notifications.length === 0) {
-        notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-bell-slash"></i> هیچ نوتیفیکیشنی ندارید</div>';
+        notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-bell-slash"></i> هیچ اعلانی موجود نیست</div>';
         return;
     }
     

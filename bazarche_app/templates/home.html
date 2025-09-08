@@ -71,36 +71,51 @@
             <span class="bottom-nav-label">ثبت اگهی</span>
         </a>
         
-        <!-- Language Dropdown -->
-        <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
-                <div class="bottom-nav-icon">
-                    <i class="bi bi-translate"></i>
-                </div>
-                <span class="bottom-nav-label">زبان</span>
+        <!-- Language Button -->
+        <div class="bottom-nav-item" onclick="openSheet('language-sheet')">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-translate"></i>
             </div>
-            <div class="dropdown-menu" id="languageDropdown" style="display: none;">
-                <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
-                <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
-                <a href="{% url 'app:set_language' %}?lang=ps" class="dropdown-item">پښتو</a>
-            </div>
+            <span class="bottom-nav-label">زبان</span>
         </div>
-        
-        <!-- City Dropdown -->
-        <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="dropdown-trigger" onclick="toggleCityDropdown()">
-                <div class="bottom-nav-icon">
-                    <i class="bi bi-geo-alt"></i>
-                </div>
-                <span class="bottom-nav-label">شهر</span>
+
+        <!-- City Button -->
+        <div class="bottom-nav-item" onclick="openSheet('city-sheet')">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-geo-alt"></i>
             </div>
-            <div class="dropdown-menu" id="cityDropdown" style="display: none;">
-                <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
-                {% for city in cities %}
-                <a href="{% url 'app:city_detail' city.id %}" class="dropdown-item">{{ city.name }}</a>
-                {% endfor %}
-            </div>
+            <span class="bottom-nav-label">شهرها</span>
         </div>
+    </div>
+</div>
+
+<!-- Bottom Sheets -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+
+<!-- Language Sheet -->
+<div class="bottom-sheet" id="language-sheet">
+    <div class="sheet-header">
+        <h5>{% trans "انتخاب زبان" %}</h5>
+        <button class="sheet-close-btn" onclick="closeSheet()">&times;</button>
+    </div>
+    <div class="sheet-content">
+        <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.get_full_path|urlencode }}">فارسی</a>
+        <a href="{% url 'app:set_language' %}?lang=en&next={{ request.get_full_path|urlencode }}">English</a>
+        <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.get_full_path|urlencode }}">پښتو</a>
+    </div>
+</div>
+
+<!-- City Sheet -->
+<div class="bottom-sheet" id="city-sheet">
+    <div class="sheet-header">
+        <h5>{% trans "انتخاب شهر" %}</h5>
+        <button class="sheet-close-btn" onclick="closeSheet()">&times;</button>
+    </div>
+    <div class="sheet-content">
+        <a href="{% url 'app:home' %}">{% trans "همه شهرها" %}</a>
+        {% for city in cities %}
+        <a href="{% url 'app:city_detail' city.id %}">{{ city.name }}</a>
+        {% endfor %}
     </div>
 </div>
 
@@ -160,9 +175,11 @@ body {
 }
 
 .category-name {
-    font-size: 0.7rem;
+    font-size: 0.75rem; /* Slightly larger */
     text-align: center;
     font-weight: 500;
+    color: #343a40; /* Darker color */
+    margin-top: 0.25rem;
 }
 
 /* Products Section */
@@ -309,57 +326,83 @@ body {
     font-weight: 500;
 }
 
-/* Dropdown Styles */
-.dropdown {
-    position: relative;
-    cursor: pointer;
-}
-
-.dropdown-trigger {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
+/* Bottom Sheet Styles */
+.sheet-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1010;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-.dropdown-menu {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 120px;
-    z-index: 99999;
-    display: none;
-    margin-bottom: 0.5rem;
-    max-height: 200px;
+.sheet-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1020;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.bottom-sheet.show {
+    transform: translateY(0);
+}
+
+.sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 0.75rem;
+}
+
+.sheet-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.sheet-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.sheet-content {
     overflow-y: auto;
 }
 
-.dropdown-item {
+.sheet-content a {
     display: block;
-    padding: 0.75rem 1rem;
-    color: #333;
+    padding: 0.8rem 0.5rem;
     text-decoration: none;
-    font-size: 0.8rem;
-    border-bottom: 1px solid #f8f9fa;
-    transition: all 0.2s ease;
+    color: #212529;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 
-.dropdown-item:hover {
+.sheet-content a:hover {
     background-color: #f8f9fa;
-    color: #007bff;
-}
-
-.dropdown-item:last-child {
-    border-bottom: none;
 }
 
 /* Responsive Design */
@@ -381,6 +424,28 @@ body {
 </style>
 
 <script>
+// Bottom Sheet Functions
+function openSheet(sheetId) {
+    // Close any open sheets first
+    closeSheet();
+    const sheet = document.getElementById(sheetId);
+    const overlay = document.getElementById('sheet-overlay');
+    if (sheet && overlay) {
+        sheet.classList.add('show');
+        overlay.classList.add('show');
+    }
+}
+
+function closeSheet() {
+    const sheets = document.querySelectorAll('.bottom-sheet');
+    const overlay = document.getElementById('sheet-overlay');
+    sheets.forEach(sheet => {
+        sheet.classList.remove('show');
+    });
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+}
 
 // Back to top functionality
 window.addEventListener('scroll', function() {

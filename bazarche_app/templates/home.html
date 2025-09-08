@@ -10,14 +10,18 @@
     <!-- Categories Section -->
     <div class="categories-section">
         <div class="categories-grid">
-            {% for category in main_categories %}
-            <a href="{% url 'app:category_detail' category.id %}" class="category-item">
-                <div class="category-icon">
-                    <i class="{{ category.icon }}"></i>
-                </div>
-                <span class="category-name">{{ category.name }}</span>
-            </a>
-            {% endfor %}
+            {% if main_categories %}
+                {% for category in main_categories %}
+                <a href="{% url 'app:category_detail' category.id %}" class="category-item">
+                    <div class="category-icon">
+                        <i class="{{ category.icon }}"></i>
+                    </div>
+                    <span class="category-name">{{ category.name }}</span>
+                </a>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: red; padding: 2rem;">دسته‌بندی‌ها یافت نشد!</p>
+            {% endif %}
         </div>
     </div>
 
@@ -140,13 +144,16 @@ body {
 
 /* Categories Section */
 .categories-section {
-    background: #fff;
-    padding: 1rem;
-    margin-bottom: 1rem;
+    background: #fff !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
     border-radius: 0 0 1rem 1rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative;
-    z-index: 1;
+    z-index: 10;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 .categories-grid {

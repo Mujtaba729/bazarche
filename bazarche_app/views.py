@@ -230,8 +230,24 @@ def load_more_products(request):
         page_obj = paginator.get_page(page)
         
         # Convert products to JSON
+        from django.utils import timezone
+        from django.template.defaultfilters import naturaltime
+        
         products_data = []
         for product in page_obj:
+            # Calculate natural time
+            time_diff = timezone.now() - product.created_at
+            if time_diff.days > 0:
+                created_at_natural = f"{time_diff.days} روز پیش"
+            elif time_diff.seconds > 3600:
+                hours = time_diff.seconds // 3600
+                created_at_natural = f"{hours} ساعت پیش"
+            elif time_diff.seconds > 60:
+                minutes = time_diff.seconds // 60
+                created_at_natural = f"{minutes} دقیقه پیش"
+            else:
+                created_at_natural = "همین الان"
+            
             products_data.append({
                 'id': product.id,
                 'name': product.name_fa or product.name_en or product.name_ps or 'نامشخص',
@@ -243,6 +259,7 @@ def load_more_products(request):
                 'is_discounted': product.is_discounted,
                 'is_suggested': product.is_suggested,
                 'created_at': product.created_at.strftime('%Y-%m-%d %H:%M'),
+                'created_at_natural': created_at_natural,
                 'url': f'/app/product/{product.id}/',
                 'type': 'product'
             })

@@ -10,14 +10,20 @@
     <!-- Categories Section -->
     <div class="categories-section" style="background: white; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; border-radius: 0 0 1rem 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <div class="categories-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-            {% for category in main_categories %}
-            <a href="{% url 'app:category_detail' category.id %}" class="category-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; min-height: 80px; justify-content: center;">
-                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 0.25rem; color: #007bff; display: block;">
-                    <i class="{{ category.icon }}"></i>
+            {% if main_categories %}
+                {% for category in main_categories %}
+                <a href="{% url 'app:category_detail' category.id %}" class="category-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; min-height: 80px; justify-content: center;">
+                    <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 0.25rem; color: #007bff; display: block;">
+                        <i class="{{ category.icon }}"></i>
+                    </div>
+                    <span class="category-name" style="font-size: 0.75rem; text-align: center; font-weight: 500; color: #343a40; margin-top: 0.25rem; display: block; line-height: 1.2;">{{ category.name_fa|default:category.name }}</span>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #6c757d;">
+                    <p>دسته‌بندی‌ها در حال بارگذاری...</p>
                 </div>
-                <span class="category-name" style="font-size: 0.75rem; text-align: center; font-weight: 500; color: #343a40; margin-top: 0.25rem; display: block; line-height: 1.2;">{{ category.name_fa|default:category.name }}</span>
-            </a>
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
 
@@ -290,16 +296,21 @@
 <script>
 // Bottom Sheet Functions
 function openSheet(sheetId) {
+    console.log('Opening sheet:', sheetId);
     closeSheet();
     const sheet = document.getElementById(sheetId);
     const overlay = document.getElementById('sheet-overlay');
     if (sheet && overlay) {
         sheet.classList.add('show');
         overlay.classList.add('show');
+        console.log('Sheet opened successfully');
+    } else {
+        console.error('Sheet or overlay not found:', sheetId);
     }
 }
 
 function closeSheet() {
+    console.log('Closing all sheets');
     const sheets = document.querySelectorAll('.bottom-sheet');
     const overlay = document.getElementById('sheet-overlay');
     sheets.forEach(sheet => {
@@ -329,7 +340,7 @@ document.getElementById('back-to-top').addEventListener('click', function() {
 
 // Infinite scroll functionality
 const placeholderImageUrl = "{% static 'logo-1.png' %}";
-let currentPage = 1;
+let currentPage = 1; // Start from 1 since page 1 is already loaded
 let isLoading = false;
 let hasMoreProducts = true;
 
@@ -359,6 +370,7 @@ function loadMoreProducts() {
     }
     
     console.log('Fetching URL:', fetchUrl);
+    console.log('Current page:', currentPage, 'Next page:', currentPage + 1);
 
     fetch(fetchUrl)
         .then(response => {
@@ -383,9 +395,9 @@ function loadMoreProducts() {
                 }
                 
                 // Check if there are more products
-                if (!data.has_next) {
+                if (!data.has_next || data.products.length < 20) {
                     hasMoreProducts = false;
-                    console.log('No more products to load');
+                    console.log('No more products to load - has_next:', data.has_next, 'products_count:', data.products.length);
                     if (endMessage) {
                         endMessage.style.display = 'block';
                     }

@@ -558,13 +558,6 @@
                         <i class="bi bi-person"></i>
                         {% trans "پروفایل" %}
                     </a>
-                    <hr class="dropdown-divider">
-                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                      {% csrf_token %}
-                      <button type="submit" class="dropdown-item" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
-                        خروج
-                      </button>
-                    </form>
                 </div>
             </div>
             {% else %}
@@ -623,13 +616,6 @@
                         <i class="bi bi-person"></i>
                         {% trans "پروفایل من" %}
                     </a>
-                    <hr class="dropdown-divider">
-                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                      {% csrf_token %}
-                      <button type="submit" class="mobile-nav-item hide-mobile-logout-btn" style="background:none;border:none;padding:0;margin:0;cursor:pointer;">
-                        خروج
-                      </button>
-                    </form>
             {% else %}
             <a href="{% url 'login' %}" class="mobile-nav-item">
                 <i class="bi bi-box-arrow-in-right"></i>

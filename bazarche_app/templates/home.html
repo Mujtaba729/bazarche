@@ -657,6 +657,7 @@
 /* Dropdown Styles */
 .dropdown {
     position: relative;
+    cursor: pointer;
 }
 
 .dropdown-menu {
@@ -669,18 +670,20 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     min-width: 120px;
-    z-index: 9999;
+    z-index: 99999;
     display: none;
     margin-bottom: 0.5rem;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .dropdown-menu.show {
-    display: block;
-    opacity: 1;
-    visibility: visible;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .dropdown-item {
@@ -691,6 +694,7 @@
     font-size: 0.8rem;
     border-bottom: 1px solid #f8f9fa;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .dropdown-item:last-child {
@@ -1324,8 +1328,22 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             console.log('Language dropdown clicked');
-            if (cityMenu) cityMenu.classList.remove('show');
-            languageMenu.classList.toggle('show');
+            
+            // Close city menu if open
+            if (cityMenu) {
+                cityMenu.classList.remove('show');
+                cityMenu.style.display = 'none';
+            }
+            
+            // Toggle language menu
+            const isOpen = languageMenu.classList.contains('show');
+            if (isOpen) {
+                languageMenu.classList.remove('show');
+                languageMenu.style.display = 'none';
+            } else {
+                languageMenu.classList.add('show');
+                languageMenu.style.display = 'block';
+            }
         });
     }
     
@@ -1335,16 +1353,36 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             console.log('City dropdown clicked');
-            if (languageMenu) languageMenu.classList.remove('show');
-            cityMenu.classList.toggle('show');
+            
+            // Close language menu if open
+            if (languageMenu) {
+                languageMenu.classList.remove('show');
+                languageMenu.style.display = 'none';
+            }
+            
+            // Toggle city menu
+            const isOpen = cityMenu.classList.contains('show');
+            if (isOpen) {
+                cityMenu.classList.remove('show');
+                cityMenu.style.display = 'none';
+            } else {
+                cityMenu.classList.add('show');
+                cityMenu.style.display = 'block';
+            }
         });
     }
     
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
-            if (languageMenu) languageMenu.classList.remove('show');
-            if (cityMenu) cityMenu.classList.remove('show');
+            if (languageMenu) {
+                languageMenu.classList.remove('show');
+                languageMenu.style.display = 'none';
+            }
+            if (cityMenu) {
+                cityMenu.classList.remove('show');
+                cityMenu.style.display = 'none';
+            }
         }
     });
 });

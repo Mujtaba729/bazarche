@@ -643,9 +643,8 @@ def product_detail(request, product_id):
     
     # دریافت کامنت‌های محصول از UserFeedback
     comments = UserFeedback.objects.filter(
-        subject__icontains=f"نظر محصول {product.id}",
-        is_approved=True
-    ).order_by('-created_at')[:10]
+        subject__icontains=f"نظر محصول {product.id}"
+    ).order_by('-timestamp')[:10]
     
     # فرم کامنت
     comment_form = ProductCommentForm()
@@ -674,7 +673,7 @@ def add_product_comment(request, product_id):
                 email=request.user.email or request.user.username,
                 subject=f"نظر محصول {product.id} - {product.name_fa[:30]}",
                 message=form.cleaned_data['comment_text'],
-                is_approved=True  # کامنت‌ها به صورت خودکار تایید می‌شوند
+                user=request.user
             )
             
             messages.success(request, 'نظر شما با موفقیت ثبت شد.')

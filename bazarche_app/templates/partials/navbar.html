@@ -536,6 +536,21 @@
     max-height: 300px;
     z-index: 1001;
     margin-top: 8px;
+    transform: translateX(0);
+}
+
+@media (max-width: 480px) {
+    .mobile-notification-dropdown {
+        right: -100px;
+        width: 250px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mobile-notification-dropdown {
+        right: -120px;
+        width: 220px;
+    }
 }
 
 .notification-btn {
@@ -721,13 +736,13 @@
         <!-- Mobile Notification Button -->
         {% if user.is_authenticated %}
         <div class="mobile-notification-btn d-md-none">
-            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'نوتیفیکیشن‌ها' %}">
+            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
                 <i class="bi bi-bell"></i>
                 <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
             </button>
             <div class="dropdown-menu notification-dropdown mobile-notification-dropdown" id="mobileNotificationDropdown" style="display: none;">
                 <div class="notification-header">
-                    <h6>{% trans "نوتیفیکیشن‌ها" %}</h6>
+                    <h6>{% trans "اعلان‌ها" %}</h6>
                     <a href="{% url 'app:notifications' %}" class="view-all-link">{% trans "مشاهده همه" %}</a>
                 </div>
                 <div class="notification-list" id="mobileNotificationList">
@@ -756,13 +771,13 @@
             {% if user.is_authenticated %}
             <!-- Notification Button -->
             <div class="notification-menu">
-                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'نوتیفیکیشن‌ها' %}">
+                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
                     <i class="bi bi-bell"></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
                 <div class="dropdown-menu notification-dropdown" id="notificationDropdown" style="display: none;">
                     <div class="notification-header">
-                        <h6>{% trans "نوتیفیکیشن‌ها" %}</h6>
+                        <h6>{% trans "اعلان‌ها" %}</h6>
                         <a href="{% url 'app:notifications' %}" class="view-all-link">{% trans "مشاهده همه" %}</a>
                     </div>
                     <div class="notification-list" id="notificationList">
@@ -786,7 +801,7 @@
                     </a>
                     <a href="{% url 'app:notifications' %}" class="dropdown-item">
                         <i class="bi bi-bell"></i>
-                        {% trans "نوتیفیکیشن‌ها" %}
+                        {% trans "اعلان‌ها" %}
                     </a>
                 </div>
             </div>
@@ -974,12 +989,12 @@ function loadNotifications() {
             if (data.success) {
                 displayNotifications(data.notifications, 'notificationList');
             } else {
-                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری اعلان‌ها</div>';
             }
         })
         .catch(error => {
             console.error('Error loading notifications:', error);
-            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری اعلان‌ها</div>';
         });
 }
 
@@ -993,12 +1008,12 @@ function loadMobileNotifications() {
             if (data.success) {
                 displayNotifications(data.notifications, 'mobileNotificationList');
             } else {
-                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری اعلان‌ها</div>';
             }
         })
         .catch(error => {
             console.error('Error loading notifications:', error);
-            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری اعلان‌ها</div>';
         });
 }
 

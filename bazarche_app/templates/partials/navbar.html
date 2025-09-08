@@ -528,6 +528,16 @@
     margin-left: 8px;
 }
 
+.mobile-notification-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 280px;
+    max-height: 300px;
+    z-index: 1001;
+    margin-top: 8px;
+}
+
 .notification-btn {
     position: relative;
 }
@@ -715,6 +725,18 @@
                 <i class="bi bi-bell"></i>
                 <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
             </button>
+            <div class="dropdown-menu notification-dropdown mobile-notification-dropdown" id="mobileNotificationDropdown" style="display: none;">
+                <div class="notification-header">
+                    <h6>{% trans "نوتیفیکیشن‌ها" %}</h6>
+                    <a href="{% url 'app:notifications' %}" class="view-all-link">{% trans "مشاهده همه" %}</a>
+                </div>
+                <div class="notification-list" id="mobileNotificationList">
+                    <div class="notification-loading">
+                        <i class="bi bi-hourglass-split"></i>
+                        {% trans "در حال بارگذاری..." %}
+                    </div>
+                </div>
+            </div>
         </div>
         {% endif %}
         
@@ -863,14 +885,33 @@ function toggleCityDropdown() {
 
 
 function toggleNotificationDropdown() {
-    const dropdown = document.getElementById('notificationDropdown');
-    const isVisible = dropdown.style.display === 'block';
+    // Desktop dropdown
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
     
-    if (!isVisible) {
-        dropdown.style.display = 'block';
-        loadNotifications();
+    // Check if mobile dropdown exists and is visible
+    const isMobileVisible = mobileDropdown && mobileDropdown.style.display === 'block';
+    const isDesktopVisible = desktopDropdown && desktopDropdown.style.display === 'block';
+    
+    if (isMobileVisible || isDesktopVisible) {
+        // Close both dropdowns
+        if (desktopDropdown) desktopDropdown.style.display = 'none';
+        if (mobileDropdown) mobileDropdown.style.display = 'none';
     } else {
-        dropdown.style.display = 'none';
+        // Open appropriate dropdown
+        if (window.innerWidth < 768) {
+            // Mobile
+            if (mobileDropdown) {
+                mobileDropdown.style.display = 'block';
+                loadMobileNotifications();
+            }
+        } else {
+            // Desktop
+            if (desktopDropdown) {
+                desktopDropdown.style.display = 'block';
+                loadNotifications();
+            }
+        }
     }
 }
 
@@ -931,7 +972,7 @@ function loadNotifications() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                displayNotifications(data.notifications);
+                displayNotifications(data.notifications, 'notificationList');
             } else {
                 notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
             }
@@ -942,8 +983,27 @@ function loadNotifications() {
         });
 }
 
-function displayNotifications(notifications) {
-    const notificationList = document.getElementById('notificationList');
+function loadMobileNotifications() {
+    const notificationList = document.getElementById('mobileNotificationList');
+    notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-hourglass-split"></i> در حال بارگذاری...</div>';
+    
+    fetch('/app/api/notifications/recent/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayNotifications(data.notifications, 'mobileNotificationList');
+            } else {
+                notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading notifications:', error);
+            notificationList.innerHTML = '<div class="notification-loading">خطا در بارگذاری نوتیفیکیشن‌ها</div>';
+        });
+}
+
+function displayNotifications(notifications, listId) {
+    const notificationList = document.getElementById(listId);
     
     if (notifications.length === 0) {
         notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-bell-slash"></i> هیچ نوتیفیکیشنی ندارید</div>';
@@ -1045,11 +1105,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Close notification dropdown when clicking outside
 document.addEventListener('click', function(event) {
-    const notificationDropdown = document.getElementById('notificationDropdown');
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
     const notificationMenu = document.querySelector('.notification-menu');
+    const mobileNotificationBtn = document.querySelector('.mobile-notification-btn');
     
-    if (!event.target.closest('.notification-menu') && !event.target.closest('#notificationDropdown')) {
-        if (notificationDropdown) notificationDropdown.style.display = 'none';
+    // Close desktop dropdown
+    if (desktopDropdown && !event.target.closest('.notification-menu') && !event.target.closest('#notificationDropdown')) {
+        desktopDropdown.style.display = 'none';
+    }
+    
+    // Close mobile dropdown
+    if (mobileDropdown && !event.target.closest('.mobile-notification-btn') && !event.target.closest('#mobileNotificationDropdown')) {
+        mobileDropdown.style.display = 'none';
     }
 });
 </script>

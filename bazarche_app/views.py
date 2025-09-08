@@ -182,8 +182,8 @@ def home(request):
         except City.DoesNotExist:
             selected_city = None
 
-    # Get main categories
-    main_categories = MainCategory.objects.all().order_by('order', 'name_fa')
+    # Get main categories (use Category instead of MainCategory)
+    main_categories = Category.objects.filter(parent__isnull=True).order_by('order', 'name_fa')
     print(f"Main categories count: {main_categories.count()}")
     
     context = {
@@ -1089,18 +1089,13 @@ def user_products(request):
 
 def category_detail(request, category_id):
     """نمایش محصولات یک دسته‌بندی"""
-    # First try to find in MainCategory, then in Category
-    try:
-        category = get_object_or_404(MainCategory, id=category_id)
-        # If it's a MainCategory, get all products from its subcategories
-        # Since Category doesn't have main_category field, we'll get all products
-        products_qs = Product.objects.filter(is_approved=True)
-    except:
-        category = get_object_or_404(Category, id=category_id)
-        products_qs = Product.objects.filter(
-            category=category,
-            is_approved=True
-        )
+    category = get_object_or_404(Category, id=category_id)
+    
+    # Get products for this category and its subcategories
+    products_qs = Product.objects.filter(
+        category=category,
+        is_approved=True
+    )
     
     # اولویت‌بندی محصولات: ویژه -> پیشنهادی -> تخفیف‌دار -> بقیه
     products_data = list(products_qs)

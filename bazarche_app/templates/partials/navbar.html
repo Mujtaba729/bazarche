@@ -736,7 +736,7 @@
         <!-- Mobile Notification Button -->
         {% if user.is_authenticated %}
         <div class="mobile-notification-btn d-md-none">
-            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
+            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown(event)" title="{% trans 'اعلان‌ها' %}">
                 <i class="bi bi-bell"></i>
                 <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
             </button>
@@ -770,7 +770,7 @@
             {% if user.is_authenticated %}
             <!-- Notification Button -->
             <div class="notification-menu">
-                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
+                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown(event)" title="{% trans 'اعلان‌ها' %}">
                     <i class="bi bi-bell"></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
@@ -898,7 +898,12 @@ function toggleCityDropdown() {
 
 
 
-function toggleNotificationDropdown() {
+function toggleNotificationDropdown(event) {
+    // Prevent event bubbling
+    if (event) {
+        event.stopPropagation();
+    }
+    
     // Desktop dropdown
     const desktopDropdown = document.getElementById('notificationDropdown');
     const mobileDropdown = document.getElementById('mobileNotificationDropdown');
@@ -917,13 +922,13 @@ function toggleNotificationDropdown() {
             // Mobile
             if (mobileDropdown) {
                 mobileDropdown.style.display = 'block';
-                loadMobileNotifications();
+                setTimeout(() => loadMobileNotifications(), 100);
             }
         } else {
             // Desktop
             if (desktopDropdown) {
                 desktopDropdown.style.display = 'block';
-                loadNotifications();
+                setTimeout(() => loadNotifications(), 100);
             }
         }
     }
@@ -1124,13 +1129,22 @@ document.addEventListener('click', function(event) {
     const notificationMenu = document.querySelector('.notification-menu');
     const mobileNotificationBtn = document.querySelector('.mobile-notification-btn');
     
+    // Check if click is on notification button (don't close if clicking the button itself)
+    const isNotificationButton = event.target.closest('.notification-btn') || 
+                                event.target.closest('.mobile-notification-btn') ||
+                                event.target.closest('.notification-menu');
+    
+    if (isNotificationButton) {
+        return; // Don't close if clicking on notification elements
+    }
+    
     // Close desktop dropdown
-    if (desktopDropdown && !event.target.closest('.notification-menu') && !event.target.closest('#notificationDropdown')) {
+    if (desktopDropdown && desktopDropdown.style.display === 'block') {
         desktopDropdown.style.display = 'none';
     }
     
     // Close mobile dropdown
-    if (mobileDropdown && !event.target.closest('.mobile-notification-btn') && !event.target.closest('#mobileNotificationDropdown')) {
+    if (mobileDropdown && mobileDropdown.style.display === 'block') {
         mobileDropdown.style.display = 'none';
     }
 });

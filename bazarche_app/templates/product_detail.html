@@ -192,55 +192,40 @@
             <span class="badge bg-primary ms-2">{{ comments.count }}</span>
         </h3>
         
-        <!-- دکمه‌های چت و کامنت -->
+        <!-- دکمه چت با فروشنده -->
+        {% if user.is_authenticated and product.user and product.user != user %}
+            <div class="chat-section mb-4">
+                <a href="{% url 'app:start_chat' product.id %}" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                    <i class="bi bi-chat-dots me-2"></i>
+                    <span>چت با فروشنده: {{ product.user.username }}</span>
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- نوار نظر دادن -->
         {% if user.is_authenticated %}
-            <div class="action-buttons mb-4">
-                <div class="row g-2">
-                    {% if product.user and product.user != user %}
-                        <div class="col-6">
-                            <a href="{% url 'app:start_chat' product.id %}" class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center">
-                                <i class="bi bi-chat-dots me-2"></i>
-                                <span>چت با فروشنده</span>
-                            </a>
+            <div class="comment-bar mb-4">
+                <form method="post" action="{% url 'app:add_product_comment' product.id %}" class="comment-form">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" 
+                               name="comment_text" 
+                               class="form-control comment-input" 
+                               placeholder="نظر خود را بنویسید..."
+                               maxlength="500"
+                               required>
+                        <button type="submit" class="btn btn-primary comment-submit">
+                            <i class="bi bi-send me-1"></i>
+                            ارسال
+                        </button>
+                    </div>
+                    {% if comment_form.comment_text.errors %}
+                        <div class="text-danger small mt-2">
+                            {% for error in comment_form.comment_text.errors %}
+                                {{ error }}
+                            {% endfor %}
                         </div>
                     {% endif %}
-                    <div class="{% if product.user and product.user != user %}col-6{% else %}col-12{% endif %}">
-                        <button type="button" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center" onclick="toggleCommentForm()">
-                            <i class="bi bi-chat-square-text me-2"></i>
-                            <span>نظر دادن</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- فرم کامنت (مخفی) -->
-            <div class="comment-form-section mb-4" id="commentForm" style="display: none;">
-                <form method="post" action="{% url 'app:add_product_comment' product.id %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="{{ comment_form.comment_text.id_for_label }}" class="form-label">
-                            <i class="bi bi-pencil-square me-1"></i>
-                            {% trans 'نظر شما' %}
-                        </label>
-                        {{ comment_form.comment_text }}
-                        {% if comment_form.comment_text.errors %}
-                            <div class="text-danger small mt-1">
-                                {% for error in comment_form.comment_text.errors %}
-                                    {{ error }}
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-send me-1"></i>
-                            {% trans 'ارسال نظر' %}
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="toggleCommentForm()">
-                            <i class="bi bi-x me-1"></i>
-                            لغو
-                        </button>
-                    </div>
                 </form>
             </div>
         {% else %}
@@ -431,37 +416,101 @@
     text-decoration: underline;
 }
 
-/* Action Buttons Styles */
-.action-buttons .btn {
-    border-radius: 8px;
-    font-size: 0.9rem;
-    padding: 8px 12px;
+/* Chat Section Styles */
+.chat-section .btn {
+    border-radius: 12px;
+    font-size: 1rem;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.chat-section .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+}
+
+/* Comment Bar Styles */
+.comment-bar {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
 }
 
-.action-buttons .btn:hover {
+.comment-bar:hover {
+    box-shadow: 0 6px 25px rgba(0,0,0,0.12);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.action-buttons .btn-outline-success {
-    border-color: #28a745;
-    color: #28a745;
+.comment-form .input-group {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.action-buttons .btn-outline-success:hover {
-    background: #28a745;
+.comment-input {
+    border: none;
+    padding: 15px 20px;
+    font-size: 1rem;
+    background: white;
+    border-radius: 12px 0 0 12px;
+    transition: all 0.3s ease;
+}
+
+.comment-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    background: #f8f9ff;
+}
+
+.comment-submit {
+    border: none;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
     color: white;
+    font-weight: 600;
+    border-radius: 0 12px 12px 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
 }
 
-.action-buttons .btn-outline-primary {
-    border-color: #007bff;
-    color: #007bff;
+.comment-submit:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #520dc2 100%);
+    transform: translateX(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
 }
 
-.action-buttons .btn-outline-primary:hover {
-    background: #007bff;
-    color: white;
+.comment-submit:active {
+    transform: translateX(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .comment-bar {
+        padding: 15px;
+        border-radius: 12px;
+    }
+    
+    .comment-input {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .comment-submit {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .chat-section .btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
 }
 </style>
 
@@ -469,14 +518,20 @@
 
 {% block extra_js %}
 <script>
-function toggleCommentForm() {
-    const commentForm = document.getElementById('commentForm');
-    if (commentForm.style.display === 'none') {
-        commentForm.style.display = 'block';
-        commentForm.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        commentForm.style.display = 'none';
+// Auto-focus on comment input when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const commentInput = document.querySelector('.comment-input');
+    if (commentInput) {
+        commentInput.addEventListener('focus', function() {
+            this.parentElement.parentElement.style.transform = 'translateY(-2px)';
+            this.parentElement.parentElement.style.boxShadow = '0 8px 30px rgba(0,0,0,0.15)';
+        });
+        
+        commentInput.addEventListener('blur', function() {
+            this.parentElement.parentElement.style.transform = 'translateY(0)';
+            this.parentElement.parentElement.style.boxShadow = '0 4px 15px rgba(0,0,0,0.08)';
+        });
     }
-}
+});
 </script>
 {% endblock %}

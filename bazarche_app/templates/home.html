@@ -162,6 +162,13 @@
             </div>
         </div>
         
+        <!-- Test Button -->
+        <div class="bottom-nav-item" onclick="testDropdown()">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-bug"></i>
+            </div>
+            <span class="bottom-nav-label">تست</span>
+        </div>
     </div>
 </div>
 
@@ -691,9 +698,6 @@
     margin-bottom: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
-    /* Force visibility when displayed */
-    visibility: visible !important;
-    opacity: 1 !important;
 }
 
 
@@ -1377,6 +1381,44 @@ function toggleCityDropdown() {
     }
 }
 
+// Test function
+function testDropdown() {
+    console.log('=== TEST DROPDOWN ===');
+    
+    const langMenu = document.getElementById('language-menu');
+    const cityMenu = document.getElementById('city-menu');
+    
+    console.log('Language menu element:', langMenu);
+    console.log('City menu element:', cityMenu);
+    
+    if (langMenu) {
+        console.log('Language menu current styles:');
+        console.log('- display:', langMenu.style.display);
+        console.log('- visibility:', langMenu.style.visibility);
+        console.log('- opacity:', langMenu.style.opacity);
+        
+        // Force show
+        langMenu.style.display = 'block';
+        langMenu.style.visibility = 'visible';
+        langMenu.style.opacity = '1';
+        console.log('Language menu FORCED to show');
+    }
+    
+    if (cityMenu) {
+        console.log('City menu current styles:');
+        console.log('- display:', cityMenu.style.display);
+        console.log('- visibility:', cityMenu.style.visibility);
+        console.log('- opacity:', cityMenu.style.opacity);
+        
+        // Force show
+        cityMenu.style.display = 'block';
+        cityMenu.style.visibility = 'visible';
+        cityMenu.style.opacity = '1';
+        console.log('City menu FORCED to show');
+    }
+    
+    console.log('=== END TEST ===');
+}
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', function(e) {

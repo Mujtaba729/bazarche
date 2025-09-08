@@ -169,6 +169,14 @@
             </div>
             <span class="bottom-nav-label">تست</span>
         </div>
+        
+        <!-- Direct Test Button -->
+        <div class="bottom-nav-item" onclick="console.log('Direct test clicked'); toggleCityDropdown();">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-gear"></i>
+            </div>
+            <span class="bottom-nav-label">مستقیم</span>
+        </div>
     </div>
 </div>
 
@@ -1332,9 +1340,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dropdown functionality
 function toggleLanguageDropdown() {
-    console.log('toggleLanguageDropdown function called!');
+    console.log('=== toggleLanguageDropdown function called! ===');
     const dropdown = document.getElementById('language-menu');
     const cityDropdown = document.getElementById('city-menu');
+    console.log('Elements found - dropdown:', dropdown, 'cityDropdown:', cityDropdown);
     
     console.log('Language dropdown element:', dropdown);
     console.log('City dropdown element:', cityDropdown);
@@ -1367,9 +1376,10 @@ function toggleLanguageDropdown() {
 }
 
 function toggleCityDropdown() {
-    console.log('toggleCityDropdown function called!');
+    console.log('=== toggleCityDropdown function called! ===');
     const dropdown = document.getElementById('city-menu');
     const languageDropdown = document.getElementById('language-menu');
+    console.log('Elements found - dropdown:', dropdown, 'languageDropdown:', languageDropdown);
     
     console.log('City dropdown element:', dropdown);
     console.log('Language dropdown element:', languageDropdown);
@@ -1450,7 +1460,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             console.log('Language button clicked via addEventListener!');
-            toggleLanguageDropdown();
+            try {
+                toggleLanguageDropdown();
+                console.log('toggleLanguageDropdown executed successfully');
+            } catch (error) {
+                console.error('Error in toggleLanguageDropdown:', error);
+            }
         });
         console.log('Language trigger event listener added');
     } else {
@@ -1462,7 +1477,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             console.log('City button clicked via addEventListener!');
-            toggleCityDropdown();
+            try {
+                toggleCityDropdown();
+                console.log('toggleCityDropdown executed successfully');
+            } catch (error) {
+                console.error('Error in toggleCityDropdown:', error);
+            }
         });
         console.log('City trigger event listener added');
     } else {

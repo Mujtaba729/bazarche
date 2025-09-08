@@ -73,13 +73,13 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="dropdown-trigger" onclick="toggleLanguage()">
+            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-translate"></i>
                 </div>
                 <span class="bottom-nav-label">زبان</span>
             </div>
-            <div class="dropdown-menu" id="language-menu" style="display: none;">
+            <div class="dropdown-menu" id="languageDropdown" style="display: none;">
                 <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
                 <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
                 <a href="{% url 'app:set_language' %}?lang=ps" class="dropdown-item">پښتو</a>
@@ -88,13 +88,13 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="dropdown-trigger" onclick="toggleCity()">
+            <div class="dropdown-trigger" onclick="toggleCityDropdown()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-geo-alt"></i>
                 </div>
                 <span class="bottom-nav-label">شهر</span>
             </div>
-            <div class="dropdown-menu" id="city-menu" style="display: none;">
+            <div class="dropdown-menu" id="cityDropdown" style="display: none;">
                 <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
                 {% for city in cities %}
                 <a href="{% url 'app:city_detail' city.id %}" class="dropdown-item">{{ city.name }}</a>
@@ -381,61 +381,6 @@ body {
 </style>
 
 <script>
-// Simple dropdown functions
-function toggleLanguage() {
-    const langMenu = document.getElementById('language-menu');
-    const cityMenu = document.getElementById('city-menu');
-    
-    // Close city menu
-    if (cityMenu) {
-        cityMenu.style.display = 'none';
-    }
-    
-    // Toggle language menu
-    if (langMenu) {
-        if (langMenu.style.display === 'none') {
-            langMenu.style.display = 'block';
-        } else {
-            langMenu.style.display = 'none';
-        }
-    }
-}
-
-function toggleCity() {
-    const cityMenu = document.getElementById('city-menu');
-    const langMenu = document.getElementById('language-menu');
-    
-    // Close language menu
-    if (langMenu) {
-        langMenu.style.display = 'none';
-    }
-    
-    // Toggle city menu
-    if (cityMenu) {
-        if (cityMenu.style.display === 'none') {
-            cityMenu.style.display = 'block';
-        } else {
-            cityMenu.style.display = 'none';
-        }
-    }
-}
-
-// Close dropdowns when clicking outside
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('#language-dropdown')) {
-        const langMenu = document.getElementById('language-menu');
-        if (langMenu) {
-            langMenu.style.display = 'none';
-        }
-    }
-    
-    if (!e.target.closest('#city-dropdown')) {
-        const cityMenu = document.getElementById('city-menu');
-        if (cityMenu) {
-            cityMenu.style.display = 'none';
-        }
-    }
-});
 
 // Back to top functionality
 window.addEventListener('scroll', function() {

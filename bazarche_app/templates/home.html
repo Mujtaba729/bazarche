@@ -133,13 +133,13 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-trigger">
+            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-translate"></i>
                 </div>
                 <span class="bottom-nav-label">زبان</span>
-            </a>
-            <div class="dropdown-menu" id="language-menu">
+            </div>
+            <div class="dropdown-menu" id="language-menu" style="display: none;">
                 <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
                 <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
                 <a href="{% url 'app:set_language' %}?lang=ps" class="dropdown-item">پښتو</a>
@@ -148,13 +148,13 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <a href="{% url 'app:home' %}" class="dropdown-trigger">
+            <div class="dropdown-trigger" onclick="toggleCityDropdown()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-geo-alt"></i>
                 </div>
                 <span class="bottom-nav-label">شهر</span>
-            </a>
-            <div class="dropdown-menu" id="city-menu">
+            </div>
+            <div class="dropdown-menu" id="city-menu" style="display: none;">
                 <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
                 {% for city in cities %}
                 <a href="{% url 'app:city_detail' city.id %}" class="dropdown-item">{{ city.name }}</a>
@@ -672,6 +672,7 @@
     color: inherit;
     width: 100%;
     height: 100%;
+    cursor: pointer;
 }
 
 .dropdown-menu {
@@ -1331,63 +1332,52 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Dropdown functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const languageDropdown = document.getElementById('language-dropdown');
-    const cityDropdown = document.getElementById('city-dropdown');
-    const languageMenu = document.getElementById('language-menu');
-    const cityMenu = document.getElementById('city-menu');
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('language-menu');
+    const cityDropdown = document.getElementById('city-menu');
     
-    // Language dropdown
-    if (languageDropdown && languageMenu) {
-        languageDropdown.addEventListener('click', function(e) {
-            // Only prevent default if clicking on the trigger (not dropdown items)
-            if (e.target.closest('.dropdown-trigger')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Language dropdown clicked');
-                
-                // Close city menu
-                if (cityMenu) {
-                    cityMenu.classList.remove('show');
-                }
-                
-                // Toggle language menu
-                languageMenu.classList.toggle('show');
-            }
-        });
+    // Close city dropdown
+    if (cityDropdown) {
+        cityDropdown.style.display = 'none';
     }
     
-    // City dropdown
-    if (cityDropdown && cityMenu) {
-        cityDropdown.addEventListener('click', function(e) {
-            // Only prevent default if clicking on the trigger (not dropdown items)
-            if (e.target.closest('.dropdown-trigger')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('City dropdown clicked');
-                
-                // Close language menu
-                if (languageMenu) {
-                    languageMenu.classList.remove('show');
-                }
-                
-                // Toggle city menu
-                cityMenu.classList.toggle('show');
-            }
-        });
+    // Toggle language dropdown
+    if (dropdown) {
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function toggleCityDropdown() {
+    const dropdown = document.getElementById('city-menu');
+    const languageDropdown = document.getElementById('language-menu');
+    
+    // Close language dropdown
+    if (languageDropdown) {
+        languageDropdown.style.display = 'none';
     }
     
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.dropdown')) {
-            if (languageMenu) {
-                languageMenu.classList.remove('show');
-            }
-            if (cityMenu) {
-                cityMenu.classList.remove('show');
-            }
+    // Toggle city dropdown
+    if (dropdown) {
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    const languageDropdown = document.getElementById('language-menu');
+    const cityDropdown = document.getElementById('city-menu');
+    
+    if (!e.target.closest('#language-dropdown')) {
+        if (languageDropdown) {
+            languageDropdown.style.display = 'none';
         }
-    });
+    }
+    
+    if (!e.target.closest('#city-dropdown')) {
+        if (cityDropdown) {
+            cityDropdown.style.display = 'none';
+        }
+    }
 });
 </script>
 {% endblock %}

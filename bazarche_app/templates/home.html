@@ -280,12 +280,12 @@
 
 /* Sheet Show/Hide */
 .sheet-overlay.show {
-    opacity: 1;
-    visibility: visible;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .bottom-sheet.show {
-    transform: translateY(0);
+    transform: translateY(0) !important;
 }
 
 .sheet-content a:hover {
@@ -304,8 +304,14 @@ function openSheet(sheetId) {
         sheet.classList.add('show');
         overlay.classList.add('show');
         console.log('Sheet opened successfully');
+        console.log('Sheet element:', sheet);
+        console.log('Overlay element:', overlay);
     } else {
         console.error('Sheet or overlay not found:', sheetId);
+        console.log('Available elements:', {
+            sheet: document.getElementById(sheetId),
+            overlay: document.getElementById('sheet-overlay')
+        });
     }
 }
 
@@ -388,6 +394,13 @@ function loadMoreProducts() {
         })
         .then(data => {
             console.log('Received data:', data);
+            console.log('Data details:', {
+                products_count: data.products ? data.products.length : 0,
+                has_next: data.has_next,
+                current_page: data.current_page,
+                total_pages: data.total_pages,
+                total_products: data.total_products
+            });
             
             if (data.products && data.products.length > 0) {
                 const productsGrid = document.getElementById('products-grid');
@@ -412,7 +425,7 @@ function loadMoreProducts() {
                 }
             } else {
                 hasMoreProducts = false;
-                console.log('No more products to load');
+                console.log('No more products to load - no products in response');
                 if (endMessage) {
                     endMessage.style.display = 'block';
                 }

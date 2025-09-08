@@ -114,7 +114,7 @@
     <div class="sheet-content">
         <a href="{% url 'app:home' %}">{% trans "همه شهرها" %}</a>
         {% for city in cities %}
-        <a href="{% url 'app:city_detail' city.id %}">{{ city.name }}</a>
+        <a href="{% url 'app:home' %}?city_id={{ city.id }}">{{ city.name }}</a>
         {% endfor %}
     </div>
 </div>
@@ -201,6 +201,11 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
     transition: all 0.3s ease;
+    display: flex; /* Use flexbox for badges and image */
+    flex-direction: column;
+    align-items: center; /* Center content */
+    text-decoration: none;
+    color: inherit;
 }
 
 .product-card:hover {
@@ -214,20 +219,24 @@ body {
     display: block;
 }
 
-.product-image {
+.product-image-container {
     width: 100%;
     height: 150px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.product-image img {
+.product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.product-info {
+.product-content {
     padding: 0.75rem;
+    width: 100%;
 }
 
 .product-title {
@@ -242,17 +251,81 @@ body {
     overflow: hidden;
 }
 
+.product-meta {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.product-meta i {
+    margin-right: 0.3rem;
+    font-size: 0.7rem;
+}
+
 .product-price {
     font-size: 0.8rem;
     color: #007bff;
     font-weight: 600;
     margin-bottom: 0.25rem;
+    display: flex;
+    align-items: baseline;
+}
+
+.product-price .original-price {
+    text-decoration: line-through;
+    color: #6c757d;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+}
+
+.product-price .discount-price {
+    color: #dc3545;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.product-price .current-price {
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .product-location {
     font-size: 0.7rem;
     color: #6c757d;
     margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.product-location i {
+    margin-right: 0.3rem;
+    font-size: 0.7rem;
+}
+
+.product-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.badge-featured {
+    background-color: #007bff;
+    color: white;
+}
+
+.badge-discounted {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-suggested {
+    background-color: #ffc107;
+    color: #343a40;
 }
 
 /* Back to Top Button */
@@ -468,6 +541,9 @@ document.getElementById('back-to-top').addEventListener('click', function() {
 let currentPage = 1;
 let isLoading = false;
 let hasMoreProducts = true;
+// Get city_id from URL if present
+const urlParams = new URLSearchParams(window.location.search);
+const cityId = urlParams.get('city_id');
 
 function loadMoreProducts() {
     if (isLoading || !hasMoreProducts) return;
@@ -479,7 +555,12 @@ function loadMoreProducts() {
         loadingIndicator.style.display = 'block';
     }
     
-    fetch(`/app/api/load-more-products/?page=${currentPage + 1}`)
+    let fetchUrl = `/app/api/load-more-products/?page=${currentPage + 1}`;
+    if (cityId) {
+        fetchUrl += `&city_id=${cityId}`;
+    }
+
+    fetch(fetchUrl)
         .then(response => {
             console.log('Response status:', response.status);
             return response.json();
@@ -499,6 +580,9 @@ function loadMoreProducts() {
             } else {
                 hasMoreProducts = false;
                 console.log('No more products to load');
+                if (loadingIndicator) {
+                    loadingIndicator.innerHTML = '<p>{% trans "تمام محصولات نمایش داده شد." %}</p>';
+                }
             }
         })
         .catch(error => {
@@ -515,18 +599,62 @@ function loadMoreProducts() {
 function createProductCard(product) {
     const div = document.createElement('div');
     div.className = 'product-card';
+    div.setAttribute('data-product-url', product.url);
+
+    // Badges
+    let badgesHTML = '';
+    if (product.is_featured) {
+        badgesHTML += '<span class="product-badge badge-featured">ویژه</span>';
+    } else if (product.is_discounted) {
+        badgesHTML += '<span class="product-badge badge-discounted">تخفیف</span>';
+    } else if (product.is_suggested) {
+        badgesHTML += '<span class="product-badge badge-suggested">پیشنهاد</span>';
+    }
+
+    // Price
+    let priceHTML = '';
+    if (product.discount_price) {
+        priceHTML = `
+            <span class="original-price">${product.price.toLocaleString()} افغانی</span>
+            <span class="discount-price">${product.discount_price.toLocaleString()} افغانی</span>
+        `;
+    } else if (product.price) {
+        priceHTML = `<span class="current-price">${product.price.toLocaleString()} افغانی</span>`;
+    } else {
+        priceHTML = `<span class="current-price">قیمت نامشخص</span>`;
+    }
+
     div.innerHTML = `
-        <a href="/app/product/${product.id}/" class="product-link">
-            <div class="product-image">
-                <img src="${product.image || '/static/images/placeholder.jpg'}" alt="${product.name}" loading="lazy">
+        ${badgesHTML}
+        <div class="product-image-container">
+            <img src="${product.image || '{% static 'logo-1.png' %}'}" class="product-image" alt="${product.name}">
+        </div>
+        <div class="product-content">
+            <h3 class="product-title">${product.name}</h3>
+            <div class="product-meta">
+                <i class="bi bi-clock"></i>
+                <span>${product.created_at_natural}</span>
             </div>
-            <div class="product-info">
-                <h3 class="product-title">${product.name}</h3>
-                <p class="product-price">${product.price ? product.price.toLocaleString() + ' افغانی' : 'قیمت توافقی'}</p>
-                <p class="product-location">${product.city}</p>
+            <div class="product-price">
+                <div class="price-container">
+                    ${priceHTML}
+                </div>
+                <div class="location">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>${product.city}</span>
+                </div>
             </div>
-        </a>
+        </div>
     `;
+
+    // Add click listener to the new card
+    div.addEventListener('click', function(event) {
+        const url = this.getAttribute('data-product-url');
+        if (url) {
+            window.location.href = url;
+        }
+    });
+
     return div;
 }
 

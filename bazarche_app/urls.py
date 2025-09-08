@@ -10,7 +10,6 @@ urlpatterns = [
     path('api/load-more-products/', views.load_more_products, name='load_more_products'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
     path('category/<int:category_id>/', views.category_detail, name='category_detail'),
-    path('city/<int:city_id>/', views.city_detail, name='city_detail'),
     path('tag/<int:tag_id>/', views.tag_detail, name='tag_detail'),
     path('search/', views.search, name='search'),
     path('about/', views.about, name='about'),

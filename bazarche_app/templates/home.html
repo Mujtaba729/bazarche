@@ -23,7 +23,7 @@
 
     <!-- Products Section -->
     <div class="products-section">
-        <div class="products-grid" id="products-grid">
+        <div class="products-grid" id="products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 0 1rem;">
             {% for product in products %}
                 {% include 'partials/product_card.html' with product=product %}
             {% endfor %}
@@ -35,210 +35,125 @@
                 <span class="visually-hidden">در حال بارگذاری...</span>
             </div>
         </div>
+        
+        <!-- End message -->
+        <div id="end-message" style="display: none; text-align: center; padding: 2rem; color: #6c757d;">
+            <p>تمام محصولات نمایش داده شد.</p>
+        </div>
     </div>
 </div>
 
 <!-- Back to Top Button -->
-<div id="back-to-top" style="display: none;">
-    <button type="button" class="btn btn-primary rounded-circle">
+<div id="back-to-top" style="display: none; position: fixed; bottom: 80px; right: 20px; z-index: 1000;">
+    <button type="button" class="btn btn-primary rounded-circle" style="width: 50px; height: 50px;">
         <i class="bi bi-arrow-up"></i>
     </button>
 </div>
 
 <!-- Fixed Bottom Navigation -->
-<div class="bottom-navbar">
-    <div class="bottom-nav-container">
+<div class="bottom-navbar" style="position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e9ecef; z-index: 1000; padding: 0.5rem 0;">
+    <div class="bottom-nav-container" style="display: flex; justify-content: space-around; align-items: center; max-width: 500px; margin: 0 auto;">
         <!-- Requests -->
-        <a href="{% url 'app:requests_list' %}" class="bottom-nav-item">
-            <div class="bottom-nav-icon">
+        <a href="{% url 'app:requests_list' %}" class="bottom-nav-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #6c757d; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease;">
+            <div class="bottom-nav-icon" style="font-size: 1.2rem; margin-bottom: 0.25rem;">
                 <i class="bi bi-list-ul"></i>
             </div>
-            <span class="bottom-nav-label">درخواستی</span>
+            <span class="bottom-nav-label" style="font-size: 0.7rem; font-weight: 500;">درخواستی</span>
         </a>
         
         <!-- Jobs -->
-        <a href="{% url 'app:jobs_list' %}" class="bottom-nav-item">
-            <div class="bottom-nav-icon">
+        <a href="{% url 'app:jobs_list' %}" class="bottom-nav-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #6c757d; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease;">
+            <div class="bottom-nav-icon" style="font-size: 1.2rem; margin-bottom: 0.25rem;">
                 <i class="bi bi-briefcase"></i>
             </div>
-            <span class="bottom-nav-label">کاریابی</span>
+            <span class="bottom-nav-label" style="font-size: 0.7rem; font-weight: 500;">کاریابی</span>
         </a>
         
         <!-- Register Product (Center) -->
-        <a href="{% url 'app:register_product' %}" class="bottom-nav-item">
-            <div class="bottom-nav-icon">
+        <a href="{% url 'app:register_product' %}" class="bottom-nav-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #6c757d; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease;">
+            <div class="bottom-nav-icon" style="font-size: 1.2rem; margin-bottom: 0.25rem;">
                 <i class="bi bi-plus-circle"></i>
             </div>
-            <span class="bottom-nav-label">ثبت اگهی</span>
+            <span class="bottom-nav-label" style="font-size: 0.7rem; font-weight: 500;">ثبت اگهی</span>
         </a>
         
         <!-- Language Button -->
-        <div class="bottom-nav-item" onclick="openSheet('language-sheet')">
-            <div class="bottom-nav-icon">
+        <div class="bottom-nav-item" onclick="openSheet('language-sheet')" style="display: flex; flex-direction: column; align-items: center; color: #6c757d; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; cursor: pointer;">
+            <div class="bottom-nav-icon" style="font-size: 1.2rem; margin-bottom: 0.25rem;">
                 <i class="bi bi-translate"></i>
             </div>
-            <span class="bottom-nav-label">زبان</span>
+            <span class="bottom-nav-label" style="font-size: 0.7rem; font-weight: 500;">زبان</span>
         </div>
 
         <!-- City Button -->
-        <div class="bottom-nav-item" onclick="openSheet('city-sheet')">
-            <div class="bottom-nav-icon">
+        <div class="bottom-nav-item" onclick="openSheet('city-sheet')" style="display: flex; flex-direction: column; align-items: center; color: #6c757d; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; cursor: pointer;">
+            <div class="bottom-nav-icon" style="font-size: 1.2rem; margin-bottom: 0.25rem;">
                 <i class="bi bi-geo-alt"></i>
             </div>
-            <span class="bottom-nav-label">شهرها</span>
+            <span class="bottom-nav-label" style="font-size: 0.7rem; font-weight: 500;">شهرها</span>
         </div>
     </div>
 </div>
 
 <!-- Bottom Sheets -->
-<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1010; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;"></div>
 
 <!-- Language Sheet -->
-<div class="bottom-sheet" id="language-sheet">
-    <div class="sheet-header">
-        <h5>{% trans "انتخاب زبان" %}</h5>
-        <button class="sheet-close-btn" onclick="closeSheet()">&times;</button>
+<div class="bottom-sheet" id="language-sheet" style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #fff; z-index: 1020; border-radius: 16px 16px 0 0; padding: 1rem; transform: translateY(100%); transition: transform 0.3s ease-in-out; max-height: 70vh; display: flex; flex-direction: column;">
+    <div class="sheet-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid #e9ecef; margin-bottom: 0.75rem;">
+        <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600;">{% trans "انتخاب زبان" %}</h5>
+        <button class="sheet-close-btn" onclick="closeSheet()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6c757d;">&times;</button>
     </div>
-    <div class="sheet-content">
-        <a href="{% url 'app:set_language' %}?lang=fa&next={{ request.get_full_path|urlencode }}">فارسی</a>
-        <a href="{% url 'app:set_language' %}?lang=en&next={{ request.get_full_path|urlencode }}">English</a>
-        <a href="{% url 'app:set_language' %}?lang=ps&next={{ request.get_full_path|urlencode }}">پښتو</a>
+    <div class="sheet-content" style="overflow-y: auto;">
+        <a href="?lang=fa" style="display: block; padding: 0.8rem 0.5rem; text-decoration: none; color: #212529; border-radius: 8px; transition: background-color 0.2s ease;">فارسی</a>
+        <a href="?lang=ps" style="display: block; padding: 0.8rem 0.5rem; text-decoration: none; color: #212529; border-radius: 8px; transition: background-color 0.2s ease;">پشتو</a>
+        <a href="?lang=en" style="display: block; padding: 0.8rem 0.5rem; text-decoration: none; color: #212529; border-radius: 8px; transition: background-color 0.2s ease;">English</a>
     </div>
 </div>
 
 <!-- City Sheet -->
-<div class="bottom-sheet" id="city-sheet">
-    <div class="sheet-header">
-        <h5>{% trans "انتخاب شهر" %}</h5>
-        <button class="sheet-close-btn" onclick="closeSheet()">&times;</button>
+<div class="bottom-sheet" id="city-sheet" style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #fff; z-index: 1020; border-radius: 16px 16px 0 0; padding: 1rem; transform: translateY(100%); transition: transform 0.3s ease-in-out; max-height: 70vh; display: flex; flex-direction: column;">
+    <div class="sheet-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid #e9ecef; margin-bottom: 0.75rem;">
+        <h5 style="margin: 0; font-size: 1.1rem; font-weight: 600;">{% trans "انتخاب شهر" %}</h5>
+        <button class="sheet-close-btn" onclick="closeSheet()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6c757d;">&times;</button>
     </div>
-    <div class="sheet-content">
-        <a href="{% url 'app:home' %}">{% trans "همه شهرها" %}</a>
+    <div class="sheet-content" style="overflow-y: auto;">
+        <a href="?" style="display: block; padding: 0.8rem 0.5rem; text-decoration: none; color: #212529; border-radius: 8px; transition: background-color 0.2s ease;">همه شهرها</a>
         {% for city in cities %}
-        <a href="{% url 'app:home' %}?city_id={{ city.id }}">{{ city.name }}</a>
+        <a href="?city_id={{ city.id }}" style="display: block; padding: 0.8rem 0.5rem; text-decoration: none; color: #212529; border-radius: 8px; transition: background-color 0.2s ease;">{{ city.name }}</a>
         {% endfor %}
     </div>
 </div>
 
 <style>
-/* Mobile-First Design */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Vazir', Arial, sans-serif;
-    background-color: #f8f9fa;
-    padding-bottom: 5rem;
-}
-
-.container-fluid {
-    padding: 0;
-}
-
-/* Categories Section */
-.categories-section {
-    background: #fff !important;
-    padding: 1rem !important;
-    margin-bottom: 1rem !important;
-    border-radius: 0 0 1rem 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    position: relative;
-    z-index: 10;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.categories-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    width: 100%;
-}
-
-.category-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #333;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    transition: all 0.3s ease;
-    min-height: 80px;
-    justify-content: center;
-}
-
-.category-item:hover {
-    background-color: #f8f9fa;
-    transform: translateY(-2px);
-    text-decoration: none;
-    color: #333;
-}
-
-.category-icon {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-    color: #007bff;
-    display: block;
-}
-
-.category-name {
-    font-size: 0.75rem;
-    text-align: center;
-    font-weight: 500;
-    color: #343a40;
-    margin-top: 0.25rem;
-    display: block;
-    line-height: 1.2;
-}
-
-/* Products Section */
-.products-section {
-    padding: 0 1rem;
-}
-
+/* Product Grid Styles */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-bottom: 2rem;
+    padding: 0 1rem;
 }
 
-/* Product Card Styles */
 .product-card {
-    background: #fff;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: white;
+    border-radius: 12px;
     overflow: hidden;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: inherit;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
 }
 
 .product-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.product-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 .product-image-container {
+    position: relative;
     width: 100%;
     height: 150px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .product-image {
@@ -248,15 +163,14 @@ body {
 }
 
 .product-content {
-    padding: 0.75rem;
-    width: 100%;
+    padding: 1rem;
 }
 
 .product-title {
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: #212529;
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -265,230 +179,74 @@ body {
 }
 
 .product-meta {
-    font-size: 0.7rem;
-    color: #6c757d;
-    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
-}
-
-.product-meta i {
-    margin-right: 0.3rem;
-    font-size: 0.7rem;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
 }
 
 .product-price {
-    font-size: 0.8rem;
-    color: #007bff;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    display: flex;
-    align-items: baseline;
-}
-
-.product-price .original-price {
-    text-decoration: line-through;
-    color: #6c757d;
-    margin-right: 0.5rem;
-    font-size: 0.7rem;
-}
-
-.product-price .discount-price {
-    color: #dc3545;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.product-price .current-price {
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.product-location {
-    font-size: 0.7rem;
-    color: #6c757d;
-    margin: 0;
-    display: flex;
-    align-items: center;
-}
-
-.product-location i {
-    margin-right: 0.3rem;
-    font-size: 0.7rem;
-}
-
-.product-badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.3rem;
-    margin-right: 0.5rem;
-    display: inline-block;
-}
-
-.badge-featured {
-    background-color: #007bff;
-    color: white;
-}
-
-.badge-discounted {
-    background-color: #28a745;
-    color: white;
-}
-
-.badge-suggested {
-    background-color: #ffc107;
-    color: #343a40;
-}
-
-/* Back to Top Button */
-#back-to-top {
-    position: fixed;
-    bottom: 6rem;
-    right: 1rem;
-    z-index: 1000;
-}
-
-#back-to-top button {
-    width: 3rem;
-    height: 3rem;
-    border: none;
-    background: #007bff;
-    color: white;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-#back-to-top button:hover {
-    background: #0056b3;
-    transform: translateY(-2px);
-}
-
-/* Fixed Bottom Navigation */
-.bottom-navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-top: 1px solid #e9ecef;
-    z-index: 1000;
-    padding: 0.5rem 0;
-}
-
-.bottom-nav-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    max-width: 100%;
-    margin: 0 auto;
-}
-
-.bottom-nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #6c757d;
-    transition: all 0.3s ease;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    min-width: 60px;
-}
-
-.bottom-nav-item:hover {
-    color: #007bff;
-    background-color: #f8f9fa;
-}
-
-.bottom-nav-icon {
-    font-size: 1.2rem;
-    margin-bottom: 0.25rem;
-}
-
-.bottom-nav-label {
-    font-size: 0.7rem;
-    font-weight: 500;
-}
-
-/* Bottom Sheet Styles */
-.sheet-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1010;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.sheet-overlay.show {
-    opacity: 1;
-    visibility: visible;
-}
-
-.bottom-sheet {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #fff;
-    z-index: 1020;
-    border-radius: 16px 16px 0 0;
-    padding: 1rem;
-    transform: translateY(100%);
-    transition: transform 0.3s ease-in-out;
-    max-height: 70vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.bottom-sheet.show {
-    transform: translateY(0);
-}
-
-.sheet-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e9ecef;
-    margin-bottom: 0.75rem;
 }
 
-.sheet-header h5 {
-    margin: 0;
-    font-size: 1.1rem;
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.current-price {
     font-weight: 600;
+    color: #28a745;
+    font-size: 0.9rem;
 }
 
-.sheet-close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
+.original-price {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+.discount-price {
+    font-weight: 600;
+    color: #dc3545;
+    font-size: 0.9rem;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
     color: #6c757d;
 }
 
-.sheet-content {
-    overflow-y: auto;
+.product-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+    z-index: 1;
 }
 
-.sheet-content a {
-    display: block;
-    padding: 0.8rem 0.5rem;
-    text-decoration: none;
-    color: #212529;
-    border-radius: 8px;
-    transition: background-color 0.2s ease;
+.badge-featured {
+    background-color: #ffc107;
 }
 
-.sheet-content a:hover {
-    background-color: #f8f9fa;
+.badge-discounted {
+    background-color: #dc3545;
+}
+
+.badge-suggested {
+    background-color: #17a2b8;
 }
 
 /* Responsive Design */
@@ -507,12 +265,31 @@ body {
         grid-template-columns: repeat(4, 1fr);
     }
 }
+
+/* Bottom Navigation Hover Effects */
+.bottom-nav-item:hover {
+    color: #007bff;
+    background-color: #f8f9fa;
+}
+
+/* Sheet Show/Hide */
+.sheet-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.bottom-sheet.show {
+    transform: translateY(0);
+}
+
+.sheet-content a:hover {
+    background-color: #f8f9fa;
+}
 </style>
 
 <script>
 // Bottom Sheet Functions
 function openSheet(sheetId) {
-    // Close any open sheets first
     closeSheet();
     const sheet = document.getElementById(sheetId);
     const overlay = document.getElementById('sheet-overlay');
@@ -552,19 +329,26 @@ document.getElementById('back-to-top').addEventListener('click', function() {
 
 // Infinite scroll functionality
 const placeholderImageUrl = "{% static 'logo-1.png' %}";
-let currentPage = 1; // Start from 1 since we already have page 1 loaded
+let currentPage = 1;
 let isLoading = false;
 let hasMoreProducts = true;
+
 // Get city_id from URL if present
 const urlParams = new URLSearchParams(window.location.search);
 const cityId = urlParams.get('city_id');
 
 function loadMoreProducts() {
-    if (isLoading || !hasMoreProducts) return;
+    if (isLoading || !hasMoreProducts) {
+        console.log('Skipping load - isLoading:', isLoading, 'hasMoreProducts:', hasMoreProducts);
+        return;
+    }
     
     console.log('Loading more products, page:', currentPage + 1);
     isLoading = true;
+    
     const loadingIndicator = document.getElementById('loading-indicator');
+    const endMessage = document.getElementById('end-message');
+    
     if (loadingIndicator) {
         loadingIndicator.style.display = 'block';
     }
@@ -579,10 +363,14 @@ function loadMoreProducts() {
     fetch(fetchUrl)
         .then(response => {
             console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
         })
         .then(data => {
             console.log('Received data:', data);
+            
             if (data.products && data.products.length > 0) {
                 const productsGrid = document.getElementById('products-grid');
                 if (productsGrid) {
@@ -592,27 +380,31 @@ function loadMoreProducts() {
                     });
                     currentPage++;
                     console.log('Added', data.products.length, 'products. Current page:', currentPage);
-                    console.log('Next page will be:', currentPage + 1);
                 }
                 
                 // Check if there are more products
                 if (!data.has_next) {
                     hasMoreProducts = false;
                     console.log('No more products to load');
-                    if (loadingIndicator) {
-                        loadingIndicator.innerHTML = '<p>{% trans "تمام محصولات نمایش داده شد." %}</p>';
+                    if (endMessage) {
+                        endMessage.style.display = 'block';
                     }
                 }
             } else {
                 hasMoreProducts = false;
                 console.log('No more products to load');
-                if (loadingIndicator) {
-                    loadingIndicator.innerHTML = '<p>{% trans "تمام محصولات نمایش داده شد." %}</p>';
+                if (endMessage) {
+                    endMessage.style.display = 'block';
                 }
             }
         })
         .catch(error => {
             console.error('Error loading more products:', error);
+            hasMoreProducts = false;
+            if (endMessage) {
+                endMessage.innerHTML = '<p>خطا در بارگذاری محصولات</p>';
+                endMessage.style.display = 'block';
+            }
         })
         .finally(() => {
             isLoading = false;
@@ -653,7 +445,7 @@ function createProductCard(product) {
     div.innerHTML = `
         ${badgesHTML}
         <div class="product-image-container">
-            <img src="${product.image || placeholderImageUrl}" class="product-image" alt="${product.name}">
+            <img src="${product.image || placeholderImageUrl}" class="product-image" alt="${product.name}" onerror="this.src='${placeholderImageUrl}'">
         </div>
         <div class="product-content">
             <h3 class="product-title">${product.name}</h3>
@@ -684,12 +476,12 @@ function createProductCard(product) {
     return div;
 }
 
-// Simple scroll-based infinite scroll
+// Infinite scroll setup
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, setting up infinite scroll...');
     console.log('Initial state - hasMoreProducts:', hasMoreProducts, 'isLoading:', isLoading);
     
-    // Simple scroll event listener with throttling
+    // Scroll event listener with throttling
     let scrollTimeout;
     window.addEventListener('scroll', function() {
         if (scrollTimeout) {
@@ -702,20 +494,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const windowHeight = window.innerHeight;
                 const documentHeight = document.documentElement.scrollHeight;
                 
-                console.log('Scroll check:', {
-                    scrollTop: scrollTop,
-                    windowHeight: windowHeight,
-                    documentHeight: documentHeight,
-                    triggerPoint: documentHeight - 300
-                });
-                
-                // Load more when user is 300px from bottom
-                if (scrollTop + windowHeight >= documentHeight - 300) {
+                // Load more when user is 200px from bottom
+                if (scrollTop + windowHeight >= documentHeight - 200) {
                     console.log('Scroll trigger: Loading more products...');
                     loadMoreProducts();
                 }
             }
-        }, 100); // Throttle scroll events
+        }, 100);
     });
 });
 </script>

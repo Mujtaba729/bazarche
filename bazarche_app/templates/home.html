@@ -55,6 +55,22 @@
             <span class="bottom-nav-label">ثبت اگهی</span>
         </a>
         
+        <!-- Requests -->
+        <a href="{% url 'app:requests_list' %}" class="bottom-nav-item">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-list-ul"></i>
+            </div>
+            <span class="bottom-nav-label">درخواستی</span>
+        </a>
+        
+        <!-- Jobs -->
+        <a href="{% url 'app:jobs_list' %}" class="bottom-nav-item">
+            <div class="bottom-nav-icon">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <span class="bottom-nav-label">کاریابی</span>
+        </a>
+        
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
             <div class="dropdown-trigger" onclick="toggleLanguage()">
@@ -159,6 +175,67 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     margin-bottom: 2rem;
+}
+
+/* Product Card Styles */
+.product-card {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.product-image {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 0.75rem;
+}
+
+.product-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-price {
+    font-size: 0.8rem;
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.product-location {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin: 0;
 }
 
 /* Back to Top Button */
@@ -375,6 +452,78 @@ document.getElementById('back-to-top').addEventListener('click', function() {
         top: 0,
         behavior: 'smooth'
     });
+});
+
+// Infinite scroll functionality
+let currentPage = 1;
+let isLoading = false;
+let hasMoreProducts = true;
+
+function loadMoreProducts() {
+    if (isLoading || !hasMoreProducts) return;
+    
+    isLoading = true;
+    const loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.style.display = 'block';
+    
+    fetch(`/app/load-more-products/?page=${currentPage + 1}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.products && data.products.length > 0) {
+                const productsGrid = document.getElementById('products-grid');
+                data.products.forEach(product => {
+                    const productCard = createProductCard(product);
+                    productsGrid.appendChild(productCard);
+                });
+                currentPage++;
+            } else {
+                hasMoreProducts = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading more products:', error);
+        })
+        .finally(() => {
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+        });
+}
+
+function createProductCard(product) {
+    const div = document.createElement('div');
+    div.className = 'product-card';
+    div.innerHTML = `
+        <a href="/app/product/${product.id}/" class="product-link">
+            <div class="product-image">
+                <img src="${product.image_url}" alt="${product.title}" loading="lazy">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">${product.title}</h3>
+                <p class="product-price">${product.price}</p>
+                <p class="product-location">${product.city}</p>
+            </div>
+        </a>
+    `;
+    return div;
+}
+
+// Intersection Observer for infinite scroll
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && hasMoreProducts) {
+            loadMoreProducts();
+        }
+    });
+}, {
+    rootMargin: '100px'
+});
+
+// Start observing when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) {
+        observer.observe(loadingIndicator);
+    }
 });
 </script>
 {% endblock %}

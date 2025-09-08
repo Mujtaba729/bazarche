@@ -133,13 +133,13 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="dropdown-trigger" id="language-trigger">
+            <div class="dropdown-trigger" onclick="toggleLanguage()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-translate"></i>
                 </div>
                 <span class="bottom-nav-label">زبان</span>
             </div>
-            <div class="dropdown-menu" id="language-menu" style="display: none; visibility: hidden; opacity: 0;">
+            <div class="dropdown-menu" id="language-menu" style="display: none;">
                 <a href="{% url 'app:set_language' %}?lang=fa" class="dropdown-item">فارسی</a>
                 <a href="{% url 'app:set_language' %}?lang=en" class="dropdown-item">English</a>
                 <a href="{% url 'app:set_language' %}?lang=ps" class="dropdown-item">پښتو</a>
@@ -148,42 +148,18 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="dropdown-trigger" id="city-trigger">
+            <div class="dropdown-trigger" onclick="toggleCity()">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-geo-alt"></i>
                 </div>
                 <span class="bottom-nav-label">شهر</span>
             </div>
-            <div class="dropdown-menu" id="city-menu" style="display: none; visibility: hidden; opacity: 0;">
+            <div class="dropdown-menu" id="city-menu" style="display: none;">
                 <a href="{% url 'app:home' %}" class="dropdown-item">همه شهرها</a>
                 {% for city in cities %}
                 <a href="{% url 'app:city_detail' city.id %}" class="dropdown-item">{{ city.name }}</a>
                 {% endfor %}
             </div>
-        </div>
-        
-        <!-- Test Button -->
-        <div class="bottom-nav-item" onclick="testDropdown()">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-bug"></i>
-            </div>
-            <span class="bottom-nav-label">تست</span>
-        </div>
-        
-        <!-- Direct Test Button -->
-        <div class="bottom-nav-item" onclick="console.log('Direct test clicked'); toggleCityDropdown();">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-gear"></i>
-            </div>
-            <span class="bottom-nav-label">مستقیم</span>
-        </div>
-        
-        <!-- Global Test Button -->
-        <div class="bottom-nav-item" onclick="window.toggleCityDropdown();">
-            <div class="bottom-nav-icon">
-                <i class="bi bi-globe"></i>
-            </div>
-            <span class="bottom-nav-label">گلوبال</span>
         </div>
     </div>
 </div>
@@ -1344,6 +1320,62 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initial check
     checkScrollPosition();
+});
+
+// Simple dropdown functions
+function toggleLanguage() {
+    const langMenu = document.getElementById('language-menu');
+    const cityMenu = document.getElementById('city-menu');
+    
+    // Close city menu
+    if (cityMenu) {
+        cityMenu.style.display = 'none';
+    }
+    
+    // Toggle language menu
+    if (langMenu) {
+        if (langMenu.style.display === 'none') {
+            langMenu.style.display = 'block';
+        } else {
+            langMenu.style.display = 'none';
+        }
+    }
+}
+
+function toggleCity() {
+    const cityMenu = document.getElementById('city-menu');
+    const langMenu = document.getElementById('language-menu');
+    
+    // Close language menu
+    if (langMenu) {
+        langMenu.style.display = 'none';
+    }
+    
+    // Toggle city menu
+    if (cityMenu) {
+        if (cityMenu.style.display === 'none') {
+            cityMenu.style.display = 'block';
+        } else {
+            cityMenu.style.display = 'none';
+        }
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#language-dropdown')) {
+        const langMenu = document.getElementById('language-menu');
+        if (langMenu) {
+            langMenu.style.display = 'none';
+        }
+    }
+    
+    if (!e.target.closest('#city-dropdown')) {
+        const cityMenu = document.getElementById('city-menu');
+        if (cityMenu) {
+            cityMenu.style.display = 'none';
+        }
+    }
 });
 
 // Dropdown functionality

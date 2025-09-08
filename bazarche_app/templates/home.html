@@ -698,6 +698,9 @@
     margin-bottom: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
+    /* Force visibility when displayed */
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 
@@ -1349,8 +1352,17 @@ function toggleLanguageDropdown() {
     if (dropdown) {
         const currentDisplay = dropdown.style.display;
         console.log('Current display:', currentDisplay);
-        dropdown.style.display = currentDisplay === 'none' ? 'block' : 'none';
-        console.log('New display:', dropdown.style.display);
+        if (currentDisplay === 'none' || currentDisplay === '') {
+            dropdown.style.display = 'block';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            console.log('Language dropdown opened');
+        } else {
+            dropdown.style.display = 'none';
+            dropdown.style.visibility = 'hidden';
+            dropdown.style.opacity = '0';
+            console.log('Language dropdown closed');
+        }
     }
 }
 
@@ -1372,8 +1384,17 @@ function toggleCityDropdown() {
     if (dropdown) {
         const currentDisplay = dropdown.style.display;
         console.log('Current display:', currentDisplay);
-        dropdown.style.display = currentDisplay === 'none' ? 'block' : 'none';
-        console.log('New display:', dropdown.style.display);
+        if (currentDisplay === 'none' || currentDisplay === '') {
+            dropdown.style.display = 'block';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            console.log('City dropdown opened');
+        } else {
+            dropdown.style.display = 'none';
+            dropdown.style.visibility = 'hidden';
+            dropdown.style.opacity = '0';
+            console.log('City dropdown closed');
+        }
     }
 }
 
@@ -1392,7 +1413,9 @@ function testDropdown() {
     if (langMenu) {
         console.log('Language menu found, current display:', langMenu.style.display);
         langMenu.style.display = 'block';
-        console.log('Language menu set to block');
+        langMenu.style.visibility = 'visible';
+        langMenu.style.opacity = '1';
+        console.log('Language menu set to visible');
     } else {
         console.log('Language menu NOT found!');
     }
@@ -1400,7 +1423,9 @@ function testDropdown() {
     if (cityMenu) {
         console.log('City menu found, current display:', cityMenu.style.display);
         cityMenu.style.display = 'block';
-        console.log('City menu set to block');
+        cityMenu.style.visibility = 'visible';
+        cityMenu.style.opacity = '1';
+        console.log('City menu set to visible');
     } else {
         console.log('City menu NOT found!');
     }

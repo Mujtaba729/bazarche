@@ -182,9 +182,13 @@ def home(request):
         except City.DoesNotExist:
             selected_city = None
 
+    # Get main categories
+    main_categories = MainCategory.objects.all().order_by('order', 'name_fa')
+    print(f"Main categories count: {main_categories.count()}")
+    
     context = {
         'products': page_obj,
-        'main_categories': MainCategory.objects.all().order_by('order', 'name_fa'),
+        'main_categories': main_categories,
         'cities': City.objects.all(),
         'selected_city_id': selected_city_id,
         'selected_city': selected_city,
@@ -231,6 +235,8 @@ def load_more_products(request):
         paginator = Paginator(products_qs, 20)
         page_obj = paginator.get_page(page)
         
+        print(f"Total products: {paginator.count}, Page: {page}, Has next: {page_obj.has_next()}")
+        
         # Convert products to JSON
         from django.utils import timezone
         from django.template.defaultfilters import naturaltime
@@ -266,13 +272,16 @@ def load_more_products(request):
                 'type': 'product'
             })
         
-        return JsonResponse({
+        response_data = {
             'products': products_data,
             'has_next': page_obj.has_next(),
             'current_page': page,
             'total_pages': paginator.num_pages,
             'total_products': paginator.count
-        })
+        }
+        
+        print(f"Response data: {response_data}")
+        return JsonResponse(response_data)
         
     except Exception as e:
         print(f"Error in load_more_products: {str(e)}")

@@ -211,10 +211,12 @@ def load_more_products(request):
         
         # نمایش محصولات با امکان فیلتر
         products_qs = Product.objects.filter(is_approved=True)
+        print(f"Total products before filters: {products_qs.count()}")
         
         # فیلتر بر اساس شهر
         if city_id:
             products_qs = products_qs.filter(city_id=city_id)
+            print(f"Products after city filter: {products_qs.count()}")
         
         # فیلتر جستجو
         if search_query:
@@ -222,6 +224,7 @@ def load_more_products(request):
                 Q(name_fa__icontains=search_query) |
                 Q(description_fa__icontains=search_query)
             ).distinct()
+            print(f"Products after search filter: {products_qs.count()}")
         
         # Order products by priority and date
         products_qs = products_qs.order_by(

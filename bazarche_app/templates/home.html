@@ -399,8 +399,12 @@ function loadMoreProducts() {
                 has_next: data.has_next,
                 current_page: data.current_page,
                 total_pages: data.total_pages,
-                total_products: data.total_products
+                total_products: data.total_products,
+                error: data.error
             });
+            
+            // Log the full response
+            console.log('Full response data:', JSON.stringify(data, null, 2));
             
             if (data.products && data.products.length > 0) {
                 const productsGrid = document.getElementById('products-grid');

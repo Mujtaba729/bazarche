@@ -203,6 +203,8 @@ def load_more_products(request):
         search_query = request.GET.get('q')
         page = int(request.GET.get('page', 1))
         
+        print(f"Load more products - page: {page}, city_id: {city_id}")
+        
         # نمایش محصولات با امکان فیلتر
         products_qs = Product.objects.filter(is_approved=True)
         
@@ -273,6 +275,7 @@ def load_more_products(request):
         })
         
     except Exception as e:
+        print(f"Error in load_more_products: {str(e)}")
         return JsonResponse({
             'products': [],
             'has_next': False,

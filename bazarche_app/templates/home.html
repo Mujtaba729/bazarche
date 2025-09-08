@@ -11,17 +11,17 @@
     <div class="categories-section" style="background: white; padding: 1rem; margin-top: 1rem; margin-bottom: 1rem; border-radius: 0 0 1rem 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <div class="categories-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
             {% if main_categories %}
-                {% for category in main_categories %}
-                <a href="{% url 'app:category_detail' category.id %}" class="category-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; min-height: 80px; justify-content: center;">
-                    <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 0.25rem; color: #007bff; display: block;">
-                        <i class="{{ category.icon }}"></i>
-                    </div>
+            {% for category in main_categories %}
+            <a href="{% url 'app:category_detail' category.id %}" class="category-item" style="display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #333; padding: 0.5rem; border-radius: 0.5rem; transition: all 0.3s ease; min-height: 80px; justify-content: center;">
+                <div class="category-icon" style="font-size: 1.5rem; margin-bottom: 0.25rem; color: #007bff; display: block;">
+                    <i class="{{ category.icon }}"></i>
+                </div>
                     <span class="category-name" style="font-size: 0.75rem; text-align: center; font-weight: 500; color: #343a40; margin-top: 0.25rem; display: block; line-height: 1.2;">{{ category.name_fa|default:category.name }}</span>
-                </a>
-                {% endfor %}
+            </a>
+            {% endfor %}
             {% else %}
                 <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #6c757d;">
-                    <p>دسته‌بندی‌ها در حال بارگذاری...</p>
+                    <p>دسته‌بندی‌ها موجود نیست. لطفاً از پنل ادمین دسته‌بندی‌ها را اضافه کنید.</p>
                 </div>
             {% endif %}
         </div>
@@ -501,17 +501,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         scrollTimeout = setTimeout(function() {
-            if (hasMoreProducts && !isLoading) {
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const windowHeight = window.innerHeight;
-                const documentHeight = document.documentElement.scrollHeight;
-                
+        if (hasMoreProducts && !isLoading) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
                 // Load more when user is 200px from bottom
-                if (scrollTop + windowHeight >= documentHeight - 200) {
-                    console.log('Scroll trigger: Loading more products...');
-                    loadMoreProducts();
-                }
+            if (scrollTop + windowHeight >= documentHeight - 200) {
+                console.log('Scroll trigger: Loading more products...');
+                loadMoreProducts();
             }
+        }
         }, 100);
     });
 });

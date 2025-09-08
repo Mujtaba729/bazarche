@@ -901,6 +901,7 @@ function toggleCityDropdown() {
 function toggleNotificationDropdown(event) {
     if (event) {
         event.stopPropagation();
+        event.preventDefault();
     }
     
     const desktopDropdown = document.getElementById('notificationDropdown');
@@ -928,6 +929,8 @@ function toggleNotificationDropdown(event) {
             }
         }
     }
+    
+    return false;
 }
 
 function toggleUserDropdown() {
@@ -1118,24 +1121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateNotificationCount, 30000);
 });
 
-// Close notification dropdown when clicking outside
-document.addEventListener('click', function(event) {
-    const desktopDropdown = document.getElementById('notificationDropdown');
-    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
-    
-    // Don't close if clicking on notification button or dropdown
-    if (event.target.closest('.notification-btn') || 
-        event.target.closest('.mobile-notification-btn') ||
-        event.target.closest('.notification-dropdown')) {
-        return;
-    }
-    
-    // Close dropdowns
-    if (desktopDropdown) desktopDropdown.style.display = 'none';
-    if (mobileDropdown) mobileDropdown.style.display = 'none';
-});
-
-// Close notification dropdown when scrolling
+// Close notification dropdown when scrolling only
 document.addEventListener('scroll', function() {
     const desktopDropdown = document.getElementById('notificationDropdown');
     const mobileDropdown = document.getElementById('mobileNotificationDropdown');

@@ -133,7 +133,7 @@
         
         <!-- Language Dropdown -->
         <div class="bottom-nav-item dropdown" id="language-dropdown">
-            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
+            <div class="dropdown-trigger" onclick="toggleLanguageDropdown(); console.log('Language button clicked!');">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-translate"></i>
                 </div>
@@ -148,7 +148,7 @@
         
         <!-- City Dropdown -->
         <div class="bottom-nav-item dropdown" id="city-dropdown">
-            <div class="dropdown-trigger" onclick="toggleCityDropdown()">
+            <div class="dropdown-trigger" onclick="toggleCityDropdown(); console.log('City button clicked!');">
                 <div class="bottom-nav-icon">
                     <i class="bi bi-geo-alt"></i>
                 </div>
@@ -1332,52 +1332,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dropdown functionality
 function toggleLanguageDropdown() {
+    console.log('toggleLanguageDropdown function called!');
     const dropdown = document.getElementById('language-menu');
     const cityDropdown = document.getElementById('city-menu');
+    
+    console.log('Language dropdown element:', dropdown);
+    console.log('City dropdown element:', cityDropdown);
     
     // Close city dropdown
     if (cityDropdown) {
         cityDropdown.style.display = 'none';
         cityDropdown.style.visibility = 'hidden';
         cityDropdown.style.opacity = '0';
+        console.log('City dropdown closed');
     }
     
     // Toggle language dropdown
     if (dropdown) {
-        if (dropdown.style.display === 'none') {
+        console.log('Current language dropdown display:', dropdown.style.display);
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
             dropdown.style.display = 'block';
             dropdown.style.visibility = 'visible';
             dropdown.style.opacity = '1';
+            console.log('Language dropdown OPENED');
         } else {
             dropdown.style.display = 'none';
             dropdown.style.visibility = 'hidden';
             dropdown.style.opacity = '0';
+            console.log('Language dropdown CLOSED');
         }
+    } else {
+        console.log('Language dropdown element NOT FOUND!');
     }
 }
 
 function toggleCityDropdown() {
+    console.log('toggleCityDropdown function called!');
     const dropdown = document.getElementById('city-menu');
     const languageDropdown = document.getElementById('language-menu');
+    
+    console.log('City dropdown element:', dropdown);
+    console.log('Language dropdown element:', languageDropdown);
     
     // Close language dropdown
     if (languageDropdown) {
         languageDropdown.style.display = 'none';
         languageDropdown.style.visibility = 'hidden';
         languageDropdown.style.opacity = '0';
+        console.log('Language dropdown closed');
     }
     
     // Toggle city dropdown
     if (dropdown) {
-        if (dropdown.style.display === 'none') {
+        console.log('Current city dropdown display:', dropdown.style.display);
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
             dropdown.style.display = 'block';
             dropdown.style.visibility = 'visible';
             dropdown.style.opacity = '1';
+            console.log('City dropdown OPENED');
         } else {
             dropdown.style.display = 'none';
             dropdown.style.visibility = 'hidden';
             dropdown.style.opacity = '0';
+            console.log('City dropdown CLOSED');
         }
+    } else {
+        console.log('City dropdown element NOT FOUND!');
     }
 }
 

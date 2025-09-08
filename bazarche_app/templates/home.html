@@ -56,7 +56,7 @@
         </a>
         
         <!-- Register Product (Center) -->
-        <a href="{% url 'app:register_product' %}" class="bottom-nav-item center-item">
+        <a href="{% url 'app:register_product' %}" class="bottom-nav-item">
             <div class="bottom-nav-icon">
                 <i class="bi bi-plus-circle"></i>
             </div>
@@ -309,35 +309,6 @@ body {
     font-weight: 500;
 }
 
-.center-item {
-    background: #007bff;
-    color: white !important;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.center-item:hover {
-    background: #0056b3 !important;
-    color: white !important;
-    transform: scale(1.05);
-}
-
-.center-item .bottom-nav-icon {
-    font-size: 1.5rem;
-    margin-bottom: 0;
-}
-
-.center-item .bottom-nav-label {
-    font-size: 0.6rem;
-    margin-top: 0.25rem;
-}
 
 /* Dropdown Styles */
 .dropdown {
@@ -494,42 +465,28 @@ function loadMoreProducts() {
     
     isLoading = true;
     const loadingIndicator = document.getElementById('loading-indicator');
-    if (loadingIndicator) {
-        loadingIndicator.style.display = 'block';
-    }
+    loadingIndicator.style.display = 'block';
     
     fetch(`/app/load-more-products/?page=${currentPage + 1}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Received data:', data);
             if (data.products && data.products.length > 0) {
                 const productsGrid = document.getElementById('products-grid');
-                if (productsGrid) {
-                    data.products.forEach(product => {
-                        const productCard = createProductCard(product);
-                        productsGrid.appendChild(productCard);
-                    });
-                    currentPage++;
-                }
+                data.products.forEach(product => {
+                    const productCard = createProductCard(product);
+                    productsGrid.appendChild(productCard);
+                });
+                currentPage++;
             } else {
                 hasMoreProducts = false;
-                console.log('No more products to load');
             }
         })
         .catch(error => {
             console.error('Error loading more products:', error);
-            hasMoreProducts = false;
         })
         .finally(() => {
             isLoading = false;
-            if (loadingIndicator) {
-                loadingIndicator.style.display = 'none';
-            }
+            loadingIndicator.style.display = 'none';
         });
 }
 
@@ -539,12 +496,12 @@ function createProductCard(product) {
     div.innerHTML = `
         <a href="/app/product/${product.id}/" class="product-link">
             <div class="product-image">
-                <img src="${product.image_url || '/static/images/placeholder.jpg'}" alt="${product.title}" loading="lazy">
+                <img src="${product.image_url}" alt="${product.title}" loading="lazy">
             </div>
             <div class="product-info">
                 <h3 class="product-title">${product.title}</h3>
-                <p class="product-price">${product.price || 'قیمت توافقی'}</p>
-                <p class="product-location">${product.city || 'نامشخص'}</p>
+                <p class="product-price">${product.price}</p>
+                <p class="product-location">${product.city}</p>
             </div>
         </a>
     `;
@@ -552,33 +509,22 @@ function createProductCard(product) {
 }
 
 // Intersection Observer for infinite scroll
-let observer;
-
-function initInfiniteScroll() {
-    observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && hasMoreProducts && !isLoading) {
-                console.log('Loading more products...');
-                loadMoreProducts();
-            }
-        });
-    }, {
-        rootMargin: '200px'
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting && hasMoreProducts) {
+            loadMoreProducts();
+        }
     });
-    
-    const loadingIndicator = document.getElementById('loading-indicator');
-    if (loadingIndicator) {
-        observer.observe(loadingIndicator);
-        console.log('Infinite scroll initialized');
-    } else {
-        console.error('Loading indicator not found');
-    }
-}
+}, {
+    rootMargin: '100px'
+});
 
 // Start observing when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing infinite scroll...');
-    initInfiniteScroll();
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) {
+        observer.observe(loadingIndicator);
+    }
 });
 </script>
 {% endblock %}

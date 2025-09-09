@@ -906,9 +906,8 @@ function toggleCityDropdown() {
 
 
 function toggleNotificationDropdown(event) {
-    if (event) {
-        event.stopPropagation();
-    }
+    event.preventDefault();
+    event.stopPropagation();
     
     const desktopDropdown = document.getElementById('notificationDropdown');
     const mobileDropdown = document.getElementById('mobileNotificationDropdown');
@@ -916,20 +915,18 @@ function toggleNotificationDropdown(event) {
     if (window.innerWidth < 768) {
         // Mobile
         if (mobileDropdown) {
-            if (mobileDropdown.style.display === 'block') {
-                mobileDropdown.style.display = 'none';
-            } else {
-                mobileDropdown.style.display = 'block';
+            const isVisible = mobileDropdown.style.display === 'block';
+            mobileDropdown.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
                 loadMobileNotifications();
             }
         }
     } else {
         // Desktop
         if (desktopDropdown) {
-            if (desktopDropdown.style.display === 'block') {
-                desktopDropdown.style.display = 'none';
-            } else {
-                desktopDropdown.style.display = 'block';
+            const isVisible = desktopDropdown.style.display === 'block';
+            desktopDropdown.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
                 loadNotifications();
             }
         }
@@ -944,13 +941,18 @@ document.addEventListener('click', function(event) {
     // Don't close if clicking on notification elements
     if (event.target.closest('.notification-btn') || 
         event.target.closest('.mobile-notification-btn') ||
-        event.target.closest('.notification-dropdown')) {
+        event.target.closest('.notification-dropdown') ||
+        event.target.closest('.notification-item')) {
         return;
     }
     
     // Close dropdowns
-    if (desktopDropdown) desktopDropdown.style.display = 'none';
-    if (mobileDropdown) mobileDropdown.style.display = 'none';
+    if (desktopDropdown && desktopDropdown.style.display === 'block') {
+        desktopDropdown.style.display = 'none';
+    }
+    if (mobileDropdown && mobileDropdown.style.display === 'block') {
+        mobileDropdown.style.display = 'none';
+    }
 });
 
 // Close dropdown when scrolling
@@ -1160,11 +1162,21 @@ function markNotificationAsRead(notificationId) {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            // Update notification count
+            // Update notification count immediately
             updateNotificationCount();
+            // Also update the UI immediately
+            const notificationElement = document.querySelector(`[data-id="${notificationId}"]`);
+            if (notificationElement) {
+                notificationElement.classList.remove('unread');
+            }
         }
     })
     .catch(error => {
@@ -1189,7 +1201,12 @@ function getCookie(name) {
 
 function updateNotificationCount() {
     fetch('/app/api/notifications/count/')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             // Update desktop notification badge
             const desktopBadge = document.getElementById('notificationBadge');
@@ -1198,6 +1215,7 @@ function updateNotificationCount() {
                     desktopBadge.textContent = data.count > 99 ? '99+' : data.count;
                     desktopBadge.style.display = 'flex';
                 } else {
+                    desktopBadge.textContent = '0';
                     desktopBadge.style.display = 'none';
                 }
             }
@@ -1209,6 +1227,7 @@ function updateNotificationCount() {
                     mobileBadge.textContent = data.count > 99 ? '99+' : data.count;
                     mobileBadge.style.display = 'flex';
                 } else {
+                    mobileBadge.textContent = '0';
                     mobileBadge.style.display = 'none';
                 }
             }

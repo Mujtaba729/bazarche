@@ -613,10 +613,15 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             const commentsSection = document.getElementById('comments');
             if (commentsSection) {
-                commentsSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
+                // Get the position and scroll less
+                const elementPosition = commentsSection.offsetTop;
+                const offsetPosition = elementPosition - 100; // 100px less scroll
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
                 });
+                
                 // Highlight the section briefly
                 commentsSection.style.backgroundColor = '#fff3cd';
                 setTimeout(function() {

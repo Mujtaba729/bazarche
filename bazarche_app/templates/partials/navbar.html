@@ -635,6 +635,13 @@
 
 .notification-item.unread {
     background: #e3f2fd;
+}
+
+.notification-item:hover {
+    background-color: #e9ecef;
+    transform: translateX(2px);
+    transition: all 0.2s ease;
+}
     border-right: 3px solid #2196f3;
 }
 
@@ -736,7 +743,7 @@
         <!-- Mobile Notification Button -->
         {% if user.is_authenticated %}
         <div class="mobile-notification-btn d-md-none">
-            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
+            <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown(event)" title="{% trans 'اعلان‌ها' %}">
                 <i class="bi bi-bell"></i>
                 <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
             </button>
@@ -770,7 +777,7 @@
             {% if user.is_authenticated %}
             <!-- Notification Button -->
             <div class="notification-menu">
-                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown()" title="{% trans 'اعلان‌ها' %}">
+                <button class="nav-btn notification-btn" onclick="toggleNotificationDropdown(event)" title="{% trans 'اعلان‌ها' %}">
                     <i class="bi bi-bell"></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </button>
@@ -898,7 +905,11 @@ function toggleCityDropdown() {
 
 
 
-function toggleNotificationDropdown() {
+function toggleNotificationDropdown(event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    
     const desktopDropdown = document.getElementById('notificationDropdown');
     const mobileDropdown = document.getElementById('mobileNotificationDropdown');
     
@@ -1064,9 +1075,14 @@ function displayNotifications(notifications, listId) {
     notifications.forEach(notification => {
         const iconClass = getNotificationIcon(notification.subject);
         const timeAgo = getTimeAgo(notification.timestamp);
+        const productId = extractProductIdFromSubject(notification.subject);
         
         html += `
-            <div class="notification-item ${!notification.is_read ? 'unread' : ''}" data-id="${notification.id}">
+            <div class="notification-item ${!notification.is_read ? 'unread' : ''}" 
+                 data-id="${notification.id}" 
+                 data-product-id="${productId}"
+                 onclick="handleNotificationClick(${notification.id}, ${productId})"
+                 style="cursor: pointer;">
                 <div class="notification-content">
                     <div class="notification-icon ${iconClass}">
                         <i class="bi ${getNotificationIconClass(notification.subject)}"></i>
@@ -1112,6 +1128,63 @@ function getTimeAgo(timestamp) {
     if (days < 7) return `${days} روز پیش`;
     
     return time.toLocaleDateString('fa-IR');
+}
+
+function extractProductIdFromSubject(subject) {
+    // Extract product ID from subject like "NOTIFICATION_COMMENT_329_15"
+    const match = subject.match(/NOTIFICATION_COMMENT_(\d+)_/);
+    return match ? match[1] : null;
+}
+
+function handleNotificationClick(notificationId, productId) {
+    // Mark notification as read
+    markNotificationAsRead(notificationId);
+    
+    // Close dropdown
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
+    if (desktopDropdown) desktopDropdown.style.display = 'none';
+    if (mobileDropdown) mobileDropdown.style.display = 'none';
+    
+    // Go to product page with comment focus
+    if (productId) {
+        window.location.href = `/app/product/${productId}/#comments`;
+    }
+}
+
+function markNotificationAsRead(notificationId) {
+    fetch(`/app/api/notifications/${notificationId}/read/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update notification count
+            updateNotificationCount();
+        }
+    })
+    .catch(error => {
+        console.error('Error marking notification as read:', error);
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 function updateNotificationCount() {

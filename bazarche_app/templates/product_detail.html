@@ -240,7 +240,7 @@
         {% endif %}
         
         <!-- لیست کامنت‌ها -->
-        <div class="comments-list">
+        <div class="comments-list" id="comments">
             {% if comments %}
                 {% for comment in comments %}
                     <div class="comment-item border-bottom pb-3 mb-3">
@@ -606,5 +606,25 @@ function showCommentError(message) {
         }
     }, 5000);
 }
+
+// Scroll to comments section if URL has #comments
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.hash === '#comments') {
+        setTimeout(function() {
+            const commentsSection = document.getElementById('comments');
+            if (commentsSection) {
+                commentsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                // Highlight the section briefly
+                commentsSection.style.backgroundColor = '#fff3cd';
+                setTimeout(function() {
+                    commentsSection.style.backgroundColor = '';
+                }, 2000);
+            }
+        }, 500);
+    }
+});
 </script>
 {% endblock %}

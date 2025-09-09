@@ -942,6 +942,15 @@ document.addEventListener('click', function(event) {
     if (mobileDropdown) mobileDropdown.style.display = 'none';
 });
 
+// Close dropdown when scrolling
+document.addEventListener('scroll', function() {
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
+    
+    if (desktopDropdown) desktopDropdown.style.display = 'none';
+    if (mobileDropdown) mobileDropdown.style.display = 'none';
+});
+
 function toggleUserDropdown() {
     const dropdown = document.getElementById('userDropdown');
     dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';

@@ -774,7 +774,10 @@ def notifications(request):
     ).order_by('-timestamp')
     
     # علامت‌گذاری همه نوتیفیکیشن‌ها به عنوان خوانده شده
-    user_notifications.update(is_read=True)
+    for notification in user_notifications:
+        if "_READ_" not in notification.subject:
+            notification.subject = notification.subject + "_READ_"
+            notification.save()
     
     context = {
         'notifications': user_notifications,
@@ -788,8 +791,9 @@ def get_unread_notifications_count(request):
     try:
         count = UserFeedback.objects.filter(
             user=request.user,
-            subject__startswith="NOTIFICATION_",
-            is_read=False
+            subject__startswith="NOTIFICATION_"
+        ).exclude(
+            subject__contains="_READ_"
         ).count()
         return JsonResponse({'count': count})
     except Exception as e:
@@ -808,11 +812,12 @@ def get_recent_notifications(request):
         
         notifications_data = []
         for notification in notifications:
+            is_read = "_READ_" in notification.subject
             notifications_data.append({
                 'id': notification.id,
                 'message': notification.message,
                 'subject': notification.subject,
-                'is_read': notification.is_read,
+                'is_read': is_read,
                 'timestamp': notification.timestamp.isoformat()
             })
         
@@ -837,8 +842,10 @@ def mark_notification_read(request, notification_id):
             user=request.user,
             subject__startswith="NOTIFICATION_"
         )
-        notification.is_read = True
-        notification.save()
+        # Add _READ_ to subject to mark as read
+        if "_READ_" not in notification.subject:
+            notification.subject = notification.subject + "_READ_"
+            notification.save()
         return JsonResponse({'success': True})
     except UserFeedback.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'نوتیفیکیشن یافت نشد'})

@@ -20,8 +20,9 @@ class Command(BaseCommand):
         
         # Check unread notifications
         unread_notifications = UserFeedback.objects.filter(
-            subject__startswith="NOTIFICATION_",
-            is_read=False
+            subject__startswith="NOTIFICATION_"
+        ).exclude(
+            subject__contains="_READ_"
         )
         self.stdout.write(f"Unread notifications: {unread_notifications.count()}")
         

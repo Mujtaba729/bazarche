@@ -785,36 +785,47 @@ def notifications(request):
 @login_required
 def get_unread_notifications_count(request):
     """دریافت تعداد نوتیفیکیشن‌های خوانده نشده"""
-    count = UserFeedback.objects.filter(
-        user=request.user,
-        subject__startswith="NOTIFICATION_",
-        is_read=False
-    ).count()
-    return JsonResponse({'count': count})
+    try:
+        count = UserFeedback.objects.filter(
+            user=request.user,
+            subject__startswith="NOTIFICATION_",
+            is_read=False
+        ).count()
+        return JsonResponse({'count': count})
+    except Exception as e:
+        print(f"Error in get_unread_notifications_count: {e}")
+        return JsonResponse({'count': 0})
 
 
 @login_required
 def get_recent_notifications(request):
     """دریافت نوتیفیکیشن‌های اخیر برای dropdown"""
-    notifications = UserFeedback.objects.filter(
-        user=request.user,
-        subject__startswith="NOTIFICATION_"
-    ).order_by('-timestamp')[:5]
-    
-    notifications_data = []
-    for notification in notifications:
-        notifications_data.append({
-            'id': notification.id,
-            'message': notification.message,
-            'subject': notification.subject,
-            'is_read': notification.is_read,
-            'timestamp': notification.timestamp.isoformat()
+    try:
+        notifications = UserFeedback.objects.filter(
+            user=request.user,
+            subject__startswith="NOTIFICATION_"
+        ).order_by('-timestamp')[:5]
+        
+        notifications_data = []
+        for notification in notifications:
+            notifications_data.append({
+                'id': notification.id,
+                'message': notification.message,
+                'subject': notification.subject,
+                'is_read': notification.is_read,
+                'timestamp': notification.timestamp.isoformat()
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'notifications': notifications_data
         })
-    
-    return JsonResponse({
-        'success': True,
-        'notifications': notifications_data
-    })
+    except Exception as e:
+        print(f"Error in get_recent_notifications: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': 'خطا در بارگذاری اعلان‌ها'
+        })
 
 
 @login_required

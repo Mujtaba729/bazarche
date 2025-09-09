@@ -925,6 +925,23 @@ function toggleNotificationDropdown() {
     }
 }
 
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const desktopDropdown = document.getElementById('notificationDropdown');
+    const mobileDropdown = document.getElementById('mobileNotificationDropdown');
+    
+    // Don't close if clicking on notification elements
+    if (event.target.closest('.notification-btn') || 
+        event.target.closest('.mobile-notification-btn') ||
+        event.target.closest('.notification-dropdown')) {
+        return;
+    }
+    
+    // Close dropdowns
+    if (desktopDropdown) desktopDropdown.style.display = 'none';
+    if (mobileDropdown) mobileDropdown.style.display = 'none';
+});
+
 function toggleUserDropdown() {
     const dropdown = document.getElementById('userDropdown');
     dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
@@ -976,10 +993,17 @@ document.addEventListener('click', function(event) {
 // Notification Functions
 function loadNotifications() {
     const notificationList = document.getElementById('notificationList');
+    if (!notificationList) return;
+    
     notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-hourglass-split"></i> در حال بارگذاری...</div>';
     
     fetch('/app/api/notifications/recent/')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 displayNotifications(data.notifications, 'notificationList');
@@ -995,10 +1019,17 @@ function loadNotifications() {
 
 function loadMobileNotifications() {
     const notificationList = document.getElementById('mobileNotificationList');
+    if (!notificationList) return;
+    
     notificationList.innerHTML = '<div class="notification-loading"><i class="bi bi-hourglass-split"></i> در حال بارگذاری...</div>';
     
     fetch('/app/api/notifications/recent/')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 displayNotifications(data.notifications, 'mobileNotificationList');

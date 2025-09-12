@@ -14,7 +14,7 @@
         
         <!-- دکمه‌های عملیات -->
         <div class="jobad-actions">
-            <button type="button" class="share-btn" onclick="shareJobAd()" title="اشتراک‌گذاری">
+            <button type="button" class="action-btn share-btn" onclick="shareJobAd()" title="اشتراک‌گذاری">
                 <i class="bi bi-share me-1"></i>
                 اشتراک‌گذاری
             </button>
@@ -77,33 +77,41 @@
 }
 
 /* دکمه شیر */
-.share-btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
     border: none;
-    color: white;
-    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 500;
+    text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
     cursor: pointer;
+    min-height: 40px;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.share-btn:hover {
+.action-btn.share-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    margin-left: 1rem;
+}
+
+.action-btn.share-btn:hover {
     background: linear-gradient(45deg, #218838, #1ea085);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
-.share-btn:active {
+.action-btn.share-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
-.share-btn i {
-    font-size: 1rem;
+.action-btn i {
+    font-size: 0.9rem;
 }
 @media (max-width: 600px) {
     .jobad-detail-card {
@@ -119,11 +127,14 @@
 <script>
 // تابع شیر آگهی کاریابی
 function shareJobAd() {
+    console.log('Job share button clicked!'); // Debug log
     const jobTitle = "{{ job.title }}";
     const jobCity = "{{ job.city.name|default:'' }}";
     const jobDescription = "{{ job.description|truncatechars:100 }}";
     const shareUrl = window.location.href;
     const shareText = `${jobTitle}\n${jobCity ? 'شهر: ' + jobCity + '\n' : ''}${jobDescription}\n\nمشاهده در سود آوا:`;
+    
+    console.log('Job share data:', { jobTitle, shareUrl, shareText }); // Debug log
     
     if (navigator.share) {
         // استفاده از Web Share API در موبایل

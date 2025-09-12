@@ -186,6 +186,14 @@ def home(request):
     main_categories = Category.objects.filter(parent__isnull=True).order_by('order', 'name_fa')
     print(f"Main categories count: {main_categories.count()}")
     
+    # Get advertisements for home page
+    home_advertisements = Advertisement.objects.filter(
+        location='home',
+        is_active=True,
+        start_date__lte=timezone.now(),
+        end_date__gte=timezone.now()
+    ).order_by('display_order', '-created_at')
+    
     context = {
         'products': page_obj,
         'main_categories': main_categories,
@@ -193,6 +201,7 @@ def home(request):
         'selected_city_id': selected_city_id,
         'selected_city': selected_city,
         'search_query': search_query,
+        'home_advertisements': home_advertisements,
     }
     return render(request, 'home.html', context)
 

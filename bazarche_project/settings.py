@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
     'bazarche_app.apps.BazarcheAppConfig',  # ← اپلیکیشن بازارچه با signals
 
     # django-allauth apps
@@ -92,6 +93,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'allauth.account.middleware.AccountMiddleware',  # اضافه شده برای django-allauth
     'bazarche_app.middleware_rate_limit.RateLimitMiddleware',  # محدودیت تعداد درخواست‌ها
@@ -119,6 +121,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'bazarche_app.context_processors.main_categories',
                 'bazarche_app.context_processors.search_query',
+                'bazarche_app.context_processors.sidebar_advertisements',
             ],
         },
     },
@@ -234,7 +237,7 @@ SESSION_COOKIE_HTTPONLY = True  # Prevent XSS attacks
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') - COMMENTED OUT FOR LOCAL
 
 # Compression & Static Files
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

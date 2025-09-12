@@ -246,6 +246,17 @@
         <div class="content-container">
             {% block content %}{% endblock %}
         </div>
+        
+        <!-- Sidebar Advertisements -->
+        {% if sidebar_advertisements %}
+        <div class="sidebar-advertisements" style="position: fixed; right: 20px; top: 50%; transform: translateY(-50%); width: 200px; z-index: 1000;">
+            {% for advertisement in sidebar_advertisements %}
+                <div class="sidebar-ad-item" style="margin-bottom: 1rem;">
+                    {% include 'partials/advertisement.html' with advertisement=advertisement %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
     
     <!-- Footer -->

@@ -27,11 +27,34 @@
         </div>
     </div>
 
+    <!-- Top Advertisement Section -->
+    {% if home_advertisements %}
+    <div class="top-advertisement-section" style="padding: 1rem; margin-top: 1rem;">
+        {% for advertisement in home_advertisements %}
+            {% if forloop.counter == 1 %}
+                <div class="top-advertisement-item">
+                    {% include 'partials/advertisement.html' with advertisement=advertisement %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Products Section -->
     <div class="products-section">
         <div class="products-grid" id="products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 0 1rem;">
             {% for product in products %}
                 {% include 'partials/product_card.html' with product=product %}
+                <!-- تبلیغات بین محصولات - هر 10 محصول یک تبلیغ -->
+                {% if forloop.counter|divisibleby:10 %}
+                    {% for advertisement in home_advertisements %}
+                        {% if forloop.counter == 2 %}
+                            <div class="advertisement-grid-item" style="grid-column: 1 / -1; margin: 1rem 0;">
+                                {% include 'partials/advertisement.html' with advertisement=advertisement %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
         </div>
         

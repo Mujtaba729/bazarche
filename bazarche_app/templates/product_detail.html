@@ -762,30 +762,27 @@ function handleShareClick(event) {
 }
 
 // تابع شیر محصول
-document.addEventListener('DOMContentLoaded', function() {
-    function shareProduct() {
-        console.log('Share button clicked!');
-        const productTitle = "{{ product.name_fa }}";
-        const productPrice = "{{ product.price }}";
-        const productDescription = "{{ product.description_fa|truncatechars:100 }}";
-        const shareUrl = window.location.href;
-        const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n\nمشاهده در سود آوا:`;
-        
-        if (navigator.share) {
-            navigator.share({
-                title: productTitle,
-                text: shareText,
-                url: shareUrl
-            }).then(() => {
-                alert('اشتراک‌گذاری موفق!');
-            }).catch(() => {
-                copyToClipboard(shareText + '\n' + shareUrl);
-            });
-        } else {
+function shareProduct() {
+    console.log('Share button clicked!');
+    const productTitle = "{{ product.name_fa }}";
+    const productPrice = "{{ product.price }}";
+    const shareUrl = window.location.href;
+    const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n\nمشاهده در سود آوا:`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: productTitle,
+            text: shareText,
+            url: shareUrl
+        }).then(() => {
+            alert('اشتراک‌گذاری موفق!');
+        }).catch(() => {
             copyToClipboard(shareText + '\n' + shareUrl);
-        }
+        });
+    } else {
+        copyToClipboard(shareText + '\n' + shareUrl);
     }
-});
+}
 
 // تابع Fallback برای شیر
 window.fallbackShare = function(text, url) {

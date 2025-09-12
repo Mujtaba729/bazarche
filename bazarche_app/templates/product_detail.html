@@ -165,28 +165,32 @@
                 </div>
                 {% endif %}
 
-                <!-- دکمه‌های عملیات ساده و حرفه‌ای -->
-                <div class="simple-actions-container">
+                <!-- دکمه‌های عملیات: تماس آبی، تخلف قرمز، اشتراک سبز -->
+                <div class="actions-row">
                     {% if user.is_authenticated %}
-                    <a href="tel:{{ product.seller_contact }}" class="simple-action-btn btn-contact">
+                    <a href="tel:{{ product.seller_contact }}" class="action-btn contact-btn">
                         <i class="bi bi-telephone-fill"></i>
-                        <span>{% trans 'تماس' %}</span>
+                        <div class="btn-text">
+                            <span>{% trans 'تماس با فروشنده' %}</span>
+                            <small>{{ product.seller_contact }}</small>
+                        </div>
                     </a>
                     {% else %}
-                    <a href="{% url 'app:register_user' %}" class="simple-action-btn btn-contact">
+                    <a href="{% url 'app:register_user' %}" class="action-btn contact-btn">
                         <i class="bi bi-person-plus-fill"></i>
-                        <span>{% trans 'ثبت نام' %}</span>
+                        <div class="btn-text">
+                            <span>{% trans 'ثبت نام برای تماس' %}</span>
+                            <small>{% trans 'برای مشاهده شماره' %}</small>
+                        </div>
                     </a>
                     {% endif %}
                     
-                    <button type="button" class="simple-action-btn btn-report" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <button type="button" class="action-btn icon-btn report-btn" data-bs-toggle="modal" data-bs-target="#reportModal" title="{% trans 'ثبت تخلف' %}">
                         <i class="bi bi-flag-fill"></i>
-                        <span>{% trans 'تخلف' %}</span>
                     </button>
                     
-                    <button type="button" class="simple-action-btn btn-share" onclick="shareProduct()">
+                    <button type="button" class="action-btn icon-btn share-btn" onclick="shareProduct()" title="{% trans 'اشتراک‌گذاری' %}">
                         <i class="bi bi-share-fill"></i>
-                        <span>{% trans 'اشتراک' %}</span>
                     </button>
                 </div>
             </div>
@@ -771,66 +775,114 @@ window.copyToClipboard = function(text) {
     }
 }
 
-/* دکمه‌های عملیات ساده و حرفه‌ای */
-.simple-actions-container {
+/* دکمه‌های عملیات: تماس آبی، تخلف قرمز، اشتراک سبز */
+.actions-row {
     margin-top: 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
 }
 
-.simple-action-btn {
+.action-btn {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 0.5rem;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: white;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    min-height: 70px;
-    text-align: center;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
-.simple-action-btn:hover {
+.action-btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-.simple-action-btn i {
-    font-size: 1.5rem;
-    margin-bottom: 0.3rem;
-    display: block;
+.action-btn:active {
+    transform: scale(0.98);
 }
 
-.simple-action-btn.btn-contact {
+/* دکمه تماس (آبی) */
+.contact-btn {
+    flex: 1;
     background-color: #007bff;
-}
-.simple-action-btn.btn-contact:hover {
-    background-color: #0069d9;
-}
-
-.simple-action-btn.btn-report {
-    background-color: #ffc107;
-    color: #212529;
-}
-.simple-action-btn.btn-report:hover {
-    background-color: #e0a800;
+    color: white;
+    padding: 0.75rem 1rem;
+    justify-content: flex-start;
 }
 
-.simple-action-btn.btn-share {
+.contact-btn:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+.contact-btn i {
+    font-size: 1.5rem;
+    margin-left: 0.75rem;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    line-height: 1.2;
+}
+
+.btn-text span {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.btn-text small {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+/* دکمه‌های آیکون */
+.icon-btn {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+}
+
+.icon-btn i {
+    font-size: 1.25rem;
+}
+
+/* دکمه تخلف (قرمز) */
+.report-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.report-btn:hover {
+    background-color: #c82333;
+}
+
+/* دکمه اشتراک (سبز) */
+.share-btn {
     background-color: #28a745;
+    color: white;
 }
-.simple-action-btn.btn-share:hover {
+
+.share-btn:hover {
     background-color: #218838;
 }
 
-.simple-action-btn:active {
-    transform: translateY(0) scale(0.98);
+/* Responsive */
+@media (max-width: 768px) {
+    .actions-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .icon-btn {
+        width: 100%;
+        height: 45px;
+    }
 }
 
 

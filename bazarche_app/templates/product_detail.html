@@ -183,7 +183,7 @@
                         <i class="bi bi-flag-fill"></i>
                     </button>
                     
-                    <button type="button" class="beautiful-btn share-beautiful" id="share-button" title="اشتراک‌گذاری" onclick="handleShareClick(event)">
+                    <button type="button" class="beautiful-btn share-beautiful" id="share-button" title="اشتراک‌گذاری" onclick="shareProduct()">
                         <i class="bi bi-share-fill"></i>
                     </button>
                 </div>
@@ -762,7 +762,7 @@ function handleShareClick(event) {
 }
 
 // تابع شیر محصول
-window.shareProduct = function() {
+function shareProduct() {
     console.log('Share button clicked!'); // Debug log
     const productTitle = "{{ product.name_fa }}";
     const productPrice = "{{ product.price }}";

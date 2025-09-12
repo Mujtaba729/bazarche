@@ -183,7 +183,7 @@
                         <i class="bi bi-flag-fill"></i>
                     </button>
                     
-                    <button type="button" class="beautiful-btn share-beautiful" id="share-button" title="اشتراک‌گذاری">
+                    <button type="button" class="beautiful-btn share-beautiful" id="share-button" title="اشتراک‌گذاری" onclick="handleShareClick(event)">
                         <i class="bi bi-share-fill"></i>
                     </button>
                 </div>
@@ -682,6 +682,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Alternative: Global event delegation
     document.addEventListener('click', function(e) {
+        console.log('Document clicked:', e.target);
         if (e.target && e.target.closest('#share-button')) {
             e.preventDefault();
             e.stopPropagation();
@@ -709,12 +710,56 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+    
+    // Direct test - add onclick directly to button
+    setTimeout(function() {
+        const shareBtn = document.getElementById('share-button');
+        if (shareBtn) {
+            console.log('Adding direct onclick to share button');
+            shareBtn.onclick = function(e) {
+                e.preventDefault();
+                console.log('Direct onclick triggered!');
+                alert('دکمه اشتراک کلیک شد!');
+            };
+        }
+    }, 2000);
     // --- END FIX ---
 });
 
 // ----------------------------------------------------
-// Share Functionality - Make functions global for onclick
+// Share Functionality - Global function for onclick
 // ----------------------------------------------------
+
+// Global share function
+function handleShareClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('handleShareClick called!');
+    
+    const productTitle = "{{ product.name_fa }}";
+    const productPrice = "{{ product.price }}";
+    const productDescription = "{{ product.description_fa|truncatechars:100 }}";
+    const shareUrl = window.location.href;
+    const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n${productDescription}\n\nمشاهده در سود آوا:`;
+    
+    console.log('Share data:', { productTitle, shareUrl });
+    
+    if (navigator.share) {
+        navigator.share({
+            title: productTitle,
+            text: shareText,
+            url: shareUrl
+        }).then(() => {
+            console.log('Share successful');
+            alert('اشتراک‌گذاری موفق!');
+        }).catch((error) => {
+            console.log('Error sharing:', error);
+            copyToClipboard(shareText + '\n' + shareUrl);
+        });
+    } else {
+        copyToClipboard(shareText + '\n' + shareUrl);
+    }
+}
 
 // تابع شیر محصول
 window.shareProduct = function() {
@@ -824,10 +869,12 @@ window.closeShareModal = function() {
 
 // کپی به کلیپ‌بورد - ساده
 function copyToClipboard(text) {
+    console.log('Copying to clipboard:', text);
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
             alert('لینک کپی شد!');
-        }).catch(() => {
+        }).catch((error) => {
+            console.log('Clipboard error:', error);
             fallbackCopy(text);
         });
     } else {
@@ -863,13 +910,15 @@ function fallbackCopy(text) {
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
-    cursor: pointer;
+    cursor: pointer !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     min-height: 48px;
     flex: 1;
     min-width: 140px;
+    pointer-events: auto !important;
+    z-index: 10;
 }
 
 /* دکمه‌های آیکون (فقط آیکون) */

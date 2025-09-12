@@ -639,13 +639,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- FIX FOR SHARE BUTTON ---
-    // Attach event listener to the share button
-    const shareBtn = document.getElementById('share-button');
-    if (shareBtn) {
-        console.log('Share button found, adding event listener');
-        shareBtn.addEventListener('click', function(e) {
+    // Wait a bit more for DOM to be fully ready
+    setTimeout(function() {
+        const shareBtn = document.getElementById('share-button');
+        console.log('Looking for share button...', shareBtn);
+        
+        if (shareBtn) {
+            console.log('Share button found, adding event listener');
+            shareBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Share button clicked!');
+                
+                const productTitle = "{{ product.name_fa }}";
+                const productPrice = "{{ product.price }}";
+                const productDescription = "{{ product.description_fa|truncatechars:100 }}";
+                const shareUrl = window.location.href;
+                const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n${productDescription}\n\nمشاهده در سود آوا:`;
+                
+                console.log('Share data:', { productTitle, shareUrl });
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: productTitle,
+                        text: shareText,
+                        url: shareUrl
+                    }).then(() => {
+                        console.log('Share successful');
+                        alert('اشتراک‌گذاری موفق!');
+                    }).catch((error) => {
+                        console.log('Error sharing:', error);
+                        copyToClipboard(shareText + '\n' + shareUrl);
+                    });
+                } else {
+                    copyToClipboard(shareText + '\n' + shareUrl);
+                }
+            });
+        } else {
+            console.log('Share button not found after timeout!');
+        }
+    }, 1000);
+    
+    // Alternative: Global event delegation
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.closest('#share-button')) {
             e.preventDefault();
-            console.log('Share button clicked!');
+            e.stopPropagation();
+            console.log('Share button clicked via delegation!');
             
             const productTitle = "{{ product.name_fa }}";
             const productPrice = "{{ product.price }}";
@@ -653,15 +693,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const shareUrl = window.location.href;
             const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n${productDescription}\n\nمشاهده در سود آوا:`;
             
-            console.log('Share data:', { productTitle, shareUrl });
-            
             if (navigator.share) {
                 navigator.share({
                     title: productTitle,
                     text: shareText,
                     url: shareUrl
                 }).then(() => {
-                    console.log('Share successful');
                     alert('اشتراک‌گذاری موفق!');
                 }).catch((error) => {
                     console.log('Error sharing:', error);
@@ -670,10 +707,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 copyToClipboard(shareText + '\n' + shareUrl);
             }
-        });
-    } else {
-        console.log('Share button not found!');
-    }
+        }
+    });
     // --- END FIX ---
 });
 

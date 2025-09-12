@@ -165,25 +165,27 @@
                 </div>
                 {% endif %}
 
-                <div class="d-flex gap-2 flex-wrap">
-                    <!-- دکمه شیر -->
-                    <button type="button" class="share-btn" onclick="shareProduct()" title="{% trans 'اشتراک‌گذاری' %}">
-                        <i class="bi bi-share me-1"></i>
-                        {% trans 'اشتراک‌گذاری' %}
-                    </button>
-                    
+                <!-- دکمه‌های عملیات منظم -->
+                <div class="product-actions">
                     {% if user.is_authenticated %}
-                    <a href="tel:{{ product.seller_contact }}" class="prod-contact-link">
-                        {% trans 'تماس با فروشنده' %}: {{ product.seller_contact }}
+                    <a href="tel:{{ product.seller_contact }}" class="action-btn contact-btn">
+                        <i class="bi bi-telephone me-1"></i>
+                        {% trans 'تماس با فروشنده' %}
                     </a>
                     {% else %}
-                    <a href="{% url 'app:register_user' %}" class="prod-contact-link" style="background: linear-gradient(45deg, #667eea, #764ba2);">
-                        <i class="bi bi-person-plus me-2"></i>
-                        برای دیدن شماره تماس ثبت نام کنید
+                    <a href="{% url 'app:register_user' %}" class="action-btn register-btn">
+                        <i class="bi bi-person-plus me-1"></i>
+                        {% trans 'ثبت نام برای تماس' %}
                     </a>
                     {% endif %}
-                    <button type="button" class="report-abuse-btn" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    
+                    <button type="button" class="action-btn report-btn" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-flag me-1"></i>
                         {% trans 'ثبت تخلف' %}
+                    </button>
+                    
+                    <button type="button" class="action-btn share-btn" onclick="shareProduct()" title="{% trans 'اشتراک‌گذاری' %}">
+                        <i class="bi bi-share"></i>
                     </button>
                 </div>
             </div>
@@ -761,33 +763,128 @@ function copyToClipboard(text) {
     }
 }
 
-/* دکمه شیر */
-.share-btn {
-    background: linear-gradient(45deg, #28a745, #20c997);
+/* دکمه‌های عملیات منظم */
+.product-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.625rem 1rem;
     border: none;
-    color: white;
-    padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 500;
+    text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    cursor: pointer;
+    min-height: 40px;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* دکمه تماس */
+.contact-btn {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    flex: 1;
+    min-width: 140px;
+}
+
+.contact-btn:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* دکمه ثبت نام */
+.register-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    flex: 1;
+    min-width: 140px;
+}
+
+.register-btn:hover {
+    background: linear-gradient(45deg, #5a67d8, #6b46c1);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* دکمه ثبت تخلف */
+.report-btn {
+    background: linear-gradient(45deg, #ffc107, #ff8c00);
+    color: white;
+    min-width: 120px;
+}
+
+.report-btn:hover {
+    background: linear-gradient(45deg, #e0a800, #e07b00);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* دکمه شیر (فقط آیکون) */
+.share-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    width: 40px;
+    min-width: 40px;
+    padding: 0.625rem;
 }
 
 .share-btn:hover {
     background: linear-gradient(45deg, #218838, #1ea085);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
 }
 
-.share-btn:active {
+.share-btn:active,
+.contact-btn:active,
+.register-btn:active,
+.report-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
 }
 
-.share-btn i {
-    font-size: 1rem;
+.action-btn i {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .product-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .share-btn {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .share-btn {
+        padding: 0.5rem;
+    }
 }
 
 /* Toast موفقیت شیر */

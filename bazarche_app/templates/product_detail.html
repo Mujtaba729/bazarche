@@ -179,14 +179,12 @@
                     </a>
                     {% endif %}
                     
-                    <button type="button" class="beautiful-btn report-beautiful" data-bs-toggle="modal" data-bs-target="#reportModal">
+                    <button type="button" class="beautiful-btn report-beautiful" data-bs-toggle="modal" data-bs-target="#reportModal" title="ثبت تخلف">
                         <i class="bi bi-flag-fill"></i>
-                        <span>تخلف</span>
                     </button>
                     
-                    <button type="button" class="beautiful-btn share-beautiful" id="share-button">
+                    <button type="button" class="beautiful-btn share-beautiful" id="share-button" title="اشتراک‌گذاری">
                         <i class="bi bi-share-fill"></i>
-                        <span>اشتراک</span>
                     </button>
                 </div>
             </div>
@@ -644,13 +642,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Attach event listener to the share button
     const shareBtn = document.getElementById('share-button');
     if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
+        console.log('Share button found, adding event listener');
+        shareBtn.addEventListener('click', function(e) {
+            e.preventDefault();
             console.log('Share button clicked!');
+            
             const productTitle = "{{ product.name_fa }}";
             const productPrice = "{{ product.price }}";
             const productDescription = "{{ product.description_fa|truncatechars:100 }}";
             const shareUrl = window.location.href;
             const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n${productDescription}\n\nمشاهده در سود آوا:`;
+            
+            console.log('Share data:', { productTitle, shareUrl });
             
             if (navigator.share) {
                 navigator.share({
@@ -658,15 +661,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: shareText,
                     url: shareUrl
                 }).then(() => {
-                    showShareSuccess();
+                    console.log('Share successful');
+                    alert('اشتراک‌گذاری موفق!');
                 }).catch((error) => {
                     console.log('Error sharing:', error);
-                    fallbackShare(shareText, shareUrl);
+                    copyToClipboard(shareText + '\n' + shareUrl);
                 });
             } else {
-                fallbackShare(shareText, shareUrl);
+                copyToClipboard(shareText + '\n' + shareUrl);
             }
         });
+    } else {
+        console.log('Share button not found!');
     }
     // --- END FIX ---
 });
@@ -781,24 +787,27 @@ window.closeShareModal = function() {
     }
 }
 
-// کپی به کلیپ‌بورد
-window.copyToClipboard = function(text) {
+// کپی به کلیپ‌بورد - ساده
+function copyToClipboard(text) {
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
-            showShareSuccess();
-            closeShareModal();
+            alert('لینک کپی شد!');
+        }).catch(() => {
+            fallbackCopy(text);
         });
     } else {
-        // Fallback برای مرورگرهای قدیمی
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showShareSuccess();
-        closeShareModal();
+        fallbackCopy(text);
     }
+}
+
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('لینک کپی شد!');
 }
 
 /* دکمه‌های عملیات زیبا و جذاب */
@@ -826,6 +835,20 @@ window.copyToClipboard = function(text) {
     min-height: 48px;
     flex: 1;
     min-width: 140px;
+}
+
+/* دکمه‌های آیکون (فقط آیکون) */
+.beautiful-btn:not(.contact-beautiful) {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    padding: 0;
+    flex: 0 0 60px;
+}
+
+.beautiful-btn:not(.contact-beautiful) i {
+    margin: 0;
+    font-size: 1.3rem;
 }
 
 .beautiful-btn::before {

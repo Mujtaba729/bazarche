@@ -165,32 +165,28 @@
                 </div>
                 {% endif %}
 
-                <!-- دکمه‌های عملیات: تماس آبی، تخلف قرمز، اشتراک سبز -->
-                <div class="actions-row">
+                <!-- دکمه‌های عملیات زیبا و منظم -->
+                <div class="beautiful-actions">
                     {% if user.is_authenticated %}
-                    <a href="tel:{{ product.seller_contact }}" class="action-btn contact-btn">
+                    <a href="tel:{{ product.seller_contact }}" class="beautiful-btn contact-beautiful">
                         <i class="bi bi-telephone-fill"></i>
-                        <div class="btn-text">
-                            <span>{% trans 'تماس با فروشنده' %}</span>
-                            <small>{{ product.seller_contact }}</small>
-                        </div>
+                        <span>تماس: {{ product.seller_contact }}</span>
                     </a>
                     {% else %}
-                    <a href="{% url 'app:register_user' %}" class="action-btn contact-btn">
+                    <a href="{% url 'app:register_user' %}" class="beautiful-btn contact-beautiful">
                         <i class="bi bi-person-plus-fill"></i>
-                        <div class="btn-text">
-                            <span>{% trans 'ثبت نام برای تماس' %}</span>
-                            <small>{% trans 'برای مشاهده شماره' %}</small>
-                        </div>
+                        <span>ثبت نام برای تماس</span>
                     </a>
                     {% endif %}
                     
-                    <button type="button" class="action-btn icon-btn report-btn" data-bs-toggle="modal" data-bs-target="#reportModal" title="{% trans 'ثبت تخلف' %}">
+                    <button type="button" class="beautiful-btn report-beautiful" data-bs-toggle="modal" data-bs-target="#reportModal">
                         <i class="bi bi-flag-fill"></i>
+                        <span>تخلف</span>
                     </button>
                     
-                    <button type="button" class="action-btn icon-btn share-btn" onclick="shareProduct()" title="{% trans 'اشتراک‌گذاری' %}">
+                    <button type="button" class="beautiful-btn share-beautiful" id="share-button">
                         <i class="bi bi-share-fill"></i>
+                        <span>اشتراک</span>
                     </button>
                 </div>
             </div>
@@ -643,6 +639,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 500);
     }
+    
+    // --- FIX FOR SHARE BUTTON ---
+    // Attach event listener to the share button
+    const shareBtn = document.getElementById('share-button');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            console.log('Share button clicked!');
+            const productTitle = "{{ product.name_fa }}";
+            const productPrice = "{{ product.price }}";
+            const productDescription = "{{ product.description_fa|truncatechars:100 }}";
+            const shareUrl = window.location.href;
+            const shareText = `${productTitle}\nقیمت: ${productPrice} افغانی\n${productDescription}\n\nمشاهده در سود آوا:`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: productTitle,
+                    text: shareText,
+                    url: shareUrl
+                }).then(() => {
+                    showShareSuccess();
+                }).catch((error) => {
+                    console.log('Error sharing:', error);
+                    fallbackShare(shareText, shareUrl);
+                });
+            } else {
+                fallbackShare(shareText, shareUrl);
+            }
+        });
+    }
+    // --- END FIX ---
 });
 
 // ----------------------------------------------------
@@ -775,113 +801,117 @@ window.copyToClipboard = function(text) {
     }
 }
 
-/* دکمه‌های عملیات: تماس آبی، تخلف قرمز، اشتراک سبز */
-.actions-row {
+/* دکمه‌های عملیات زیبا و جذاب */
+.beautiful-actions {
     margin-top: 1.5rem;
     display: flex;
-    gap: 0.5rem;
-    align-items: stretch;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
-.action-btn {
-    display: flex;
+.beautiful-btn {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0.875rem 1.25rem;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     text-decoration: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-}
-
-.action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.action-btn:active {
-    transform: scale(0.98);
-}
-
-/* دکمه تماس (آبی) */
-.contact-btn {
-    flex: 1;
-    background-color: #007bff;
-    color: white;
-    padding: 0.75rem 1rem;
-    justify-content: flex-start;
-}
-
-.contact-btn:hover {
-    background-color: #0056b3;
-    color: white;
-    text-decoration: none;
-}
-
-.contact-btn i {
-    font-size: 1.5rem;
-    margin-left: 0.75rem;
-}
-
-.btn-text {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-    line-height: 1.2;
-}
-
-.btn-text span {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-height: 48px;
+    flex: 1;
+    min-width: 140px;
 }
 
-.btn-text small {
-    font-size: 0.75rem;
-    opacity: 0.9;
+.beautiful-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
 }
 
-/* دکمه‌های آیکون */
-.icon-btn {
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
+.beautiful-btn:hover::before {
+    left: 100%;
 }
 
-.icon-btn i {
-    font-size: 1.25rem;
+.beautiful-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
-/* دکمه تخلف (قرمز) */
-.report-btn {
-    background-color: #dc3545;
+.beautiful-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.beautiful-btn i {
+    margin-left: 0.5rem;
+    font-size: 1.1rem;
+}
+
+/* دکمه تماس (آبی جذاب) */
+.contact-beautiful {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.report-btn:hover {
-    background-color: #c82333;
-}
-
-/* دکمه اشتراک (سبز) */
-.share-btn {
-    background-color: #28a745;
+.contact-beautiful:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
     color: white;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
-.share-btn:hover {
-    background-color: #218838;
+/* دکمه تخلف (قرمز جذاب) */
+.report-beautiful {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.report-beautiful:hover {
+    background: linear-gradient(135deg, #ff5252 0%, #e63946 100%);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+/* دکمه اشتراک (سبز جذاب) */
+.share-beautiful {
+    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+}
+
+.share-beautiful:hover {
+    background: linear-gradient(135deg, #26d0ce 0%, #2c9f9f 100%);
+    box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .actions-row {
+    .beautiful-actions {
         flex-direction: column;
         gap: 0.5rem;
     }
     
-    .icon-btn {
+    .beautiful-btn {
         width: 100%;
-        height: 45px;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .beautiful-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
     }
 }
 

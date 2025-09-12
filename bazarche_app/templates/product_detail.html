@@ -165,41 +165,29 @@
                 </div>
                 {% endif %}
 
-                <!-- دکمه‌های عملیات زیبا و جذاب -->
-                <div class="modern-product-actions">
+                <!-- دکمه‌های عملیات ساده و حرفه‌ای -->
+                <div class="simple-actions-container">
                     {% if user.is_authenticated %}
-                    <a href="tel:{{ product.seller_contact }}" class="modern-btn contact-btn">
-                        <div class="btn-icon">
-                            <i class="bi bi-telephone"></i>
-                        </div>
-                        <div class="btn-content">
-                            <span class="btn-title">{% trans 'تماس با فروشنده' %}</span>
-                            <span class="btn-subtitle">{{ product.seller_contact }}</span>
-                        </div>
+                    <a href="tel:{{ product.seller_contact }}" class="simple-action-btn btn-contact">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>{% trans 'تماس' %}</span>
                     </a>
                     {% else %}
-                    <a href="{% url 'app:register_user' %}" class="modern-btn register-btn">
-                        <div class="btn-icon">
-                            <i class="bi bi-person-plus"></i>
-                        </div>
-                        <div class="btn-content">
-                            <span class="btn-title">{% trans 'ثبت نام برای تماس' %}</span>
-                            <span class="btn-subtitle">برای مشاهده شماره تماس</span>
-                        </div>
+                    <a href="{% url 'app:register_user' %}" class="simple-action-btn btn-contact">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>{% trans 'ثبت نام' %}</span>
                     </a>
                     {% endif %}
                     
-                    <div class="action-buttons-row">
-                        <button type="button" class="modern-btn-small report-btn" data-bs-toggle="modal" data-bs-target="#reportModal">
-                            <i class="bi bi-flag"></i>
-                            <span>{% trans 'ثبت تخلف' %}</span>
-                        </button>
-                        
-                        <button type="button" class="modern-btn-small share-btn" onclick="shareProduct()" title="{% trans 'اشتراک‌گذاری' %}">
-                            <i class="bi bi-share"></i>
-                            <span>{% trans 'اشتراک‌گذاری' %}</span>
-                        </button>
-                    </div>
+                    <button type="button" class="simple-action-btn btn-report" data-bs-toggle="modal" data-bs-target="#reportModal">
+                        <i class="bi bi-flag-fill"></i>
+                        <span>{% trans 'تخلف' %}</span>
+                    </button>
+                    
+                    <button type="button" class="simple-action-btn btn-share" onclick="shareProduct()">
+                        <i class="bi bi-share-fill"></i>
+                        <span>{% trans 'اشتراک' %}</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -653,8 +641,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// ----------------------------------------------------
+// Share Functionality - Make functions global for onclick
+// ----------------------------------------------------
+
 // تابع شیر محصول
-function shareProduct() {
+window.shareProduct = function() {
     console.log('Share button clicked!'); // Debug log
     const productTitle = "{{ product.name_fa }}";
     const productPrice = "{{ product.price }}";
@@ -683,7 +675,7 @@ function shareProduct() {
 }
 
 // تابع Fallback برای شیر
-function fallbackShare(text, url) {
+window.fallbackShare = function(text, url) {
     const shareText = `${text}\n${url}`;
     
     if (navigator.clipboard) {
@@ -698,7 +690,7 @@ function fallbackShare(text, url) {
 }
 
 // نمایش پیام موفقیت
-function showShareSuccess() {
+window.showShareSuccess = function() {
     // ایجاد toast موفقیت
     const toast = document.createElement('div');
     toast.className = 'share-toast';
@@ -722,7 +714,7 @@ function showShareSuccess() {
 }
 
 // نمایش modal شیر (برای مرورگرهای قدیمی)
-function showShareModal(text, url) {
+window.showShareModal = function(text, url) {
     const modal = document.createElement('div');
     modal.className = 'share-modal-overlay';
     modal.innerHTML = `
@@ -749,7 +741,7 @@ function showShareModal(text, url) {
 }
 
 // بستن modal شیر
-function closeShareModal() {
+window.closeShareModal = function() {
     const modal = document.querySelector('.share-modal-overlay');
     if (modal) {
         modal.classList.remove('show');
@@ -760,7 +752,7 @@ function closeShareModal() {
 }
 
 // کپی به کلیپ‌بورد
-function copyToClipboard(text) {
+window.copyToClipboard = function(text) {
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
             showShareSuccess();
@@ -779,229 +771,68 @@ function copyToClipboard(text) {
     }
 }
 
-/* دکمه‌های عملیات مدرن و جذاب */
-.modern-product-actions {
+/* دکمه‌های عملیات ساده و حرفه‌ای */
+.simple-actions-container {
     margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-/* دکمه تماس اصلی (بزرگ و جذاب) */
-.modern-btn {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.25rem;
-    border: none;
-    border-radius: 12px;
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.modern-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.modern-btn:hover::before {
-    left: 100%;
-}
-
-.btn-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.25rem;
-    position: relative;
-    z-index: 2;
-}
-
-.btn-content {
-    flex: 1;
-    text-align: right;
-    position: relative;
-    z-index: 2;
-}
-
-.btn-title {
-    display: block;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.btn-subtitle {
-    display: block;
-    font-size: 0.85rem;
-    opacity: 0.8;
-    font-weight: 400;
-}
-
-/* دکمه تماس */
-.modern-btn.contact-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.modern-btn.contact-btn .btn-icon {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.modern-btn.contact-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-}
-
-/* دکمه ثبت نام */
-.modern-btn.register-btn {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-}
-
-.modern-btn.register-btn .btn-icon {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.modern-btn.register-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
-}
-
-/* ردیف دکمه‌های کوچک */
-.action-buttons-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 0.75rem;
 }
 
-.modern-btn-small {
-    flex: 1;
+.simple-action-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.5rem;
     border: none;
-    border-radius: 10px;
-    font-size: 0.875rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.8rem;
     font-weight: 500;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: white;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    min-height: 70px;
+    text-align: center;
 }
 
-.modern-btn-small::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.modern-btn-small:hover::before {
-    left: 100%;
-}
-
-.modern-btn-small i {
-    margin-left: 0.5rem;
-    font-size: 1rem;
-}
-
-/* دکمه تخلف */
-.modern-btn-small.report-btn {
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-    color: #8b4513;
-    border: 2px solid #fcb69f;
-}
-
-.modern-btn-small.report-btn:hover {
-    background: linear-gradient(135deg, #fcb69f 0%, #ff8c00 100%);
-    color: white;
+.simple-action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(252, 182, 159, 0.4);
 }
 
-/* دکمه شیر */
-.modern-btn-small.share-btn {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #2c5530;
-    border: 2px solid #a8edea;
+.simple-action-btn i {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+    display: block;
 }
 
-.modern-btn-small.share-btn:hover {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+.simple-action-btn.btn-contact {
+    background-color: #007bff;
+}
+.simple-action-btn.btn-contact:hover {
+    background-color: #0069d9;
 }
 
-/* انیمیشن کلیک */
-.modern-btn:active,
-.modern-btn-small:active {
+.simple-action-btn.btn-report {
+    background-color: #ffc107;
+    color: #212529;
+}
+.simple-action-btn.btn-report:hover {
+    background-color: #e0a800;
+}
+
+.simple-action-btn.btn-share {
+    background-color: #28a745;
+}
+.simple-action-btn.btn-share:hover {
+    background-color: #218838;
+}
+
+.simple-action-btn:active {
     transform: translateY(0) scale(0.98);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .modern-product-actions {
-        gap: 0.75rem;
-    }
-    
-    .modern-btn {
-        padding: 0.875rem 1rem;
-    }
-    
-    .btn-icon {
-        width: 45px;
-        height: 45px;
-        margin-right: 0.75rem;
-        font-size: 1.1rem;
-    }
-    
-    .btn-title {
-        font-size: 0.9rem;
-    }
-    
-    .btn-subtitle {
-        font-size: 0.8rem;
-    }
-    
-    .action-buttons-row {
-        gap: 0.5rem;
-    }
-    
-    .modern-btn-small {
-        padding: 0.625rem 0.75rem;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .action-buttons-row {
-        flex-direction: column;
-    }
-    
-    .modern-btn-small {
-        padding: 0.75rem 1rem;
-    }
-}
 
 /* Toast موفقیت شیر */
 .share-toast {

@@ -11,7 +11,15 @@
         <div class="jobad-detail-date">تاریخ ثبت: {{ job.created_at|date:'Y/m/d' }}</div>
         <div class="jobad-detail-description">{{ job.description|linebreaksbr }}</div>
         <div class="jobad-detail-contact">اطلاعات تماس: <span>{{ job.contact }}</span></div>
-        <a href="{% url 'app:jobs_list' %}" class="btn btn-secondary jobad-back-btn">بازگشت به لیست کاریابی</a>
+        
+        <!-- دکمه‌های عملیات -->
+        <div class="jobad-actions">
+            <button type="button" class="share-btn" onclick="shareJobAd()" title="اشتراک‌گذاری">
+                <i class="bi bi-share me-1"></i>
+                اشتراک‌گذاری
+            </button>
+            <a href="{% url 'app:jobs_list' %}" class="btn btn-secondary jobad-back-btn">بازگشت به لیست کاریابی</a>
+        </div>
     </div>
 </div>
 <style>
@@ -56,9 +64,46 @@
     font-size: 1.05rem;
     font-weight: 500;
 }
-.jobad-back-btn {
+.jobad-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
     margin-top: 1.2rem;
+}
+
+.jobad-back-btn {
     min-width: 160px;
+}
+
+/* دکمه شیر */
+.share-btn {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    cursor: pointer;
+}
+
+.share-btn:hover {
+    background: linear-gradient(45deg, #218838, #1ea085);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
+}
+
+.share-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.share-btn i {
+    font-size: 1rem;
 }
 @media (max-width: 600px) {
     .jobad-detail-card {
@@ -68,6 +113,258 @@
     .jobad-detail-title {
         font-size: 1.1rem;
     }
+}
+</style>
+
+<script>
+// تابع شیر آگهی کاریابی
+function shareJobAd() {
+    const jobTitle = "{{ job.title }}";
+    const jobCity = "{{ job.city.name|default:'' }}";
+    const jobDescription = "{{ job.description|truncatechars:100 }}";
+    const shareUrl = window.location.href;
+    const shareText = `${jobTitle}\n${jobCity ? 'شهر: ' + jobCity + '\n' : ''}${jobDescription}\n\nمشاهده در سود آوا:`;
+    
+    if (navigator.share) {
+        // استفاده از Web Share API در موبایل
+        navigator.share({
+            title: jobTitle,
+            text: shareText,
+            url: shareUrl
+        }).then(() => {
+            showShareSuccess();
+        }).catch((error) => {
+            console.log('Error sharing:', error);
+            fallbackShare(shareText, shareUrl);
+        });
+    } else {
+        // Fallback برای دسکتاپ
+        fallbackShare(shareText, shareUrl);
+    }
+}
+
+// تابع Fallback برای شیر
+function fallbackShare(text, url) {
+    const shareText = `${text}\n${url}`;
+    
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareText).then(() => {
+            showShareSuccess();
+        }).catch(() => {
+            showShareModal(text, url);
+        });
+    } else {
+        showShareModal(text, url);
+    }
+}
+
+// نمایش پیام موفقیت
+function showShareSuccess() {
+    // ایجاد toast موفقیت
+    const toast = document.createElement('div');
+    toast.className = 'share-toast';
+    toast.innerHTML = `
+        <i class="bi bi-check-circle me-2"></i>
+        لینک آگهی کپی شد!
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
+// نمایش modal شیر (برای مرورگرهای قدیمی)
+function showShareModal(text, url) {
+    const modal = document.createElement('div');
+    modal.className = 'share-modal-overlay';
+    modal.innerHTML = `
+        <div class="share-modal">
+            <div class="share-modal-header">
+                <h5>اشتراک‌گذاری آگهی کاریابی</h5>
+                <button type="button" class="close-btn" onclick="closeShareModal()">&times;</button>
+            </div>
+            <div class="share-modal-body">
+                <textarea readonly class="share-textarea">${text}\n${url}</textarea>
+                <button type="button" class="copy-btn" onclick="copyToClipboard('${text}\\n${url}')">
+                    <i class="bi bi-clipboard me-1"></i>
+                    کپی لینک
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 100);
+}
+
+// بستن modal شیر
+function closeShareModal() {
+    const modal = document.querySelector('.share-modal-overlay');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 300);
+    }
+}
+
+// کپی به کلیپ‌بورد
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showShareSuccess();
+            closeShareModal();
+        });
+    } else {
+        // Fallback برای مرورگرهای قدیمی
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showShareSuccess();
+        closeShareModal();
+    }
+}
+</script>
+
+<style>
+/* Toast موفقیت شیر */
+.share-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    z-index: 10000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    font-weight: 500;
+}
+
+.share-toast.show {
+    transform: translateX(0);
+}
+
+/* Modal شیر */
+.share-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.share-modal-overlay.show {
+    opacity: 1;
+}
+
+.share-modal {
+    background: white;
+    border-radius: 1rem;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.share-modal-overlay.show .share-modal {
+    transform: scale(1);
+}
+
+.share-modal-header {
+    padding: 1.5rem 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.share-modal-header h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: #f8f9fa;
+    color: #333;
+}
+
+.share-modal-body {
+    padding: 1.5rem;
+}
+
+.share-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    resize: vertical;
+    margin-bottom: 1rem;
+    font-family: inherit;
+}
+
+.copy-btn {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.copy-btn:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 </style>
 {% endblock %} 
